@@ -1,0 +1,9 @@
+{
+  "name": "@b2bi/designer-core",
+  "version": "1.0.0",
+  "description": "B2Bi Designer Core",
+  "main": "index.js",
+  "license": "Precisely License",
+  "private": true,
+  "dependencies": {}
+}

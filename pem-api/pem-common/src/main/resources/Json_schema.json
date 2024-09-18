@@ -1,0 +1,312 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"type": "object",
+	"properties": {
+		"name": {
+			"type": "string"
+		},
+		"description": {
+			"type": "string"
+		},
+		"schemaVersion": {
+			"type": "number"
+		},
+		"process": {
+			"type": "object",
+			"properties": {
+				"nodes": {
+					"type": "array",
+					"items": {"$ref": "#/definitions/Node"}
+				},
+				"connectors": {
+					"type": "array",
+					"items": {"$ref": "#/definitions/Connector"}
+				},
+				"contextData": {
+					"type": "string"
+				}
+			},
+			"required": ["nodes", "connectors"]
+		}
+	},
+	"definitions": {
+		"Node": {
+			"type": "object",
+			"properties": {
+				"id": {
+					"type": "string",
+					"pattern": "^[a-zA-Z0-9_-]+$"
+				},
+				"name": {
+					"type": "string"
+				},
+				"type": {
+					"type": "string",
+					"enum": ["START", "END", "FORM", "CONNECTORS", "API", "XSLT", "GATEWAY", "PARTNER", "SYSTEM", "SPONSOR", "CALL_ACTIVITY"]
+				},
+				"userKeys": {
+					"type": "string"
+				},
+				"roleKeys": {
+					"type": "string"
+				},
+				"description": {
+					"type": "string"
+				},
+				"form": {
+					"type": "string",
+					"contentMediaType": "application/json",
+					"contentEncoding": "utf-8"
+				},
+				"targetActivity": {
+					"type": "string"
+				},
+				"inVariables": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"source": {
+								"type": "string"
+							},
+							"target": {
+								"type": "string"
+							}
+						},
+						"required": ["source", "target"]
+					}
+				},
+				"outVariables": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"source": {
+								"type": "string"
+							},
+							"target": {
+								"type": "string"
+							}
+						},
+						"required": ["source", "target"]
+					}
+				},
+				"api": {
+					"type": "object",
+					"properties": {
+						"apiConfiguration": {
+							"type": "string"
+						},
+						"url": {
+							"type": "string"
+						},
+						"method": {
+							"type": "string",
+							"enum": ["GET", "POST", "PUT", "DELETE", "PATCH"]
+						},
+						"requestContentType": {
+							"type": "string"
+						},
+						"responseContentType": {
+							"type": "string"
+						},
+						"file": {
+							"type": "string"
+						},
+						"requestHeaders": {
+							"type": "string",
+							"contentMediaType": "application/json",
+							"contentEncoding": "utf-8"
+						},
+						"request": {
+							"type": "string",
+							"contentEncoding": "utf-8"
+						},
+						"sampleResponse": {
+							"type": "string",
+							"contentMediaType": "application/json",
+							"contentEncoding": "utf-8"
+						},
+						"response": {
+							"type": "string",
+							"contentMediaType": "application/json",
+							"contentEncoding": "utf-8"
+						}
+					},
+					"required": ["apiConfiguration", "url", "method"]
+				},
+				"xslt": {
+					"type": "object",
+					"properties": {
+						"input": {
+							"type": "string"
+						},
+						"xslt": {
+							"type": "string"
+						},
+						"sampleOutput": {
+							"type": "string"
+						},
+						"output": {
+							"type": "string"
+						}
+					},
+					"required": ["input", "xslt", "sampleOutput", "output"]
+				},
+				"gatewayType": {
+					"type": "string"
+				},
+				"nodes": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/Node"
+					}
+				},
+				"connectors": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/Connector"
+					}
+				},
+				"estimateDays": {
+					"type": "number"
+				},
+				"showToPartner": {
+					"type": "boolean"
+				},
+				"contextData": {
+					"type": "string"
+				},
+				"diagram": {
+					"type": "object",
+					"properties": {
+						"x": {
+							"type": "number"
+						},
+						"y": {
+							"type": "number"
+						}
+					},
+					"required": [
+						"x",
+						"y"
+					]
+				}
+			},
+			"required": ["id", "name", "type"],
+			"oneOf": [
+				{
+					"properties": {
+						"type": {
+							"const": "START"
+						}
+					}
+				},
+				{
+					"properties": {
+						"type": {
+							"const": "END"
+						}
+					}
+				},
+				{
+					"properties": {
+						"type": {
+							"const" : "PARTNER"
+						}
+					},
+					"required": ["nodes", "connectors"]
+				},
+				{
+					"properties": {
+						"type": {
+							"const" : "SPONSOR"
+						}
+					},
+					"required": ["nodes", "connectors"]
+				},
+				{
+					"properties": {
+						"type": {
+							"const" : "SYSTEM"
+						}
+					},
+					"required": ["nodes", "connectors"]
+				},
+				{
+					"properties": {
+						"type": {
+							"const": "FORM"
+						}
+					},
+					"required": ["form"]
+				},
+				{
+					"properties": {
+						"type": {
+							"const": "CONNECTORS"
+						}
+					}
+				},
+				{
+					"properties": {
+						"type": {
+							"const": "CALL_ACTIVITY"
+						}
+					}
+				},
+				{
+					"properties": {
+						"type": {
+							"const": "API"
+						}
+					}
+				},
+				{
+					"properties": {
+						"type": {
+							"const": "XSLT"
+						}
+					}
+				},
+				{
+					"properties": {
+						"type": {
+							"const": "GATEWAY"
+						}
+					}
+				}
+			]
+		},
+		"Connector": {
+			"type": "object",
+			"properties": {
+				"source": {
+					"type": "string"
+				},
+				"target": {
+					"type": "string"
+				},
+				"condition": {
+					"type": "string"
+				},
+				"diagram": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"x": {
+								"type": "number"
+							},
+							"y": {
+								"type": "number"
+							}
+						}
+					}
+				}
+			},
+			"required": ["source", "target"]
+		}
+	},
+	"required": ["name", "description", "schemaVersion", "process"]
+}

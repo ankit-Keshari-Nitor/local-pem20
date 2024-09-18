@@ -1,0 +1,35 @@
+{
+  "name": "@b2bi/carbon-mappers",
+  "version": "1.0.0",
+  "description": "B2Bi Carbon Component mappers for DDF",
+  "main": "es/index.js",
+  "license": "Precisely License",
+  "private": true,
+  "dependencies": {
+    "@carbon/react": "^1.57.0",
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "5.0.1",
+    "sass": "^1.71.1",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build1": "react-scripts build",
+    "build": "node tasks/build.js",
+    "test": "react-scripts test --watchAll=false --coverage",
+    "eject": "react-scripts eject"
+  },
+  "devDependencies": {
+    "prettier": "^3.2.5"
+  },
+  "rollup": {
+    "watch": {
+      "include": "src/**",
+      "buildDelay": 1000
+    }
+  }
+}

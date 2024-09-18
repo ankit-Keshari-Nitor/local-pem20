@@ -1,0 +1,11 @@
+{
+  "breadcrumb": {
+    "definitions": "Activity Listing",
+    "designer": "Designer",
+    "workflow": "Workflow"
+  },
+  "list": {
+    "title": "Activity Definition",
+    "pageDescription": "Definitions list page"
+  }
+}

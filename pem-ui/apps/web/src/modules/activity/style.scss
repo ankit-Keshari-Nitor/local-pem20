@@ -1,0 +1,18 @@
+@use '@carbon/layout';
+@use '@carbon/react/scss/spacing' as *;
+@use '@carbon/colors';
+@use '@carbon/type';
+@use '@carbon/react/scss/theme' as *;
+
+.define-grid {
+  --cds-grid-gutter-start: none;
+  padding-inline: unset;
+}
+
+.col-margin {
+  margin: 0.5rem;
+  display: flex;
+}
+.pem--table-10-rows {
+  height: ((3+10) * $spacing-09) + $spacing-01 !important;
+}

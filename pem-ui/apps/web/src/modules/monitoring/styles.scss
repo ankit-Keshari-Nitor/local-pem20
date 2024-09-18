@@ -1,0 +1,149 @@
+@use '@carbon/layout';
+@use '@carbon/react/scss/spacing' as *;
+@use '@carbon/colors';
+@use '@carbon/type';
+@use '@carbon/react/scss/theme' as *;
+
+.tile-label {
+  font-family: IBM Plex Sans;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 20px;
+  text-align: left;
+}
+
+.tab-count {
+  font-family: IBM Plex Sans;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 31.2px;
+  text-align: left;
+  color: #525252;
+  margin-top: 1rem;
+}
+
+.close-side-page-icon {
+  display: flex;
+  justify-content: flex-end;
+  cursor: pointer;
+  margin: 0rem 1rem;
+}
+
+.circle {
+  border-radius: 50%;
+}
+
+.modal-body {
+  padding: 1.5rem !important;
+}
+
+.content-body {
+  padding: 0.75rem;
+  display: flex;
+  align-items: left;
+  justify-content: left;
+  font-weight: 600;
+}
+
+.content-title {
+  font-weight: 500;
+  display: flex;
+}
+
+.monitoring-tile {
+  padding: 2rem !important;
+}
+
+.monitoring-grid {
+  margin: 1rem 0rem 0rem 0rem !important;
+  padding: 0rem !important;
+}
+
+.monitoring-grid > .cds--css-grid-column {
+  margin: 0rem !important;
+  border: 1px solid #e9ebec;
+}
+
+.view-partner-container {
+  padding: 0rem 0.9rem;
+}
+
+.view-partner-count-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  border-right: 1px solid #e9ebec;
+  padding: 1.5rem;
+  background-color: #ffffff;
+  margin: 0rem;
+}
+
+.view-partner-header-key {
+  font-family: IBM Plex Sans;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  letter-spacing: 0.1599999964237213px;
+  text-align: left;
+}
+
+.view-partner-header-value {
+  font-family: IBM Plex Sans;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: 0.1599999964237213px;
+  text-align: left;
+}
+
+.view-partner-header-link {
+  font-family: IBM Plex Sans;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: 0.1599999964237213px;
+  text-align: left;
+  color: #0f62fe;
+  cursor: pointer;
+}
+
+.view-header-wrapper {
+  margin-bottom: 0.25rem;
+}
+
+.pem--table-10-rows {
+  height: ((3+10) * $spacing-09) + $spacing-01 !important;
+}
+
+.pem-information-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.pem-information-text {
+  padding: 0rem 0.25rem 0.25rem 0.25rem;
+}
+
+.view-partner-header-wrapper {
+  display: inline-block;
+}
+
+.view-partner-header-wrapper-mg {
+  display: inline-block;
+  margin-left: 1.5rem;
+}
+
+.owner-label {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin: 0.5rem 0rem;
+}
+
+.pem--button-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}

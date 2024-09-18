@@ -1,0 +1,24 @@
+{
+  "name": "sfg-sanity-test",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "type": "module",
+  "devDependencies": {
+    "@cucumber/cucumber": "^10.1.0",
+    "@playwright/test": "^1.46.0",
+    "@types/node": "^20.10.6",
+    "cucumber-html-reporter": "^7.1.1",
+    "jsonpath-plus": "^9.0.0",
+    "xlsx": "^0.18.5"
+  },
+  "scripts": {
+    "test": "cucumber-js test --tags \"(not (@Ignore or @ignore))\" ",
+    "test-current": "cucumber-js --tags \"(@current and (not (@Ignore or @ignore)))\" -f summary -f json:test/report/cucumber_report.json",
+    "test-qa": "cucumber-js test --tags \"(@qatest and (not (@Ignore or @ignore)))\" -f summary -f json:test/report/cucumber_qareport.json",
+    "test-report": "node bdd/reporter.js"
+  },
+  "dependencies": {
+    "@playwright/test": "^1.46.1"
+  }
+}

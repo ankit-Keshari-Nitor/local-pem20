@@ -1,0 +1,8 @@
+{
+  "pagination": {
+    "backwardText": "Previous page",
+    "forwardText": "Next page",
+    "itemsPerPageText": "Items per page:",
+    "pageNumberText": "Page Number"
+  }
+}

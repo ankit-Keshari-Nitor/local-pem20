@@ -1,0 +1,84 @@
+.remove-edge-button {
+  width: 20px;
+  height: 20px;
+  background: #ffffff;
+  border: 1px solid #ed3e32;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 12px;
+  line-height: 1;
+  color: #ed3e32;
+}
+
+.add-block-button {
+  width: 20px;
+  height: 20px;
+  background: #ffffff;
+  border: 1px solid blue;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 12px;
+  line-height: 1;
+  color: blue;
+}
+
+.edge-button:hover {
+  box-shadow: 0 0 6px 2px rgba(0, 0, 0, 0.08);
+}
+
+.node-type-list {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+}
+
+.node-type-list-label {
+  font-family: IBM Plex Sans;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 19.5px;
+  letter-spacing: -0.002em;
+  text-align: center;
+  color: #3e3e3e;
+}
+
+.node-type-list-label::first-letter {
+  text-transform: capitalize;
+}
+
+.disabledEdge {
+  cursor: not-allowed;
+}
+
+.blocks-tray {
+  background-color: #f4f4f4;
+  border-radius: 0px 9px 9px 0px;
+  min-width: 10rem;
+  cursor: auto;
+}
+
+.block-name {
+  font-size: large;
+  margin-left: -2.5rem;
+}
+
+.block-icon {
+  margin-left: -1rem;
+}
+
+.category-block {
+  height: 3rem;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+}
+
+.category-block:hover {
+  background-color:#E7E9EB;
+}
+
+.hidebuttons {
+  visibility: hidden;
+  opacity: 0;
+}

@@ -1,0 +1,50 @@
+.header-button-right-drawer {
+  display: contents;
+  background-color: #ffffff;
+  justify-content: flex-start !important;
+  float: left !important;
+  color: #525252 !important;
+  font-weight: 500 !important;
+  font-size: 18px !important;
+  padding-top: 1rem !important;
+  padding-left: 0.75rem !important;
+}
+
+.header-button-left-drawer {
+  position: fixed !important;
+  display: inline-flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  background-color: #ffffff;
+  float: right;
+  right: 0%;
+}
+
+.headers-drawer {
+  padding-left: 0.75rem !important;
+  padding-bottom: 0.5rem !important;
+}
+
+.information-text {
+  display: flex !important;
+  align-items: center !important;
+}
+
+.custom-inline-notification-container {
+  top: 50px !important;
+}
+
+.action-item-drawer {
+  padding-right: 1rem !important;
+  width: 90%;
+  display: flex;
+  justify-content: center;
+}
+
+td:empty {
+  display: none;
+}
+
+.activity-sidedrawer-drawer div:last-child th:first-child div {
+  text-align: start !important;
+}

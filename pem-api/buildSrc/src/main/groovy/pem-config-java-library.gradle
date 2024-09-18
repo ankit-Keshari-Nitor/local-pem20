@@ -1,0 +1,44 @@
+plugins {
+    id 'java-library'
+    id 'eclipse'
+    id 'pmd'
+}
+
+group = 'com.precisely.b2b'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
+
+compileJava.options.encoding = "UTF-8"
+compileTestJava.options.encoding = "UTF-8"
+
+eclipse {
+    jdt {
+        file {
+            withProperties { properties ->
+                properties.setProperty("encoding/<project>", "UTF-8");
+            }
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+pmd {
+    ignoreFailures = true
+    ruleSetFiles = files("../buildSrc/src/main/resources/pmd/ruleset.xml")
+    ruleSets = []
+}
+
+task wrapper(type:Wrapper) {
+    distributionUrl = "https://services.gradle.org/distributions/gradle-7.4.2-bin.zip"
+}

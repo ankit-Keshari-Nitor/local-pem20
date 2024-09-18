@@ -1,0 +1,51 @@
+{
+  "name": "@b2bi/flow-designer",
+  "description": "Workflow/Activity Designer",
+  "version": "0.1.0",
+  "main": "es/index.js",
+  "private": true,
+  "dependencies": {
+    "@carbon/react": "^1.57.0",
+    "@data-driven-forms/carbon-component-mapper": "^3.22.4",
+    "@data-driven-forms/react-form-renderer": "^3.22.4",
+    "@react-querybuilder/dnd": "^7.2.0",
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "carbon-components-react": "^8.56.0",
+    "dagre": "^0.8.5",
+    "lodash": "^4.17.21",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-dnd": "^16.0.1",
+    "react-querybuilder": "^7.2.0",
+    "react-resizable-panels": "^2.0.17",
+    "react-scripts": "5.0.1",
+    "reactflow": "11.10.4",
+    "sass": "^1.71.1",
+    "uuid": "^9.0.1",
+    "web-vitals": "^2.1.4",
+    "zustand": "^4.5.2"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "node tasks/build.js",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "devDependencies": {
+    "prettier": "^3.2.5"
+  },
+  "rollup": {
+    "watch": {
+      "include": "src/**",
+      "buildDelay": 1000
+    }
+  }
+}

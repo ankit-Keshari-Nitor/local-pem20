@@ -1,0 +1,19 @@
+.button-container-container {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  position: absolute;
+  bottom: 0;
+}
+
+.buttons-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  margin: 0px;
+}
+
+.button {
+  width: 100%;
+}

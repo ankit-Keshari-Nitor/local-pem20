@@ -1,0 +1,26 @@
+{
+  "cucumber.features": ["pem-ui/apps/sanity/bdd/features/**/*.feature"],
+  "cucumber.glue": ["pem-ui/node_modules/@b2bi/shell-bdd/bdd/steps/**/*.js", "pem-ui/apps/sanity/bdd/steps/**/*.js", ],
+  "cucumber.parameterTypes": [
+    {
+      "regexp": "enabled|disabled|visible|hidden",
+      "name": "elementStatus"
+    },
+    {
+      "regexp": "success|information|warning|error",
+      "name": "notificationType"
+    },
+    {
+      "regexp": "confirm|information|warning|error",
+      "name": "modalType"
+    },
+    {
+      "regexp": "SYSTEM_ADMIN|COMPANY_ADMIN|BUSINESSUNIT_ADMIN",
+      "name": "appUser"
+    },
+    {
+      "regexp": "TextInput|Password|Select|RadioGroup|Radio|CheckboxGroup|Checkbox|Combobox",
+      "name": "formFieldType"
+    }
+  ]
+}

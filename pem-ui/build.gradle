@@ -1,0 +1,68 @@
+plugins {
+    // https://github.com/node-gradle/gradle-node-plugin/blob/master/docs/usage.md
+    id "com.github.node-gradle.node" version "5.0.0"
+    id 'base'
+}
+
+node {
+    version = '18.16.0'
+    
+    // Allow build to download and install a specific Node.js version.
+    download = true
+    
+    // The directory where Node.js is unpacked (when download is true)
+    workDir = file("${project.projectDir}/.gradle/nodejs")
+
+    // The directory where npm is installed (when a specific version is defined)
+    npmWorkDir = file("${project.projectDir}/.gradle/npm")
+
+    // The directory where yarn is installed (when a Yarn task is used)
+    yarnWorkDir = file("${project.projectDir}/.gradle/yarn")
+  
+    // Location of Node.js project directory containing package.json files and node_modules directory.
+    nodeProjectDir = file("${project.projectDir}")
+	
+}
+
+yarn {
+    args = ['--cache-folder', '../.yarn-cache']
+}
+
+yarn_install {
+    args = ['--cache-folder', '../.yarn-cache']
+}
+
+// yarn_install.dependsOn(yarn_cache_clean)
+
+task npmBuild(type: NpmTask, dependsOn: npmInstall) {
+    args = ['run', 'build']
+}
+
+task yarnBuild(type: YarnTask, dependsOn: yarn) {
+    args = ['run', 'build']
+}
+
+task yarnPublish(type: YarnTask, dependsOn: yarn) {
+    args = ['run', 'publish']
+}
+
+task bundle(type: Zip, dependsOn: yarnBuild) {
+    archiveName = "pem-ui.zip"
+    destinationDir = file('packages/')
+    from (files('./apps/web/build/dist'))
+}
+
+assemble.dependsOn(bundle)
+
+task test(type: YarnTask, dependsOn: yarn) {
+    // Set the environment variable CI to true ensure test process runs once and exit.
+    // Without this, tests will run in watch mode and build will not finish.
+    // environment = ['CI': 'true']
+    args = ['run', 'test']
+}    
+// Disabling test temporarly still the unit tests are fixed
+// check.dependsOn(test)
+
+task run(type: NpmTask) {
+    args = ['start']
+}

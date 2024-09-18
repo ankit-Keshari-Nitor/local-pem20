@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="20240623-1" author="IBM" dbms="mssql">
+        <sql>
+            ALTER DATABASE ${databaseName} SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+        </sql>
+    </changeSet>
+
+    <changeSet id="20240623-2" author="IBM" dbms="mssql">
+        <sql>
+            ALTER DATABASE ${databaseName} COLLATE SQL_Latin1_General_CP1_CI_AS;
+        </sql>
+    </changeSet>
+
+    <changeSet id="20240623-3" author="IBM" dbms="mssql">
+        <sql>
+            ALTER DATABASE ${databaseName} SET MULTI_USER;
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

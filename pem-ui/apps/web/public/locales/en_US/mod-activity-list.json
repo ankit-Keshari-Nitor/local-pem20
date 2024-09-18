@@ -1,0 +1,37 @@
+{
+  "breadcrumb": {
+    "definitions": "Activity Definitions"
+  },
+  "list": {
+    "title": "Activity Definitions",
+    "pageDescription": "Definitions list page",
+    "confirmation": "Confirmation",
+    "columns": {
+      "activityName": "Activity Name",
+      "status": "Status",
+      "defaultVersion": "Default Version",
+      "actions": "Actions"
+    },
+    "actions": {
+      "view": "View",
+      "edit": "Edit",
+      "exportActivity": "Export Activity",
+      "testActivity": "Test Activity",
+      "cloneActivity": "Clone Activity",
+      "shareUnshared": "Share/Unshared",
+      "delete": "Delete",
+      "search": "Search",
+      "new": "New",
+      "import": "Import",
+      "markAsFinal": "Mark As Final",
+      "rollout": "Rollout",
+      "restore": "Restore"
+    },
+    "filters": {
+      "status": "Status",
+      "DELETE": "Delete",
+      "DRAFT": "Draft",
+      "FINAL": "Final"
+    }
+  }
+}

@@ -1,0 +1,19 @@
+rootProject.name = 'pem20'
+include(':pem-ui')
+project(':pem-ui').projectDir = file("pem-ui")
+include ':pem-api'
+project(':pem-api').projectDir = file("pem-api")
+include ':pem-liberty'
+project(':pem-liberty').projectDir = file("pem-liberty")
+include(':pem-services')
+project(':pem-services').projectDir = file("pem-api/pem-services")
+include(':pem-entity')
+project(':pem-entity').projectDir = file("pem-api/pem-entity")
+include(':pem-rest')
+project(':pem-rest').projectDir = file("pem-api/pem-rest")
+include(':pem-common')
+project(':pem-common').projectDir = file("pem-api/pem-common")
+include(':pem-activiti')
+project(':pem-activiti').projectDir = file("pem-api/pem-activiti")
+include(':pem-systemdata')
+project(':pem-systemdata').projectDir = file("pem-api/pem-systemdata")

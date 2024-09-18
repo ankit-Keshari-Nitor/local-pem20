@@ -1,0 +1,9 @@
+{
+  "name": "@b2bi/designer-shared",
+  "version": "1.0.0",
+  "description": "B2Bi Designer Shared",
+  "main": "index.js",
+  "license": "Precisely License",
+  "private": true,
+  "dependencies": {}
+}

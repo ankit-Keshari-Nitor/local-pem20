@@ -1,0 +1,16 @@
+plugins {
+    id 'java-library'
+}
+
+configurations {
+    // Required to enable Lombok
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+dependencies {
+    // Enable Lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+}

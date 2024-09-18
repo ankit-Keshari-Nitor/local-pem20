@@ -1,0 +1,7 @@
+{
+  "default": {
+    "paths": ["bdd/features/", "steps/"],
+    "import": ["bdd/steps/", "bdd/support_files/"],
+    "format": ["progress-bar", ["html", "cucumber-report.html"]]
+  }
+}

@@ -1,0 +1,628 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="20240623-1" author="IBM" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="vch_activity_defn"/>
+            </not>
+        </preConditions>
+        <createTable tableName="vch_activity_defn">
+            <column name="activity_defn_key" type="varchar(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="create_ts" type="datetime(6)"/>
+            <column name="created_by" type="varchar(255)"/>
+            <column name="modified_by" type="varchar(255)"/>
+            <column name="modify_ts" type="datetime(6)"/>
+            <column name="activity_description" type="varchar(255)"/>
+            <column name="activity_name" type="varchar(80)"/>
+            <column name="application" type="varchar(10)"/>
+            <column name="is_deleted" type="boolean" defaultValue="false"/>
+            <column name="migration_status" type="boolean" defaultValue="false"/>
+            <column name="sponsor_key" type="varchar(50)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20240623-2" author="IBM" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="vch_activity_defn_version"/>
+            </not>
+        </preConditions>
+        <createTable tableName="vch_activity_defn_version">
+            <column name="activity_defn_version_key" type="varchar(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="create_ts" type="datetime(6)"/>
+            <column name="created_by" type="varchar(255)"/>
+            <column name="modified_by" type="varchar(255)"/>
+            <column name="modify_ts" type="datetime(6)"/>
+            <column name="activity_defn_data_key" type="varchar(255)"/>
+            <column name="activity_defn_key" type="varchar(255)"/>
+            <column name="description" type="varchar(255)"/>
+            <column name="vault_key" type="varchar(255)"/>
+            <column name="is_default" type="boolean" defaultValue="false"/>
+            <column name="is_encrypted" type="boolean" defaultValue="false"/>
+            <column name="schema_version" type="decimal(10,2)"/>
+            <column name="status" type="varchar(255)"/>
+            <column name="version" type="decimal(10,1)"/>
+            <column name="activity_defn_details" type="varchar(255)"/>
+            <column name="activity_defn_data" type="varchar(255)">
+                <constraints unique="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20240623-3" author="IBM" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="vch_activity_defn_data"/>
+            </not>
+        </preConditions>
+        <createTable tableName="vch_activity_defn_data">
+            <column name="activity_defn_data_key" type="varchar(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="create_ts" type="datetime(6)"/>
+            <column name="created_by" type="varchar(255)"/>
+            <column name="modified_by" type="varchar(255)"/>
+            <column name="modify_ts" type="datetime(6)"/>
+            <column name="def_data" type="mediumblob"/>
+            <column name="activity_defn_version" type="varchar(255)">
+                <constraints unique="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20240623-4" author="IBM" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="vch_activity_inst"/>
+            </not>
+        </preConditions>
+        <createTable tableName="vch_activity_inst">
+            <column name="activity_inst_key" type="varchar(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="create_ts" type="datetime(6)"/>
+            <column name="created_by" type="varchar(255)"/>
+            <column name="modified_by" type="varchar(255)"/>
+            <column name="modify_ts" type="datetime(6)"/>
+            <column name="activity_defn_key" type="varchar(255)"/>
+            <column name="activity_defn_version_key" type="varchar(255)"/>
+            <column name="alert_date" type="datetime(6)"/>
+            <column name="alert_frequency" type="int"/>
+            <column name="application" type="varchar(10)"/>
+            <column name="context_data" type="mediumblob"/>
+            <column name="activity_inst_name" type="varchar(255)"/>
+            <column name="activity_inst_description" type="varchar(255)"/>
+            <column name="activity_inst_status" type="varchar(255)"/>
+            <column name="start_date" type="datetime(6)"/>
+            <column name="due_date" type="datetime(6)"/>
+            <column name="email_preference" type="varchar(255)"/>
+            <column name="is_created_by_partner" type="boolean" defaultValue="false"/>
+            <column name="is_deleted" type="boolean" defaultValue="false"/>
+            <column name="is_encrypted" type="boolean" defaultValue="false"/>
+            <column name="sponsor_key" type="varchar(50)"/>
+            <column name="task_skipped" type="varchar(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20240623-5" author="IBM" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="vch_pcpt_activity_inst"/>
+            </not>
+        </preConditions>
+        <createTable tableName="vch_pcpt_activity_inst">
+            <column name="pcpt_activity_inst_key" type="varchar(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="create_ts" type="datetime(6)"/>
+            <column name="created_by" type="varchar(255)"/>
+            <column name="modified_by" type="varchar(255)"/>
+            <column name="modify_ts" type="datetime(6)"/>
+            <column name="activity_inst_key" type="varchar(255)"/>
+            <column name="activity_workflow_inst_key" type="varchar(255)"/>
+            <column name="due_date" type="datetime(6)"/>
+            <column name="completion_date" type="datetime(6)"/>
+            <column name="current_task" type="varchar(255)"/>
+            <column name="alert_frequency" type="int"/>
+            <column name="application" type="varchar(10)"/>
+            <column name="pcpt_context_data" type="mediumblob"/>
+            <column name="is_already_rolled_out" type="boolean" defaultValue="false"/>
+            <column name="is_deleted" type="boolean" defaultValue="false"/>
+            <column name="is_encrypted" type="boolean" defaultValue="false"/>
+            <column name="mail_group_key" type="varchar(255)"/>
+            <column name="partner_key" type="varchar(255)"/>
+            <column name="pcpt_inst_status" type="varchar(255)"/>
+            <column name="sponsor_key" type="varchar(255)"/>
+            <column name="task_completed" type="boolean" defaultValue="false"/>
+            <column name="activity_inst_details" type="varchar(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20240623-6" author="IBM" dbms="db2">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="VCH_ACTIVITY_DEFN"/>
+            </not>
+        </preConditions>
+        <createTable tableName="VCH_ACTIVITY_DEFN">
+            <column name="ACTIVITY_DEFN_KEY" type="VARCHAR(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="CREATE_TS" type="TIMESTAMP"/>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="MODIFY_TS" type="TIMESTAMP"/>
+            <column name="ACTIVITY_DESCRIPTION" type="VARCHAR(255)"/>
+            <column name="ACTIVITY_NAME" type="VARCHAR(80)"/>
+            <column name="APPLICATION" type="VARCHAR(10)"/>
+            <column name="IS_DELETED" type="BOOLEAN"/>
+            <column name="MIGRATION_STATUS" type="BOOLEAN"/>
+            <column name="SPONSOR_KEY" type="VARCHAR(50)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20240623-7" author="IBM" dbms="db2">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="VCH_ACTIVITY_DEFN_VERSION"/>
+            </not>
+        </preConditions>
+        <createTable tableName="VCH_ACTIVITY_DEFN_VERSION">
+            <column name="ACTIVITY_DEFN_VERSION_KEY" type="VARCHAR(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="CREATE_TS" type="TIMESTAMP"/>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="MODIFY_TS" type="TIMESTAMP"/>
+            <column name="ACTIVITY_DEFN_DATA_KEY" type="VARCHAR(255)"/>
+            <column name="ACTIVITY_DEFN_KEY" type="VARCHAR(255)"/>
+            <column name="DESCRIPTION" type="VARCHAR(255)"/>
+            <column name="VAULT_KEY" type="VARCHAR(255)"/>
+            <column name="IS_DEFAULT" type="BOOLEAN"/>
+            <column name="IS_ENCRYPTED" type="BOOLEAN"/>
+            <column name="SCHEMA_VERSION" type="DECIMAL(10,2)"/>
+            <column name="STATUS" type="VARCHAR(255)"/>
+            <column name="VERSION" type="DECIMAL(10,1)"/>
+            <column name="ACTIVITY_DEFN_DETAILS" type="VARCHAR(255)"/>
+            <column name="ACTIVITY_DEFN_DATA" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20240623-8" author="IBM" dbms="db2">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="VCH_ACTIVITY_DEFN_DATA"/>
+            </not>
+        </preConditions>
+        <createTable tableName="VCH_ACTIVITY_DEFN_DATA">
+            <column name="ACTIVITY_DEFN_DATA_KEY" type="VARCHAR(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="CREATE_TS" type="TIMESTAMP"/>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="MODIFY_TS" type="TIMESTAMP"/>
+            <column name="DEF_DATA" type="BLOB"/>
+            <column name="ACTIVITY_DEFN_VERSION" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20240623-9" author="IBM" dbms="db2">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="VCH_ACTIVITY_INST"/>
+            </not>
+        </preConditions>
+        <createTable tableName="VCH_ACTIVITY_INST">
+            <column name="ACTIVITY_INST_KEY" type="VARCHAR(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="CREATE_TS" type="TIMESTAMP"/>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="MODIFY_TS" type="TIMESTAMP"/>
+            <column name="ACTIVITY_DEFN_KEY" type="VARCHAR(255)"/>
+            <column name="ACTIVITY_DEFN_VERSION_KEY" type="VARCHAR(255)"/>
+            <column name="ALERT_DATE" type="TIMESTAMP"/>
+            <column name="ALERT_FREQUENCY" type="INT"/>
+            <column name="APPLICATION" type="VARCHAR(10)"/>
+            <column name="CONTEXT_DATA" type="MEDIUMBLOB"/>
+            <column name="ACTIVITY_INST_NAME" type="VARCHAR(255)"/>
+            <column name="ACTIVITY_INST_DESCRIPTION" type="VARCHAR(255)"/>
+            <column name="ACTIVITY_INST_STATUS" type="VARCHAR(255)"/>
+            <column name="START_DATE" type="TIMESTAMP"/>
+            <column name="DUE_DATE" type="TIMESTAMP"/>
+            <column name="END_DATE" type="TIMESTAMP"/>
+            <column name="EMAIL_PREFERENCE" type="VARCHAR(255)"/>
+            <column name="IS_CREATED_BY_PARTNER" type="BOOLEAN"/>
+            <column name="IS_DELETED" type="BOOLEAN"/>
+            <column name="IS_ENCRYPTED" type="BOOLEAN"/>
+            <column name="SPONSOR_KEY" type="VARCHAR(50)"/>
+            <column name="TASK_SKIPPED" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20240623-10" author="IBM" dbms="db2">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="VCH_PCPT_ACTIVITY_INST"/>
+            </not>
+        </preConditions>
+        <createTable tableName="VCH_PCPT_ACTIVITY_INST">
+            <column name="PCPT_ACTIVITY_INST_KEY" type="VARCHAR(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="CREATE_TS" type="TIMESTAMP"/>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="MODIFY_TS" type="TIMESTAMP"/>
+            <column name="ACTIVITY_INST_KEY" type="VARCHAR(255)"/>
+            <column name="ACTIVITY_WORKFLOW_INST_KEY" type="VARCHAR(255)"/>
+            <column name="DUE_DATE" type="TIMESTAMP"/>
+            <column name="COMPLETION_DATE" type="TIMESTAMP"/>
+            <column name="CURRENT_TASK" type="VARCHAR(255)"/>
+            <column name="PCPT_CONTEXT_DATA" type="MEDIUMBLOB"/>
+            <column name="IS_ALREADY_ROLLED_OUT" type="BOOLEAN" defaultValue="false"/>
+            <column name="IS_DELETED" type="BOOLEAN" defaultValue="false"/>
+            <column name="IS_ENCRYPTED" type="BOOLEAN" defaultValue="false"/>
+            <column name="MAIL_GROUP_KEY" type="VARCHAR(255)"/>
+            <column name="PARTNER_KEY" type="VARCHAR(255)"/>
+            <column name="PCPT_INST_STATUS" type="VARCHAR(255)"/>
+            <column name="SPONSOR_KEY" type="VARCHAR(255)"/>
+            <column name="TASK_COMPLETED" type="BOOLEAN" defaultValue="false"/>
+            <column name="ACTIVITY_INST_DETAILS" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20240623-11" author="IBM" dbms="oracle">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="VCH_ACTIVITY_DEFN"/>
+            </not>
+        </preConditions>
+        <createTable tableName="VCH_ACTIVITY_DEFN">
+            <column name="ACTIVITY_DEFN_KEY" type="VARCHAR2(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="CREATE_TS" type="TIMESTAMP(6)"/>
+            <column name="CREATED_BY" type="VARCHAR2(255)"/>
+            <column name="MODIFIED_BY" type="VARCHAR2(255)"/>
+            <column name="MODIFY_TS" type="TIMESTAMP(6)"/>
+            <column name="ACTIVITY_DESCRIPTION" type="VARCHAR2(255)"/>
+            <column name="ACTIVITY_NAME" type="VARCHAR2(80)"/>
+            <column name="APPLICATION" type="VARCHAR2(10)"/>
+            <column name="IS_DELETED" type="NUMBER(1)" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="MIGRATION_STATUS" type="NUMBER(1)" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="SPONSOR_KEY" type="VARCHAR2(50)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20240623-12" author="IBM" dbms="oracle">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="VCH_ACTIVITY_DEFN_VERSION"/>
+            </not>
+        </preConditions>
+        <createTable tableName="VCH_ACTIVITY_DEFN_VERSION">
+            <column name="ACTIVITY_DEFN_VERSION_KEY" type="VARCHAR2(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="CREATE_TS" type="TIMESTAMP(6)"/>
+            <column name="CREATED_BY" type="VARCHAR2(255)"/>
+            <column name="MODIFIED_BY" type="VARCHAR2(255)"/>
+            <column name="MODIFY_TS" type="TIMESTAMP(6)"/>
+            <column name="ACTIVITY_DEFN_DATA_KEY" type="VARCHAR2(255)"/>
+            <column name="ACTIVITY_DEFN_KEY" type="VARCHAR2(255)"/>
+            <column name="DESCRIPTION" type="VARCHAR2(255)"/>
+            <column name="VAULT_KEY" type="VARCHAR2(255)"/>
+            <column name="IS_DEFAULT" type="NUMBER(1)" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="IS_ENCRYPTED" type="NUMBER(1)" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="SCHEMA_VERSION" type="NUMBER(10,2)"/>
+            <column name="STATUS" type="VARCHAR2(255)"/>
+            <column name="VERSION" type="DECIMAL(10,1)"/>
+            <column name="ACTIVITY_DEFN_DETAILS" type="VARCHAR2(255)"/>
+            <column name="ACTIVITY_DEFN_DATA" type="VARCHAR2(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20240623-13" author="IBM" dbms="oracle">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="VCH_ACTIVITY_DEFN_DATA"/>
+            </not>
+        </preConditions>
+        <createTable tableName="VCH_ACTIVITY_DEFN_DATA">
+            <column name="ACTIVITY_DEFN_DATA_KEY" type="VARCHAR2(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="CREATE_TS" type="TIMESTAMP(6)"/>
+            <column name="CREATED_BY" type="VARCHAR2(255)"/>
+            <column name="MODIFIED_BY" type="VARCHAR2(255)"/>
+            <column name="MODIFY_TS" type="TIMESTAMP(6)"/>
+            <column name="DEF_DATA" type="BLOB"/>
+            <column name="ACTIVITY_DEFN_VERSION" type="VARCHAR2(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20240623-14" author="IBM" dbms="oracle">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="VCH_ACTIVITY_INST"/>
+            </not>
+        </preConditions>
+        <createTable tableName="VCH_ACTIVITY_INST">
+            <column name="ACTIVITY_INST_KEY" type="VARCHAR2(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="CREATE_TS" type="TIMESTAMP(6)"/>
+            <column name="CREATED_BY" type="VARCHAR2(255)"/>
+            <column name="MODIFIED_BY" type="VARCHAR2(255)"/>
+            <column name="MODIFY_TS" type="TIMESTAMP(6)"/>
+            <column name="ACTIVITY_DEFN_KEY" type="VARCHAR2(255)"/>
+            <column name="ACTIVITY_DEFN_VERSION_KEY" type="VARCHAR2(255)"/>
+            <column name="ALERT_DATE" type="TIMESTAMP(6)"/>
+            <column name="ALERT_FREQUENCY" type="NUMBER(10)"/>
+            <column name="APPLICATION" type="VARCHAR2(10)"/>
+            <column name="CONTEXT_DATA" type="BLOB"/>
+            <column name="ACTIVITY_INST_NAME" type="VARCHAR2(255)"/>
+            <column name="ACTIVITY_INST_DESCRIPTION" type="VARCHAR2(255)"/>
+            <column name="ACTIVITY_INST_STATUS" type="VARCHAR2(255)"/>
+            <column name="START_DATE" type="TIMESTAMP(6)"/>
+            <column name="DUE_DATE" type="TIMESTAMP(6)"/>
+            <column name="END_DATE" type="TIMESTAMP(6)"/>
+            <column name="EMAIL_PREFERENCE" type="VARCHAR2(255)"/>
+            <column name="IS_CREATED_BY_PARTNER" type="NUMBER(1)" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="IS_DELETED" type="NUMBER(1)" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="IS_ENCRYPTED" type="NUMBER(1)" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="SPONSOR_KEY" type="VARCHAR2(50)"/>
+            <column name="TASK_SKIPPED" type="VARCHAR2(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20240623-15" author="IBM" dbms="oracle">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="VCH_PCPT_ACTIVITY_INST"/>
+            </not>
+        </preConditions>
+        <createTable tableName="VCH_PCPT_ACTIVITY_INST">
+            <column name="PCPT_ACTIVITY_INST_KEY" type="VARCHAR2(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="CREATE_TS" type="TIMESTAMP(6)"/>
+            <column name="CREATED_BY" type="VARCHAR2(255)"/>
+            <column name="MODIFIED_BY" type="VARCHAR2(255)"/>
+            <column name="MODIFY_TS" type="TIMESTAMP(6)"/>
+            <column name="ACTIVITY_INST_KEY" type="VARCHAR2(255)"/>
+            <column name="ACTIVITY_WORKFLOW_INST_KEY" type="VARCHAR2(255)"/>
+            <column name="DUE_DATE" type="TIMESTAMP(6)"/>
+            <column name="COMPLETION_DATE" type="TIMESTAMP(6)"/>
+            <column name="CURRENT_TASK" type="VARCHAR2(255)"/>
+            <column name="PCPT_CONTEXT_DATA" type="BLOB"/>
+            <column name="IS_ALREADY_ROLLED_OUT" type="NUMBER(1)" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="IS_DELETED" type="NUMBER(1)" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="IS_ENCRYPTED" type="NUMBER(1)" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="MAIL_GROUP_KEY" type="VARCHAR2(255)"/>
+            <column name="PARTNER_KEY" type="VARCHAR2(255)"/>
+            <column name="PCPT_INST_STATUS" type="VARCHAR2(255)"/>
+            <column name="SPONSOR_KEY" type="VARCHAR2(255)"/>
+            <column name="TASK_COMPLETED" type="NUMBER(1)" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ACTIVITY_INST_DETAILS" type="VARCHAR2(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20240623-16" author="IBM" dbms="mssql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="VCH_ACTIVITY_DEFN"/>
+            </not>
+        </preConditions>
+        <createTable tableName="VCH_ACTIVITY_DEFN">
+            <column name="ACTIVITY_DEFN_KEY" type="VARCHAR(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="CREATE_TS" type="DATETIME"/>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="MODIFY_TS" type="DATETIME"/>
+            <column name="ACTIVITY_DESCRIPTION" type="VARCHAR(255)"/>
+            <column name="ACTIVITY_NAME" type="VARCHAR(80)"/>
+            <column name="APPLICATION" type="VARCHAR(10)"/>
+            <column name="IS_DELETED" type="BIT"/>
+            <column name="MIGRATION_STATUS" type="BIT"/>
+            <column name="SPONSOR_KEY" type="VARCHAR(50)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20240623-17" author="IBM" dbms="mssql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="VCH_ACTIVITY_DEFN_VERSION"/>
+            </not>
+        </preConditions>
+        <createTable tableName="VCH_ACTIVITY_DEFN_VERSION">
+            <column name="ACTIVITY_DEFN_VERSION_KEY" type="VARCHAR(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="CREATE_TS" type="DATETIME"/>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="MODIFY_TS" type="DATETIME"/>
+            <column name="ACTIVITY_DEFN_DATA_KEY" type="VARCHAR(255)"/>
+            <column name="ACTIVITY_DEFN_KEY" type="VARCHAR(255)"/>
+            <column name="DESCRIPTION" type="VARCHAR(255)"/>
+            <column name="VAULT_KEY" type="VARCHAR(255)"/>
+            <column name="IS_DEFAULT" type="BIT"/>
+            <column name="IS_ENCRYPTED" type="BIT"/>
+            <column name="SCHEMA_VERSION" type="DECIMAL(10,2)"/>
+            <column name="STATUS" type="VARCHAR(255)"/>
+            <column name="VERSION" type="DECIMAL(10,1)"/>
+            <column name="ACTIVITY_DEFN_DETAILS" type="VARCHAR(255)"/>
+            <column name="ACTIVITY_DEFN_DATA" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20240623-18" author="IBM" dbms="mssql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="VCH_ACTIVITY_DEFN_DATA"/>
+            </not>
+        </preConditions>
+        <createTable tableName="VCH_ACTIVITY_DEFN_DATA">
+            <column name="ACTIVITY_DEFN_DATA_KEY" type="VARCHAR(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="CREATE_TS" type="DATETIME"/>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="MODIFY_TS" type="DATETIME"/>
+            <column name="DEF_DATA" type="VARBINARY(MAX)"/>
+            <column name="ACTIVITY_DEFN_VERSION" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20240623-19" author="IBM" dbms="mssql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="VCH_ACTIVITY_INST"/>
+            </not>
+        </preConditions>
+        <createTable tableName="VCH_ACTIVITY_INST">
+            <column name="ACTIVITY_INST_KEY" type="VARCHAR(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="CREATE_TS" type="DATETIME"/>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="MODIFY_TS" type="DATETIME"/>
+            <column name="ACTIVITY_DEFN_KEY" type="VARCHAR(255)"/>
+            <column name="ACTIVITY_DEFN_VERSION_KEY" type="VARCHAR(255)"/>
+            <column name="ALERT_DATE" type="DATETIME"/>
+            <column name="ALERT_FREQUENCY" type="INT"/>
+            <column name="APPLICATION" type="VARCHAR(10)"/>
+            <column name="CONTEXT_DATA" type="VARBINARY(MAX)"/>
+            <column name="ACTIVITY_INST_NAME" type="VARCHAR(255)"/>
+            <column name="ACTIVITY_INST_DESCRIPTION" type="VARCHAR(255)"/>
+            <column name="ACTIVITY_INST_STATUS" type="VARCHAR(255)"/>
+            <column name="START_DATE" type="DATETIME"/>
+            <column name="DUE_DATE" type="DATETIME"/>
+            <column name="END_DATE" type="DATETIME"/>
+            <column name="EMAIL_PREFERENCE" type="VARCHAR(255)"/>
+            <column name="IS_CREATED_BY_PARTNER" type="BIT"/>
+            <column name="IS_DELETED" type="BIT"/>
+            <column name="IS_ENCRYPTED" type="BIT"/>
+            <column name="SPONSOR_KEY" type="VARCHAR(50)"/>
+            <column name="TASK_SKIPPED" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20240623-20" author="IBM" dbms="mssql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="VCH_PCPT_ACTIVITY_INST"/>
+            </not>
+        </preConditions>
+        <createTable tableName="VCH_PCPT_ACTIVITY_INST">
+            <column name="PCPT_ACTIVITY_INST_KEY" type="VARCHAR(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="CREATE_TS" type="DATETIME"/>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="MODIFY_TS" type="DATETIME"/>
+            <column name="ACTIVITY_INST_KEY" type="VARCHAR(255)"/>
+            <column name="ACTIVITY_WORKFLOW_INST_KEY" type="VARCHAR(255)"/>
+            <column name="DUE_DATE" type="DATETIME"/>
+            <column name="COMPLETION_DATE" type="DATETIME"/>
+            <column name="CURRENT_TASK" type="VARCHAR(255)"/>
+            <column name="PCPT_CONTEXT_DATA" type="VARBINARY(MAX)"/>
+            <column name="IS_ALREADY_ROLLED_OUT" type="BIT" defaultValue="0"/>
+            <column name="IS_DELETED" type="BIT" defaultValue="0"/>
+            <column name="IS_ENCRYPTED" type="BIT" defaultValue="0"/>
+            <column name="MAIL_GROUP_KEY" type="VARCHAR(255)"/>
+            <column name="PARTNER_KEY" type="VARCHAR(255)"/>
+            <column name="PCPT_INST_STATUS" type="VARCHAR(255)"/>
+            <column name="SPONSOR_KEY" type="VARCHAR(255)"/>
+            <column name="TASK_COMPLETED" type="BIT" defaultValue="0"/>
+            <column name="ACTIVITY_INST_DETAILS" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20240623-21" author="IBM" dbms="mysql">
+        <createIndex indexName="idx_defn_details" tableName="vch_activity_defn_version">
+            <column name="activity_defn_details"/>
+        </createIndex>
+        <createIndex indexName="idx_inst_details" tableName="vch_pcpt_activity_inst">
+            <column name="activity_inst_details"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="20240623-22" author="IBM" dbms="db2,oracle,mssql">
+        <createIndex indexName="IDX_DEFN_DATA" tableName="VCH_ACTIVITY_DEFN_VERSION" unique="true">
+            <column name="ACTIVITY_DEFN_DATA"/>
+        </createIndex>
+        <createIndex indexName="IDX_DEFN_VERSION" tableName="VCH_ACTIVITY_DEFN_DATA" unique="true">
+            <column name="ACTIVITY_DEFN_VERSION"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="20240623-23" author="IBM" dbms="db2,oracle,mysql,mssql">
+        <addForeignKeyConstraint
+                baseTableName="VCH_ACTIVITY_DEFN_DATA"
+                baseColumnNames="ACTIVITY_DEFN_VERSION"
+                referencedTableName="VCH_ACTIVITY_DEFN_VERSION"
+                referencedColumnNames="ACTIVITY_DEFN_VERSION_KEY"
+                constraintName="FK_ACTIVITYDEFNDATA_ACTIVITYVERSION"
+                onDelete="CASCADE"/>
+        <addForeignKeyConstraint
+                baseTableName="VCH_ACTIVITY_DEFN_VERSION"
+                baseColumnNames="ACTIVITY_DEFN_DETAILS"
+                referencedTableName="VCH_ACTIVITY_DEFN"
+                referencedColumnNames="ACTIVITY_DEFN_KEY"
+                constraintName="FK_ACTIVITYVERSION_ACTIVITYDEFN"
+                onDelete="CASCADE"/>
+        <addForeignKeyConstraint
+                baseTableName="VCH_ACTIVITY_DEFN_VERSION"
+                baseColumnNames="ACTIVITY_DEFN_DATA"
+                referencedTableName="VCH_ACTIVITY_DEFN_DATA"
+                referencedColumnNames="ACTIVITY_DEFN_DATA_KEY"
+                constraintName="FK_ACTIVITYVERSION_ACTIVITYDEFNDATA"
+                onDelete="CASCADE"/>
+        <addForeignKeyConstraint
+                baseTableName="VCH_PCPT_ACTIVITY_INST"
+                baseColumnNames="ACTIVITY_INST_DETAILS"
+                referencedTableName="VCH_ACTIVITY_INST"
+                referencedColumnNames="ACTIVITY_INST_KEY"
+                constraintName="FK_PCPTACTIVITYINST_ACTIVITYINST"/>
+    </changeSet>
+</databaseChangeLog>

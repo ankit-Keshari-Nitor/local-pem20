@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server description="PEM 2.0">
+	
+    <!-- Enable features -->
+    <featureManager>
+		<feature>webProfile-10.0</feature>
+        <feature>transportSecurity-1.0</feature>
+		<feature>springBoot-3.0</feature>
+        <feature>servlet-6.0</feature>
+        <feature>transportSecurity-1.0</feature>
+    </featureManager>
+    
+    <!-- keystore password is defined in server.env file -->
+    <keyStore id="defaultKeyStore" type="${server.keystore.type}" location="${server.keystore.file}" />
+    
+    <ssl id="defaultSSLConfig"
+        keyStoreRef="defaultKeyStore"
+        sslProtocol="${server.ssl.protocol}" />
+
+    <!-- To access this server from a remote client add a host attribute to the following element, e.g. host="*" -->
+    <httpEndpoint id="defaultHttpEndpoint"
+        httpPort="${server.http.port}"
+        httpsPort="${server.https.port}"
+        host="*" >
+        <tcpOptions soReuseAddr="true" />  
+    </httpEndpoint>
+
+    <webContainer deferServletLoad="false" disableXPoweredBy="true" />
+                  
+    <!-- Automatically expand WAR files and EAR files -->
+    <!-- applicationManager autoExpand="true"/ -->
+	
+	<webApplication id="pem-ui" location="${pemui.app.location}" contextRoot="${pemui.app.context.root}" />
+	
+	<springBootApplication id="pem-api" location="${pemapi.app.location}">
+        <applicationArgument>--server.servlet.context-path=/${pemapi.app.context.root}</applicationArgument>
+		<classloader commonLibraryRef="DBLib" />
+    </springBootApplication>
+	
+	<library id="DBLib">
+		<fileset dir="resources/dbdrivers/" includes="*.jar"/>
+	</library>
+
+</server>

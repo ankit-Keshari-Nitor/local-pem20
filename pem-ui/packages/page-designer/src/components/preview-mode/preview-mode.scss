@@ -1,0 +1,13 @@
+.preview-submit-btn {
+  display: flex;
+  justify-content: right;
+}
+
+.preview-modal > .cds--modal-container {
+  @media (min-width: 82rem) {
+    inline-size: 75%;
+  }
+  @media (min-width: 66rem) {
+    max-block-size: 100%;
+  }
+}

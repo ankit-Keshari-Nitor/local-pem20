@@ -1,0 +1,28 @@
+plugins {
+    id 'java'
+    id 'org.liquibase.gradle' version '2.2.0'
+}
+
+group = 'com.precisely.pem'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    all*.exclude module: 'spring-boot-starter-logging'
+}
+
+dependencies {
+    implementation 'org.liquibase:liquibase-core:4.27.0'
+    implementation 'org.liquibase:liquibase-groovy-dsl:2.1.1'
+    implementation 'info.picocli:picocli:4.7.5'
+    implementation 'org.yaml:snakeyaml:2.0'
+}
+
+apply plugin: "org.liquibase.gradle"
+
+test {
+    useJUnitPlatform()
+}

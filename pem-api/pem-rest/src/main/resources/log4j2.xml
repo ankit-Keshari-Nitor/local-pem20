@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <Properties>
+        <Property name="logsDir">logs</Property>
+        <Property name="logPattern_log4j">[%d{M/d/yy H:mm:ss:SSS zzz}] %4r %-100c %p [%X{sponsor.name}] : %m%n%ex</Property>
+    </Properties>
+
+    <Appenders>
+        <Console name="stdout" target="SYSTEM_OUT">
+            <PatternLayout pattern="${logPattern_log4j}" />
+        </Console>
+        <Console name="stderr" target="SYSTEM_ERR">
+            <PatternLayout pattern="${logPattern_log4j}" />
+        </Console>
+
+        <RollingFile name="APIMessages" fileName="${logsDir}/API_Messages.log"
+                     filePattern="${logsDir}/API_Messages_%i.log.gz" append="true">
+            <PatternLayout>
+                <pattern>${logPattern_log4j}</pattern>
+            </PatternLayout>
+            <Policies>
+                <OnStartupTriggeringPolicy />
+                <SizeBasedTriggeringPolicy size="100MB" />
+            </Policies>
+            <DefaultRolloverStrategy max="20" />
+        </RollingFile>
+    </Appenders>
+
+    <Loggers>
+        <Logger name="org.hibernate.SQL" level="debug"/>
+        <Logger name="org.springframework.data.jpa.repository.query" level="debug"/>
+
+        <Logger name="org.activiti" level="DEBUG" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+
+        <Logger name="com.precisely.pem" level="INFO" additivity="false">
+            <AppenderRef ref="stdout" level="info" />
+        </Logger>
+
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="APIMessages" level="${env:fileRootLoggerLevel:-off}" />
+            <AppenderRef ref="stdout" level="info" />
+            <AppenderRef ref="stderr" level="off" />
+        </Root>
+    </Loggers>
+
+</Configuration>

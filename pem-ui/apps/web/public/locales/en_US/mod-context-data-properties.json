@@ -1,0 +1,16 @@
+{
+  "form": {
+    "name": "Name (required)",
+    "description": "Description",
+    "contextData": "Context Data",
+    "iconDescription": "Context Data",
+    "button": {
+      "save": "Save",
+      "cancel": "Cancel"
+    }
+  },
+  "treeHeading": "Context Data Properties",
+  "actions": {
+    "search": "Search for property"
+  }
+}

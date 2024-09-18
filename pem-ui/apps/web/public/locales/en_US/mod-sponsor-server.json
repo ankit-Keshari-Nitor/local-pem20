@@ -1,0 +1,39 @@
+{
+  "placeHolderName": "Enter Name",
+  "field": {
+    "name": "Name (required)",
+    "protocol": "Protocol (required)",
+    "host": "Host (required)",
+    "port": "Port (required)",
+    "sslProtocol": "SSL Protocol",
+    "preemptiveAuthentication": "Preemptive Authentication",
+    "authenticateWith": "Authenticate With TEST",
+    "namePassword": "User Name and Password",
+    "internallyGeneratedToken": "Internally Generated Token",
+    "none": "None",
+    "verifyHost": "Verify Host",
+    "create": "Create",
+    "password": "Password",
+    "userName": "User Name",
+    "uploadField": {
+      "name": "Name (required)",
+      "description": "Description",
+      "encrypt": "Encrypt",
+      "uploadFiles": "Upload files",
+      "uploadedFile": "Uploaded file",
+      "uploadFileLabel": "Drag and drop key file to upload here or click to select file",
+      "create": "Create",
+      "success": "File Upload Successfully."
+    }
+  },
+  "errorText": {
+    "nameRequire": "Name is a required field.",
+    "protocolRequire": "Protocol is a required field.",
+    "hostRequire": "Host is a required field.",
+    "postRequire": "Post is a required field."
+  },
+  "message": {
+    "success": "Data Create Successfully.",
+    "nameErrorMessage": "This field should contain lowercase letters, uppercase letters, numbers, and special characters (e.g., @#%^&*(){}[]+=;:\"'!?/.,\\|~`)."
+  }
+}

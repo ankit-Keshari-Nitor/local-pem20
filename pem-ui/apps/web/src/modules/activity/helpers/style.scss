@@ -1,0 +1,22 @@
+#rollout .generic-modal > .cds--modal-container {
+  @media (min-width: 82rem) {
+    inline-size: 60% !important;
+    min-height: 680px !important;
+  }
+  @media (min-width: 66rem) {
+    max-block-size: 100% !important;
+    min-height: 680px !important;
+  }
+}
+
+#rollout .generic-modal > .cds--modal-container-body {
+  .page-content {
+    display: contents !important;
+  }
+}
+
+#rollout .generic-modal > .cds--modal-lg {
+  .cds--modal-container {
+    height: 100% !important; 
+  }
+}

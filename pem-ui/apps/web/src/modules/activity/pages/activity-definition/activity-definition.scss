@@ -1,0 +1,53 @@
+.activity-actions {
+  display: flex;
+  justify-content: right;
+  background-color: #161616;
+  --cds-grid-gutter-start: calc(var(--cds-grid-gutter) / 2);
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.activity-actions .cds--css-grid-column:hover {
+  cursor: pointer;
+}
+
+.activity-definition-header {
+  a.cds--header__name {
+    padding-left: 0px;
+  }
+  .activity-task-section {
+    flex-grow: 1;
+    justify-content: center;
+    display: flex;
+
+    .activity-task-count {
+      margin: 0.5rem;
+      .node-type-task {
+        color: #0585fc;
+      }
+      .node-type-form {
+        color: #d21cf0;
+      }
+      .node-type-api {
+        color: #ff611d;
+      }
+      .node-type-xslt {
+        color: #3fba13;
+      }
+    }
+  }
+
+  .cds--header__global {
+    flex-grow: unset;
+  }
+}
+
+.page-designer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  padding-top: 3rem;
+  height: calc(100% - 3rem);
+}

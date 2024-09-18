@@ -1,0 +1,140 @@
+{
+  "applications": {
+    "QA_B2BISFG": {
+      "__text": "SAMPLE_QA_B2BISFG",
+      "_type": "APIConfig"
+    },
+    "SSP": {
+      "Policy": {
+        "FTP_Policy": "",
+        "HTTPS_Policy": "",
+        "FTPS_Policy": "",
+        "HTTP_Policy": "",
+        "CD_Policy": "",
+        "SFTP_Policy": ""
+      },
+      "SystemCert": "",
+      "FTP_Netmap": "TEST_FTP_NETMAP",
+      "TrustStore": "",
+      "KeyStore": "",
+      "SecuritySetting": "",
+      "SFTP_Netmap": "SFTP_TEST",
+      "CD_Netmap": "CMCD_Netmap",
+      "FTPS_Netmap": "FTPS_NETMAP",
+      "ciphers": {
+        "cipher": [
+          {
+            "name": "cipher1"
+          },
+          {
+            "name": "cipher2"
+          }
+        ]
+      },
+      "Enable": false,
+      "HTTP_Netmap": "TEST_HTTP_NETMAP",
+      "HTTPS_Netmap": "HTTPS_NETMAP",
+      "ClientAuthentication": ""
+    },
+    "PR": {
+      "__text": "SAMPLE_PR",
+      "_type": "Harsh"
+    },
+    "Prod_CM": {
+      "__text": "SAMPLE_PROD_CM",
+      "_type": "APIConfig"
+    },
+    "Scripts": {
+      "FileDrop": "",
+      "password": "",
+      "User": "",
+      "Server": "",
+      "localFile": false,
+      "Port": 22,
+      "pemKey": false,
+      "PGP": "",
+      "Prod_Server": ""
+    },
+    "Prod_B2BISFG": {
+      "__text": "SAMPLE_PROD_B2BISFG",
+      "_type": "APIConfig"
+    },
+    "Prod_B2BISFGHTTP": {
+      "__text": "SAMPLE_PROD_B2BISFGHTTP",
+      "_type": "APIConfig"
+    },
+    "PEM": {
+      "__text": "SAMPLE_PEM",
+      "_type": "APIConfig"
+    },
+    "QA_CM": {
+      "__text": "SAMPLE_QA_CM",
+      "_type": "APIConfig"
+    },
+    "SponsorConfigurations": {
+      "AS2": "",
+      "S3": "",
+      "prod_codelistVersion_pcm": "|||1",
+      "RCT": "",
+      "FTP": "",
+      "codelist": "SFG_FileType",
+      "CustomProtocols": {
+        "protocol": [
+          {
+            "_name": "http-protocol",
+            "_value": "HTTPS",
+            "_bp": "AFTRouteViaHTTP"
+          },
+          {
+            "_name": "",
+            "_value": "HTTPS"
+          }
+        ]
+      },
+      "prod_codelist": "SFG_FileType",
+      "Inbound_Envelope_EDIFACT": {
+        "_type": "activityfiles"
+      },
+      "FileRoute": false,
+      "codelistVersion": "%7C%7C%7C1",
+      "codelistVersion_pcm": "|||1",
+      "Prod_Customer_IPs": {
+        "Outbound": "",
+        "Inbound": ""
+      },
+      "CD": "",
+      "ImplementationGuides": {
+        "_type": "activityfiles"
+      },
+      "prod_codelistVersion": "%7C%7C%7C1",
+      "SFTP": "",
+      "SFG_Community": "CM_PEMCommunity",
+      "Outbound_Envelope_EDIFACT": {
+        "_type": "activityfiles"
+      },
+      "Inbound_Envelope_X12": {
+        "_type": "activityfiles"
+      },
+      "NonProd_Customer_IPs": {
+        "Outbound": "10.0.0.20-10.0.0.30",
+        "Inbound": "10.0.0.1-10.0.0.10"
+      },
+      "FTPS": "",
+      "Filegateway": "",
+      "PGP": "",
+      "Outbound_Envelope_X12": {
+        "_type": "activityfiles"
+      },
+      "NativePGP": false,
+      "UserAccount": {
+        "AuthenticationHost": "",
+        "AuthenticationType": "Local",
+        "LDAPProvisioningEnabled": false
+      }
+    },
+    "QA_B2BISFGHTTP": {
+      "__text": "SAMPLE_QA_B2BISFGHTTP",
+      "_type": "APIConfig"
+    }
+  }
+}

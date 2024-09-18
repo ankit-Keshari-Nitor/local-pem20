@@ -1,0 +1,61 @@
+.task-node-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: row;
+  background: #fff;
+  border-style: solid;
+  border-width: 1px 1px 1px 5px;
+  min-width: 150px;
+  min-height: 50px;
+  padding: 1px 1px 1px 5px;
+}
+
+.task-node-selected {
+  -webkit-box-shadow: 10px 10px 16px -5px rgba(2, 63, 178, 1);
+  -moz-box-shadow: 10px 10px 16px -5px rgba(2, 63, 178, 1);
+  box-shadow: 10px 10px 16px -5px rgba(2, 63, 178, 1);
+
+}
+
+.gateway-node-container {
+  border-radius: 50%;
+  border-color: #5e718d;
+  border-style: solid;
+  border-width: 1px;
+  min-width: 36px;
+  min-height: 36px;
+  padding: 8px;
+}
+
+.start-node-container {
+  border-radius: 50%;
+  border-color: #61e897;
+  background: #61e897;
+  border-style: solid;
+  border-width: 1px;
+  min-width: 24px;
+  min-height: 24px;
+  padding: 8px;
+}
+
+.end-node-container {
+  border-radius: 50%;
+  border-color: #ed3e32;
+  background: #ed3e32;
+  border-style: solid;
+  border-width: 1px;
+  min-width: 24px;
+  min-height: 24px;
+  padding: 8px;
+}
+
+.sourceHandlerConnector {
+  border-color: #61e897;
+  background: #61e897;
+}
+
+.targetHandlerConnector {
+  border-color: #ed3e32;
+  background: #ed3e32;
+}

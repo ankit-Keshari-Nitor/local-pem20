@@ -1,0 +1,53 @@
+{
+  "name": "@b2bi/pem",
+  "version": "1.0.0",
+  "description": "B2Bi PEM",
+  "main": "index.js",
+  "license": "Precisely License",
+  "private": true,
+  "dependencies": {
+    "@b2bi/carbon-mappers": "1.0.0",
+    "@b2bi/page-designer": "1.0.0",
+    "@b2bi/shell": "^1.0.18",
+    "@b2bi/styles": "^1.0.5",
+    "@b2bi/ui-lib": "^1.0.0",
+    "axios": "^1.6.2",
+    "fs": "^0.0.1-security",
+    "file-saver": "^2.0.5",
+    "jsonpath-plus": "^9.0.0",
+    "react-hook-form": "^7.48.2"
+  },
+  "devDependencies": {
+    "@b2bi/build": "file:../../../../b2bi-ui-shared/packages/build-lib",
+    "@craco/craco": "^7.1.0",
+    "babel-plugin-module-resolver": "^5.0.2"
+  },
+  "scripts": {
+    "prestart": "rm -rf node_modules/.cache",
+    "start": "react-scripts start --no-cache",
+    "prestart-craco": "rm -rf node_modules/.cache",
+    "start-craco": "craco start",
+    "build": "react-scripts build",
+    "build-local": "CI=true react-scripts build",
+    "test": "react-scripts test --coverage --coverageDirectory='build/reports/jest'"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ],
+    "ignorePatterns": []
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

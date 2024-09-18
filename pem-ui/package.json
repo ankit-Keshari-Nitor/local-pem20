@@ -1,0 +1,31 @@
+{
+  "name": "pem20",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "ssh://git@sourcefront.syncsort.com/pem/pem20.git",
+  "author": "Pradeep K <Pradeep.K@precisely.com>",
+  "license": "Precisely License",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "packageManager": "yarn@1.22.19",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "setup": "yarn install",
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "start": "cd apps/web && yarn start",
+    "start-dev": "cd apps/web && yarn workspace @b2bi/pem start-craco"
+  },
+  "dependencies": {
+    "file-saver": "^2.0.5",
+    "turbo": "^1.12.4"
+  }
+}

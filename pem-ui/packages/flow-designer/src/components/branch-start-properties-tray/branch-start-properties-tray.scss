@@ -1,0 +1,95 @@
+.branch-input-container {
+  padding: 1rem;
+}
+
+.properties-container {
+  width: 100%;
+  background-color: #e9e9e9;
+  padding: 1rem 1rem;
+}
+
+.hamburger-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-bottom: 0.5rem;
+}
+
+.no-connector-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.hamburger-icon {
+  cursor: pointer;
+}
+
+.dialog-properties-container {
+  width: 100%;
+  height: 100%;
+}
+
+.dialog-sequence-wrapper {
+  width: 100%;
+  height: 100%;
+  background-color: #e0e0e0;
+  padding: 1rem 0rem;
+}
+.pem-node-name {
+  font-family: IBM Plex Sans;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 18px;
+  letter-spacing: 0.1599999964237213px;
+  text-align: left;
+}
+
+.dialog-sequence-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 1rem 0rem;
+}
+
+.text-input-container {
+  margin: 0rem;
+}
+
+.delete-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  width: 60px;
+  border: 1px solid #0f62fe;
+}
+
+.delete-icon-container:hover {
+  background-color: #0f62fe;
+}
+
+.trash-icon {
+  color: #0f62fe;
+}
+
+.button-container-container {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  position: absolute;
+  bottom: 0;
+}
+
+.buttons-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  margin: 0px;
+}
+
+.button {
+  width: 100%;
+}

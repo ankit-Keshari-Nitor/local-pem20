@@ -1,0 +1,24 @@
+{
+  "versionList": {
+    "columns": {
+      "version": "Version",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "actions": {
+      "view": "View",
+      "edit": "Edit",
+      "exportVersion": "Export Version",
+      "testVersion": "Test Version",
+      "cloneVersion": "Clone Version",
+      "shareUnshared": "Share/Unshared",
+      "delete": "Delete",
+      "markAsDefault": "Mark As Default"
+    },
+    "emptyStates": {
+      "initNoRecords": {
+        "title": "No Version list"
+      }
+    }
+  }
+}

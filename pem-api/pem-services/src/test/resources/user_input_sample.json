@@ -1,0 +1,325 @@
+{
+  "name": "Pem Definitions 1",
+  "description": "This is definitions 1",
+  "schemaVersion": 5.0,
+  "process": {
+    "nodes": [
+      {
+        "id": "StartNode_1",
+        "type": "START",
+        "name": "Start",
+        "diagram": {
+          "x": 200,
+          "y": 200
+        }
+      },
+      {
+        "id": "EndNode_1",
+        "type": "END",
+        "name": "End",
+        "diagram": {
+          "x": 2500,
+          "y": 200
+        }
+      },
+      {
+        "id": "SubProcess_1",
+        "type": "PARTNER",
+        "name": "My Process To call API",
+        "description": "This process describes the order fulfilment workflow.",
+        "userKeys": "user1,user2,user3",
+        "roleKeys": "group1,group2",
+        "estimateDays": 10,
+        "nodes": [
+          {
+            "id": "SubStartNode_1",
+            "type": "START",
+            "name": "Start",
+            "diagram": {
+              "x": 300,
+              "y": 1000
+            }
+          },
+          {
+            "id": "SubProcess_1_FormNode_1",
+            "type": "FORM",
+            "name": "User Task Node",
+            "description": "description of form",
+            "loop": {
+              "loopDataInput": "orderCollection",
+              "dataItem": "order",
+              "completionCondition":"${orderCollection/order > 0.5}"
+            },
+            "form": "{\"fields\":[{\"id\":\"1f161396-681a-4ae8-b16f-4f4e4ed282ad\",\"type\":\"textinput\",\"labelText\":\"Email\",\"helperText\":\"Enter email\",\"min\":{\"value\":\"3\",\"message\":\"value should be min 3 char\"},\"max\":{\"value\":\"5\",\"message\":\"value should be max 5 char\"},\"isRequired\":{\"value\":true,\"message\":\"isRequired\"}},{\"id\":\"682127c1-f894-488b-97db-5d06bf8dff89\",\"type\":\"textarea\",\"labelText\":\"TextArea\"},{\"id\":\"1488e97a-975d-4822-b223-f0b0fccf6698\",\"type\":\"select\",\"labelText\":\"Select Filed\"},{\"id\":\"7450017e-e15a-4278-86fa-bb00c40069b5\",\"type\":\"checkbox\",\"labelText\":\"Check Box\"},{\"id\":\"a6bcd0f9-842c-4f6f-88f1-f232c2e59a30\",\"type\":\"radio\",\"labelText\":\"Radio\"},{\"id\":\"9431f756-10c0-4ca5-bab1-3ba27d33c0c3\",\"type\":\"toggle\",\"labelText\":\"Toggler\"},{\"id\":\"3b6ed547-f460-4ed7-9cc9-1c47f64e39e7\",\"type\":\"link\",\"labelText\":\"Link\"},{\"id\":\"ed3f7b49-0265-4fbe-8d4a-6be0a9775922\",\"type\":\"datepicker\",\"labelText\":\"Date Picker\"},{\"id\":\"29e61a98-968d-4303-b777-0959927aefe9\",\"type\":\"tab\",\"children\":[{\"id\":\"43969e1c-1490-47d8-b767-86c89bce91b3\",\"tabTitle\":\"Tab-1\",\"children\":[{\"id\":\"6baf6df7-9a83-4ead-be65-4711f6a4f887\",\"type\":\"radio\",\"labelText\":\"Radio Button\"}]},{\"id\":\"f68f60d9-4538-4047-8343-504a927c8a66\",\"tabTitle\":\"tab-2\",\"children\":[{\"id\":\"43989c6a-1e8c-4e40-b02b-743f6e0d3533\",\"type\":\"textarea\",\"labelText\":\"Text Area\"}]}]},{\"id\":\"6d13daa4-da42-4d16-851d-2df2b00fc8af\",\"type\":\"button\",\"labelText\":\"Submit\"}]}",
+            "diagram": {
+              "x": 700,
+              "y": 1000
+            }
+          },
+          {
+            "id": "SubProcess_1_apiNode",
+            "type": "API",
+            "name": "Partner API Node",
+            "description": "apiNode-Task to Call user list.",
+            "loop": {
+              "loopCardinality": 5
+            },
+            "api": {
+              "apiConfiguration": "apiConfiguration",
+              "url": "https://jira.com/browse/PEM-27076",
+              "method": "GET",
+              "requestContentType": "JSON",
+              "responseContentType": "JSON",
+              "file": "file object",
+              "requestHeaders": "[{\"key\":\"value\"}]",
+              "request": "{\"name\":\"test_name\"}",
+              "sampleResponse": "{\"name\":\"activiti\",\"application\":\"pem\",\"sampleResponse\":\"sample response object\"}",
+              "response": "{\"name\":\"test_name\"}"
+            },
+            "diagram": {
+              "x": 1200,
+              "y": 1000
+            }
+          },
+          {
+            "id": "SubProcess_1_FormNode_2",
+            "type": "FORM",
+            "name": "User Task Node 2",
+            "description": "description of form",
+            "form": "{\"fields\":[{\"id\":\"1f161396-681a-4ae8-b16f-4f4e4ed282ad\",\"type\":\"textinput\",\"labelText\":\"Email\",\"helperText\":\"Enter email\",\"min\":{\"value\":\"3\",\"message\":\"value should be min 3 char\"},\"max\":{\"value\":\"5\",\"message\":\"value should be max 5 char\"},\"isRequired\":{\"value\":true,\"message\":\"isRequired\"}},{\"id\":\"682127c1-f894-488b-97db-5d06bf8dff89\",\"type\":\"textarea\",\"labelText\":\"TextArea\"},{\"id\":\"1488e97a-975d-4822-b223-f0b0fccf6698\",\"type\":\"select\",\"labelText\":\"Select Filed\"},{\"id\":\"7450017e-e15a-4278-86fa-bb00c40069b5\",\"type\":\"checkbox\",\"labelText\":\"Check Box\"},{\"id\":\"a6bcd0f9-842c-4f6f-88f1-f232c2e59a30\",\"type\":\"radio\",\"labelText\":\"Radio\"},{\"id\":\"9431f756-10c0-4ca5-bab1-3ba27d33c0c3\",\"type\":\"toggle\",\"labelText\":\"Toggler\"},{\"id\":\"3b6ed547-f460-4ed7-9cc9-1c47f64e39e7\",\"type\":\"link\",\"labelText\":\"Link\"},{\"id\":\"ed3f7b49-0265-4fbe-8d4a-6be0a9775922\",\"type\":\"datepicker\",\"labelText\":\"Date Picker\"},{\"id\":\"29e61a98-968d-4303-b777-0959927aefe9\",\"type\":\"tab\",\"children\":[{\"id\":\"43969e1c-1490-47d8-b767-86c89bce91b3\",\"tabTitle\":\"Tab-1\",\"children\":[{\"id\":\"6baf6df7-9a83-4ead-be65-4711f6a4f887\",\"type\":\"radio\",\"labelText\":\"Radio Button\"}]},{\"id\":\"f68f60d9-4538-4047-8343-504a927c8a66\",\"tabTitle\":\"tab-2\",\"children\":[{\"id\":\"43989c6a-1e8c-4e40-b02b-743f6e0d3533\",\"type\":\"textarea\",\"labelText\":\"Text Area\"}]}]},{\"id\":\"6d13daa4-da42-4d16-851d-2df2b00fc8af\",\"type\":\"button\",\"labelText\":\"Submit\"}]}",
+            "diagram": {
+              "x": 700,
+              "y": 1000
+            }
+          },
+          {
+            "id": "SubEndNode_1",
+            "type": "END",
+            "name": "End",
+            "diagram": {
+              "x": 1700,
+              "y": 1000
+            }
+          }
+        ],
+        "connectors": [
+          {
+            "source": "SubStartNode_1",
+            "target": "SubProcess_1_FormNode_1",
+            "condition": "{\"group\":{\"combinator\":\"and\",\"not\":false,\"rules\":[{\"rule\":{\"dataType\":\"String\",\"lhs\":\"PEM\",\"rhs\":\"PEM\",\"operator\":\"equals\"}}]}}"
+          },
+          {
+            "source": "SubProcess_1_FormNode_1",
+            "target": "SubProcess_1_apiNode",
+            "condition": "{\"group\":{\"combinator\":\"and\",\"not\":false,\"rules\":[{\"rule\":{\"dataType\":\"String\",\"lhs\":\"PEM\",\"rhs\":\"PEM\",\"operator\":\"equals\"}},{\"rule\":{\"dataType\":\"String\",\"lhs\":\"FirstName\",\"rhs\":\"PEM\",\"operator\":\"notEquals\"}},{\"rule\":{\"dataType\":\"String\",\"lhs\":\"FirstName\",\"rhs\":\"PEM\",\"operator\":\"notStartsWith\"}},{\"rule\":{\"dataType\":\"String\",\"lhs\":\"FirstNamePEM\",\"rhs\":\"PEM\",\"operator\":\"endsWith\"}},{\"rule\":{\"dataType\":\"String\",\"lhs\":\"FirstName\",\"rhs\":\"PEM\",\"operator\":\"notEndsWith\"}},{\"rule\":{\"dataType\":\"String\",\"lhs\":\"FirstNamePEM\",\"rhs\":\"PEM\",\"operator\":\"contains\"}},{\"rule\":{\"dataType\":\"String\",\"lhs\":\"FirstName\",\"rhs\":\"PEM\",\"operator\":\"notContains\"}},{\"rule\":{\"dataType\":\"String\",\"lhs\":\"FirstName\",\"rhs\":\"PEM\",\"operator\":\"isNotNull\"}},{\"rule\":{\"dataType\":\"String\",\"lhs\":\"FirstName\",\"rhs\":\"PEM\",\"operator\":\"isNotNull\"}},{\"group\":{\"combinator\":\"OR\",\"not\":true,\"rules\":[{\"group\":{\"combinator\":\"and\",\"not\":false,\"rules\":[{\"rule\":{\"dataType\":\"Boolean\",\"lhs\":\"true\",\"rhs\":\"true\",\"operator\":\"equals\"}},{\"rule\":{\"dataType\":\"Boolean\",\"lhs\":\"true\",\"rhs\":\"false\",\"operator\":\"notEquals\"}}]}}]}},{\"group\":{\"combinator\":\"and\",\"not\":false,\"rules\":[{\"rule\":{\"dataType\":\"Number\",\"lhs\":\"1\",\"rhs\":\"2\",\"operator\":\"lessThan\"}},{\"rule\":{\"dataType\":\"Number\",\"lhs\":\"2\",\"rhs\":\"1\",\"operator\":\"greaterThan\"}},{\"rule\":{\"dataType\":\"Number\",\"lhs\":\"1\",\"rhs\":\"1\",\"operator\":\"lessThanEquals\"}},{\"rule\":{\"dataType\":\"Number\",\"lhs\":\"2\",\"rhs\":\"2\",\"operator\":\"greaterThanEquals\"}},{\"rule\":{\"dataType\":\"Number\",\"lhs\":\"1\",\"rhs\":\"2\",\"operator\":\"notEquals\"}},{\"rule\":{\"dataType\":\"Number\",\"lhs\":\"1\",\"rhs\":\"1\",\"operator\":\"equals\"}}]}}]}}"
+          },
+          {
+            "source": "SubProcess_1_apiNode",
+            "target": "SubProcess_1_FormNode_2",
+            "condition": "{\"group\":{\"combinator\":\"and\",\"not\":false,\"rules\":[{\"rule\":{\"dataType\":\"String\",\"lhs\":\"PEM\",\"rhs\":\"PEM\",\"operator\":\"equals\"}}]}}"
+          },
+          {
+            "source": "SubProcess_1_FormNode_2",
+            "target": "SubEndNode_1",
+            "condition": "{\"group\":{\"combinator\":\"and\",\"not\":false,\"rules\":[{\"rule\":{\"dataType\":\"String\",\"lhs\":\"PEM\",\"rhs\":\"PEM\",\"operator\":\"equals\"}}]}}"
+          }
+        ],
+        "diagram": {
+          "x": 1000,
+          "y": 200
+        }
+      },
+      {
+        "id": "SubProcess_2",
+        "type": "SPONSOR",
+        "name": "SPONSOR Sub Process Node",
+        "description": "This process describes the order fulfilment workflow.",
+        "userKeys": "user1,user2",
+        "roleKeys": "group1",
+        "showToPartner": false,
+        "nodes": [
+          {
+            "id": "SubProcess_2_StartNode_1",
+            "type": "START",
+            "name": "Start",
+            "diagram": {
+              "x": 300,
+              "y": 2000
+            }
+          },
+          {
+            "id": "SubProcess_2_xsltNode1",
+            "name": "XSLT Node",
+            "type": "XSLT",
+            "description": "xsltNode- task",
+            "loop": {
+              "loopCardinality": 5,
+              "completionCondition":"${nrOfCompletedInstances/nrOfInstances > 0.5}"
+            },
+            "xslt": {
+              "input": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<catalog>\n  <cd>\n    <title>Empire Burlesque</title>\n    <artist>Bob Dylan</artist>\n    <country>USA</country>\n    <company>Columbia</company>\n    <price>10.90</price>\n    <year>1985</year>\n  </cd>\n</catalog>",
+              "xslt": "<?xml version=\"1.0\"?>\n\n<xsl:stylesheet version=\"1.0\"\nxmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\">\n\n<xsl:template match=\"/\">\n  <html>\n  <body>\n    <h2>My CD Collection</h2>\n    <table border=\"1\">\n      <tr bgcolor=\"#9acd32\">\n        <th>Title</th>\n        <th>Artist</th>\n      </tr>\n      <xsl:for-each select=\"catalog/cd\">\n        <tr>\n          <td><xsl:value-of select=\"title\"/></td>\n          <td><xsl:value-of select=\"artist\"/></td>\n        </tr>\n      </xsl:for-each>\n    </table>\n  </body>\n  </html>\n</xsl:template>\n\n</xsl:stylesheet>",
+              "sampleOutput": "<?xml version=\"1.0\"?><xsl:stylesheet version=\"1.0\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\"><xsl:output method=\"text\"/><xsl:template match=\"/\">Article - <xsl:value-of select=\"/Article/Title\"/>Authors: <xsl:apply-templates select=\"/Article/Authors/Author\"/></xsl:template><xsl:template match=\"Author\">- <xsl:value-of select=\".\" /></xsl:template></xsl:stylesheet>",
+              "output": "output object",
+              "escapeInput" : "false"
+            },
+            "diagram": {
+              "x": 1000,
+              "y": 2000
+            }
+          },
+          {
+            "id": "SubProcess_2_FormNode_1",
+            "type": "FORM",
+            "name": "User Task Node",
+            "description": "description of form",
+            "form": "{\"fields\":[{\"id\":\"1f161396-681a-4ae8-b16f-4f4e4ed282ad\",\"type\":\"textinput\",\"labelText\":\"Email\",\"helperText\":\"Enter email\",\"min\":{\"value\":\"3\",\"message\":\"value should be min 3 char\"},\"max\":{\"value\":\"5\",\"message\":\"value should be max 5 char\"},\"isRequired\":{\"value\":true,\"message\":\"isRequired\"}},{\"id\":\"682127c1-f894-488b-97db-5d06bf8dff89\",\"type\":\"textarea\",\"labelText\":\"TextArea\"},{\"id\":\"1488e97a-975d-4822-b223-f0b0fccf6698\",\"type\":\"select\",\"labelText\":\"Select Filed\"},{\"id\":\"7450017e-e15a-4278-86fa-bb00c40069b5\",\"type\":\"checkbox\",\"labelText\":\"Check Box\"},{\"id\":\"a6bcd0f9-842c-4f6f-88f1-f232c2e59a30\",\"type\":\"radio\",\"labelText\":\"Radio\"},{\"id\":\"9431f756-10c0-4ca5-bab1-3ba27d33c0c3\",\"type\":\"toggle\",\"labelText\":\"Toggler\"},{\"id\":\"3b6ed547-f460-4ed7-9cc9-1c47f64e39e7\",\"type\":\"link\",\"labelText\":\"Link\"},{\"id\":\"ed3f7b49-0265-4fbe-8d4a-6be0a9775922\",\"type\":\"datepicker\",\"labelText\":\"Date Picker\"},{\"id\":\"29e61a98-968d-4303-b777-0959927aefe9\",\"type\":\"tab\",\"children\":[{\"id\":\"43969e1c-1490-47d8-b767-86c89bce91b3\",\"tabTitle\":\"Tab-1\",\"children\":[{\"id\":\"6baf6df7-9a83-4ead-be65-4711f6a4f887\",\"type\":\"radio\",\"labelText\":\"Radio Button\"}]},{\"id\":\"f68f60d9-4538-4047-8343-504a927c8a66\",\"tabTitle\":\"tab-2\",\"children\":[{\"id\":\"43989c6a-1e8c-4e40-b02b-743f6e0d3533\",\"type\":\"textarea\",\"labelText\":\"Text Area\"}]}]},{\"id\":\"6d13daa4-da42-4d16-851d-2df2b00fc8af\",\"type\":\"button\",\"labelText\":\"Submit\"}]}",
+            "diagram": {
+              "x": 1500,
+              "y": 2000
+            }
+          },
+          {
+            "id": "SubProcess_2_EndNode_1",
+            "type": "END",
+            "name": "End",
+            "diagram": {
+              "x": 2000,
+              "y": 2000
+            }
+          }
+        ],
+        "connectors": [
+          {
+            "source": "SubProcess_2_StartNode_1",
+            "target": "SubProcess_2_xsltNode1",
+            "condition": "{\"group\":{\"combinator\":\"and\",\"not\":false,\"rules\":[{\"rule\":{\"dataType\":\"String\",\"lhs\":\"PEM\",\"rhs\":\"PEM\",\"operator\":\"equals\"}}]}}"
+          },
+          {
+            "source": "SubProcess_2_xsltNode1",
+            "target": "SubProcess_2_FormNode_1",
+            "condition": "{\"group\":{\"combinator\":\"and\",\"not\":false,\"rules\":[{\"rule\":{\"dataType\":\"String\",\"lhs\":\"PEM\",\"rhs\":\"PEM\",\"operator\":\"equals\"}}]}}"
+          },
+          {
+            "source": "SubProcess_2_FormNode_1",
+            "target": "SubProcess_2_EndNode_1",
+            "condition": "{\"group\":{\"combinator\":\"and\",\"not\":false,\"rules\":[{\"rule\":{\"dataType\":\"String\",\"lhs\":\"PEM\",\"rhs\":\"PEM\",\"operator\":\"equals\"}}]}}"
+          }
+        ],
+        "diagram": {
+          "x": 1500,
+          "y": 200
+        }
+      },
+      {
+        "id": "SubProcess_3",
+        "type": "SYSTEM",
+        "name": "Sub Process Node",
+        "description": "This process describes the order fulfilment workflow.",
+        "nodes": [
+          {
+            "id": "SubProcess_3_StartNode_1",
+            "type": "START",
+            "name": "Start",
+            "diagram": {
+              "x": 300,
+              "y": 3000
+            }
+          },
+          {
+            "id": "SubProcess_3_apiNode",
+            "type": "API",
+            "name": "API Node",
+            "description": "apiNode-Task to Call user list.",
+            "api": {
+              "apiConfiguration": "apiConfiguration",
+              "url": "https://jira.com/browse/PEM-27076",
+              "method": "GET",
+              "requestContentType": "JSON",
+              "responseContentType": "JSON",
+              "file": "file object",
+              "requestHeaders": "[{\"key\":\"value\"}]",
+              "request": "{\"name\":\"test_name\"}",
+              "sampleResponse": "{\"name\":\"activiti\",\"application\":\"pem\",\"sampleResponse\":\"sample response object\"}",
+              "response": "{\"name\":\"test_name\"}"
+            },
+            "diagram": {
+              "x": 1000,
+              "y": 3000
+            }
+          },
+          {
+            "id": "SubProcess_3_EndNode_1",
+            "type": "END",
+            "name": "End",
+            "diagram": {
+              "x": 1500,
+              "y": 3000
+            }
+          }
+        ],
+        "connectors": [
+          {
+            "source": "SubProcess_3_StartNode_1",
+            "target": "SubProcess_3_apiNode",
+            "condition": "{\"group\":{\"combinator\":\"and\",\"not\":false,\"rules\":[{\"rule\":{\"dataType\":\"String\",\"lhs\":\"PEM\",\"rhs\":\"PEM\",\"operator\":\"equals\"}}]}}"
+          },
+          {
+            "source": "SubProcess_3_apiNode",
+            "target": "SubProcess_3_EndNode_1",
+            "condition": "{\"group\":{\"combinator\":\"and\",\"not\":false,\"rules\":[{\"rule\":{\"dataType\":\"String\",\"lhs\":\"PEM\",\"rhs\":\"PEM\",\"operator\":\"equals\"}}]}}"
+          }
+        ],
+        "diagram": {
+          "x": 2000,
+          "y": 200
+        }
+      },
+      {
+        "id": "linkActivity1",
+        "type": "CALL_ACTIVITY",
+        "name": "Activity A calling B",
+        "targetActivity": "targetActivityId",
+        "inVariables": [
+          {
+            "source": "parentVar",
+            "target": "subVar"
+          }
+        ],
+        "outVariables": [
+          {
+            "source": " subVar",
+            "target": " parentVar"
+          }
+        ],
+        "diagram": {
+          "x": 500,
+          "y": 4000
+        }
+      }
+    ],
+    "connectors": [
+      {
+        "source": "StartNode_1",
+        "target": "SubProcess_1",
+        "condition": "{\"group\":{\"combinator\":\"and\",\"not\":false,\"rules\":[{\"rule\":{\"dataType\":\"String\",\"lhs\":\"PEM\",\"rhs\":\"PEM\",\"operator\":\"equals\"}}]}}"
+      },
+      {
+        "source": "SubProcess_1",
+        "target": "SubProcess_2",
+        "condition": "{\"group\":{\"combinator\":\"and\",\"not\":false,\"rules\":[{\"rule\":{\"dataType\":\"String\",\"lhs\":\"PEM\",\"rhs\":\"PEM\",\"operator\":\"equals\"}}]}}"
+      },
+      {
+        "source": "SubProcess_2",
+        "target": "SubProcess_3",
+        "condition": "{\"group\":{\"combinator\":\"and\",\"not\":false,\"rules\":[{\"rule\":{\"dataType\":\"String\",\"lhs\":\"PEM\",\"rhs\":\"PEM\",\"operator\":\"equals\"}}]}}"
+      },
+      {
+        "source": "SubProcess_3",
+        "target": "EndNode_1",
+        "condition": "{\"group\":{\"combinator\":\"and\",\"not\":false,\"rules\":[{\"rule\":{\"dataType\":\"String\",\"lhs\":\"PEM\",\"rhs\":\"PEM\",\"operator\":\"equals\"}}]}}"
+      }
+    ],
+    "contextData": "{\"applications\":{\"QA_B2BISFG\":{\"__text\":\"SAMPLE_QA_B2BISFG\",\"_type\":\"APIConfig\"},\"SSP\":{\"Policy\":{\"FTP_Policy\":\"\",\"HTTPS_Policy\":\"\",\"FTPS_Policy\":\"\",\"HTTP_Policy\":\"\",\"CD_Policy\":\"\",\"SFTP_Policy\":\"\"},\"SystemCert\":\"\",\"FTP_Netmap\":\"TEST_FTP_NETMAP\",\"TrustStore\":\"\",\"KeyStore\":\"\",\"SecuritySetting\":\"\",\"SFTP_Netmap\":\"SFTP_TEST\",\"CD_Netmap\":\"CMCD_Netmap\",\"FTPS_Netmap\":\"FTPS_NETMAP\",\"ciphers\":{\"cipher\":[{\"name\":\"\"},{\"name\":\"\"}]},\"Enable\":false,\"HTTP_Netmap\":\"TEST_HTTP_NETMAP\",\"HTTPS_Netmap\":\"HTTPS_NETMAP\",\"ClientAuthentication\":\"\"},\"PR\":{\"__text\":\"SAMPLE_PR\",\"_type\":\"Harsh\"},\"Prod_CM\":{\"__text\":\"SAMPLE_PROD_CM\",\"_type\":\"APIConfig\"},\"Scripts\":{\"FileDrop\":\"\",\"password\":\"\",\"User\":\"\",\"Server\":\"\",\"localFile\":false,\"Port\":22,\"pemKey\":false,\"PGP\":\"\",\"Prod_Server\":\"\"},\"Prod_B2BISFG\":{\"__text\":\"SAMPLE_PROD_B2BISFG\",\"_type\":\"APIConfig\"},\"Prod_B2BISFGHTTP\":{\"__text\":\"SAMPLE_PROD_B2BISFGHTTP\",\"_type\":\"APIConfig\"},\"PEM\":{\"__text\":\"SAMPLE_PEM\",\"_type\":\"APIConfig\"},\"QA_CM\":{\"__text\":\"SAMPLE_QA_CM\",\"_type\":\"APIConfig\"},\"SponsorConfigurations\":{\"AS2\":\"\",\"S3\":\"\",\"prod_codelistVersion_pcm\":\"|||1\",\"RCT\":\"\",\"FTP\":\"\",\"codelist\":\"SFG_FileType\",\"CustomProtocols\":{\"protocol\":[{\"_name\":\"http-protocol\",\"_value\":\"HTTPS\",\"_bp\":\"AFTRouteViaHTTP\"},{\"_name\":\"\",\"_value\":\"HTTPS\"}]},\"prod_codelist\":\"SFG_FileType\",\"Inbound_Envelope_EDIFACT\":{\"_type\":\"activityfiles\"},\"FileRoute\":false,\"codelistVersion\":\"%7C%7C%7C1\",\"codelistVersion_pcm\":\"|||1\",\"Prod_Customer_IPs\":{\"Outbound\":\"\",\"Inbound\":\"\"},\"CD\":\"\",\"ImplementationGuides\":{\"_type\":\"activityfiles\"},\"prod_codelistVersion\":\"%7C%7C%7C1\",\"SFTP\":\"\",\"SFG_Community\":\"CM_PEMCommunity\",\"Outbound_Envelope_EDIFACT\":{\"_type\":\"activityfiles\"},\"Inbound_Envelope_X12\":{\"_type\":\"activityfiles\"},\"NonProd_Customer_IPs\":{\"Outbound\":\"10.0.0.20-10.0.0.30\",\"Inbound\":\"10.0.0.1-10.0.0.10\"},\"FTPS\":\"\",\"Filegateway\":\"\",\"PGP\":\"\",\"Outbound_Envelope_X12\":{\"_type\":\"activityfiles\"},\"NativePGP\":false,\"UserAccount\":{\"AuthenticationHost\":\"\",\"AuthenticationType\":\"Local\",\"LDAPProvisioningEnabled\":false}},\"QA_B2BISFGHTTP\":{\"__text\":\"SAMPLE_QA_B2BISFGHTTP\",\"_type\":\"APIConfig\"}}}\n"
+  }
+}

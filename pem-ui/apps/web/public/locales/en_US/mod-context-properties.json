@@ -1,0 +1,101 @@
+{
+  "sideNav": {
+    "contextMapping": "Context Mapping"
+  },
+  "breadcrumb": {
+    "contextMapping": "Context Mapping",
+    "add": "New Api Configuration",
+    "details": "Api Configuration Details"
+  },
+  "title": "Context Data Mapping",
+  "tabs": {
+    "sponsorServerInfo": "Sponsor Server info",
+    "createNew": "Create New",
+    "availableFiles": "Available Files",
+    "uploadFiles": "Upload Files",
+    "titleOne": "Select File from table",
+    "titleTwo": "Select Name from List"
+  },
+  "form": {
+    "name": "Name",
+    "protocol": "Protocol",
+    "protocol_http": "http",
+    "protocol_https": "https",
+    "host": "Host",
+    "port": "Port",
+    "preemptiveAuth": "Preemptive authentication",
+    "userName": "User Name",
+    "password": "Password",
+    "verifyHost": "Verify Host",
+    "isInternalAuth": "",
+    "sslProtocol": "SSL Protocol",
+    "authenticationType": "Authenticate with",
+    "authenticationType_NONE": "None",
+    "authenticationType_USERNAME_PASSWORD": "UserName and Password",
+    "authenticationType_INTERNAL_TOKEN": "Internally generated token"
+  },
+  "list": {
+    "pageTitle": "Api Configurations",
+    "pageDescription": "Click \"Add\" to create a new Api Configurations",
+    "columns": {
+      "name": "Name",
+      "protocol": "Protocol",
+      "host": "Host",
+      "port": "Port",
+      "givenName": "Given Name",
+      "type": "Type",
+      "virusScanStatus": "Virus scan status"
+    },
+    "actions": {
+      "search": "Search by name"
+    },
+    "emptyStates": {
+      "initNoRecords": {
+        "title": "Start Adding The Activity"
+      }
+    }
+  },
+  "addEdit": {
+    "pageTitle_ADD": "New Api Configuration",
+    "pageTitle_EDIT": "Edit Api Configuration",
+    "pageDescription": "Description",
+    "messages": {
+      "upload_sucess": "Api Configuration added successfully."
+    }
+  },
+  "details": {
+    "pageTitle": "{{value}} Api Configuration Details",
+    "pageDescription": "Description",
+    "messages": {
+      "upload_sucess": "Api Configuration added successfully."
+    }
+  },
+  "placeHolderName": "Enter Name",
+  "placeHolderDescription": "Enter text",
+  "field": {
+    "name": "Name",
+    "protocol": "Protocol (required)",
+    "host": "Host (required)",
+    "post": "Post (required)",
+    "sslProtocol": "SSL Protocol",
+    "preemptiveAuthentication": "Preemptive Authentication",
+    "authenticateWith": "Authenticate With TEST",
+    "namePassword": "User Name and Password",
+    "internallyGeneratedToken": "Internally Generated Token",
+    "none": "None",
+    "verifyHost": "Verify Host",
+    "create": "Create",
+    "description": "Description",
+    "encrypt": "Encrypt (optional)",
+    "uploadFiles": "Upload files",
+    "uploadFileDescription": "Max file size is 500kb. Supported file types are .jpg and .png.",
+    "uploadFileLabel": "Drag and drop key file to upload here or click to select file"
+  },
+  "errorText": {
+    "nameRequire": "Name is a required field.",
+    "protocolRequire": "Protocol is a required field.",
+    "hostRequire": "Host is a required field.",
+    "postRequire": "Post is a required field.",
+    "descriptionLength": "Description must be at least 0 characters long."
+  }
+}

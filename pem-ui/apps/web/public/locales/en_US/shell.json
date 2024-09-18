@@ -1,0 +1,235 @@
+{
+  "dashboard": "Dashboard",
+  "userProfile": "User Profile",
+
+  "login": {
+    "languageChooser": "Choose the language",
+    "welcome_message": "Welcome to",
+    "logIn": "Log in",
+    "loginHelpMessage": "Need help? Contact Administrator",
+    "passwordHelpMessage": "Logging in as {{userId}}.",
+    "notYou": "Not you?",
+    "userId": "User Id",
+    "continue": "Continue",
+    "login_btn": "Log in",
+    "forgot_id_link": "Forgot ID?",
+    "forgot_password_link": "Forgot Password?",
+    "remember_id": "Remember ID",
+    "password": "Password",
+    "remember_password": "Remember Password",
+    "togglePasswordOn": "Show password",
+    "togglePasswordOff": "Hide password",
+    "invalid_user_credentials": " Invalid Userid/Password. Please try again",
+    "server_not_reachable": "Server not reachable"
+  },
+  "breadcrumb": {
+    "overflowmenu": "More breadcrumb items"
+  },
+  "common": {
+    "value": "{{value}}",
+    "actions": {
+      "assign": "Assign",
+      "assign_ACTIVE": "Assigning...",
+      "assign_SUCCESS": "Assign Successful",
+      "assign_ERROR": "Assign Error",
+      "save": "Save",
+      "save_ACTIVE": "Saving...",
+      "save_SUCCESS": "Save Successful",
+      "save_ERROR": "Save Error",
+      "cancel": "Cancel",
+      "cancel_ACTIVE": "Cancelling...",
+      "cancel_SUCCESS": "Cancel Successful",
+      "cancel_ERROR": "Cancel Error",
+      "add": "Add",
+      "add_ACTIVE": "Adding...",
+      "add_SUCCESS": "Add Successful",
+      "add_ERROR": "Add Error",
+      "update": "Update",
+      "update_ACTIVE": "Updating...",
+      "update_SUCCESS": "Update Successful",
+      "update_ERROR": "Update Error",
+      "edit": "Edit",
+      "edit_ACTIVE": "Editing...",
+      "edit_SUCCESS": "Edit Successful",
+      "edit_ERROR": "Edit Error",
+      "view": "View",
+      "view_ACTIVE": "Viewing...",
+      "view_SUCCESS": "View Successful",
+      "view_ERROR": "View Error",
+      "close": "Close",
+      "close_ACTIVE": "Closing...",
+      "close_SUCCESS": "Close Successful",
+      "close_ERROR": "Close Error",
+      "delete": "Delete",
+      "delete_ACTIVE": "Deleting...",
+      "delete_SUCCESS": "Delete Successful",
+      "delete_ERROR": "Delete Error",
+      "apply": "Apply",
+      "apply_ACTIVE": "Applying...",
+      "apply_SUCCESS": "Apply Successful",
+      "apply_ERROR": "Apply Error",
+      "deactivate": "Deactivate",
+      "deactivate_ACTIVE": "Deactivating...",
+      "deactivate_SUCCESS": "Deactivate Successful",
+      "deactivate_ERROR": "Deactivate Error",
+      "activate": "Activate",
+      "activate_ACTIVE": "Activating...",
+      "activate_SUCCESS": "Activate Successful",
+      "activate_ERROR": "Activate Error",
+      "confirm": "Confirm",
+      "confirm_ACTIVE": "Confirming...",
+      "confirm_SUCCESS": "Confirm Successful",
+      "confirm_ERROR": "Confirm Error",
+      "back": "Back",
+      "back_ACTIVE": "Backing...",
+      "back_SUCCESS": "Back Successful",
+      "back_ERROR": "Back Error",
+      "ok": "OK",
+      "ok_ACTIVE": "OKing...",
+      "ok_SUCCESS": "OK Successful",
+      "ok_ERROR": "OK Error",
+      "clearAll": "Clear All",
+      "clearAll_ACTIVE": "Clearing All...",
+      "clearAll_SUCCESS": "Clear All Successful",
+      "clearAll_ERROR": "Clear All Error",
+      "done": "Done",
+      "done_ACTIVE": "Doing...",
+      "done_SUCCESS": "Done Successful",
+      "done_ERROR": "Done Error",
+      "select": "Select",
+      "select_ACTIVE": "Selecting...",
+      "select_SUCCESS": "Select Successful",
+      "select_ERROR": "Select Error",
+      "manage": "Manage",
+      "manage_ACTIVE": "Managing...",
+      "manage_SUCCESS": "Manage Successful",
+      "manage_ERROR": "Manage Error",
+      "remove": "Remove",
+      "remove_ACTIVE": "Removing...",
+      "remove_SUCCESS": "Remove Successful",
+      "remove_ERROR": "Remove Error",
+      "saveAndAddMore": "Save and Add More",
+      "saveAndAddMore_ACTIVE": "Saving and Adding More...",
+      "saveAndAddMore_SUCCESS": "Save and Add More Successful",
+      "saveAndAddMore_ERROR": "Save and Add More Error",
+      "upload": "Upload",
+      "upload_ACTIVE": "Uploading...",
+      "upload_SUCCESS": "Upload Successful",
+      "upload_ERROR": "Upload Error",
+      "download": "Download",
+      "download_ACTIVE": "Downloading...",
+      "download_SUCCESS": "Download Successful",
+      "download_ERROR": "Download Error",
+      "disable": "Disable",
+      "disable_ACTIVE": "Disabling...",
+      "disable_SUCCESS": "Disable Successful",
+      "disable_ERROR": "Disable Error",
+      "enable": "Enable",
+      "enable_ACTIVE": "Enabling...",
+      "enable_SUCCESS": "Enable Successful",
+      "enable_ERROR": "Enable Error",
+      "uploadSave": "Upload and Save",
+      "uploadSave_ACTIVE": "Uploading and Saving...",
+      "uploadSave_SUCCESS": "Upload and Save Successful",
+      "uploadSave_ERROR": "Upload and Save Error",
+      "fileUpload": "Drag and drop files here or click to upload",
+      "fileUpload_ACTIVE": "Uploading files...",
+      "fileUpload_SUCCESS": "File Upload Successful",
+      "fileUpload_ERROR": "File Upload Error",
+      "deleteFile": "Delete",
+      "deleteFile_ACTIVE": "Deleting file...",
+      "deleteFile_SUCCESS": "Delete File Successful",
+      "deleteFile_ERROR": "Delete File Error",
+      "backToDetails":"Back to Details"
+    }
+    ,
+    "errors": {
+      "fileSizeLimit_title": "File size exceeds limit",
+      "fileSizeLimit_description": "{{maxFileSize}} max file size. Select a new file and try again.",
+      "invalidFileType_title": "Invalid file type",
+      "invalidFileType_description": "'{{fileName}}' does not have a valid file type."
+    },
+    "messages": {
+      "fileUploadSizeDescription": "Max file size is {{maxFileSize}}.",
+      "fileUploadFormatDescription": "Supported file types are {{supportedFileFormats}}."
+    },
+    "form": {
+      "field_required": "This field is required",
+      "field_label": {
+        "required": "{{value}} (required)",
+        "optional": "{{value}} (optional)"
+      }
+    },
+    "emptyState": {
+      "no_result_found": "No results found",
+      "message": "Try adjusting your search or filter options to find what you're looking for.",
+      "reset_filters": "Reset Filters"
+    },
+    "filter-section": {
+      "filter": "Filter",
+      "clear-filter": "Clear Filters"
+    }
+  },
+  "pages": {
+    "addEdit": {
+      "pageDescription": "All fields are required unless marked optional."
+    }
+  },
+  "form": {
+    "labels": {
+      "selectValue": "Select a value",
+      "required": "{{value}} (required)",
+      "optional": "{{value}} (optional)"
+    },
+    "placeholder": {
+      "enter": "Enter {{label}}",
+      "select": "Select {{label}}"
+    },
+    "validations": {
+      "required": "This field is required",
+      "minLength": "This field should have minimum {{length}} characters",
+      "maxLength": "This field should have maximum {{length}} characters",
+      "min": "This field should have min {{value}} value",
+      "max": "This field should have max {{value}} value",
+      "patterns": "This field doesnot match the required pattern",
+      "patterns_EMAIL": "This field should have valid Email",
+      "patterns_PHONE": "This field should have valid Phone Number",
+      "patterns_ZIPCODE": "This field should have valid Postal code"
+    }
+  },
+  "modal": {
+    "labels": {
+      "confirm": "Confirm",
+      "warning": "Warning",
+      "info": "Information",
+      "error": "Error"
+    },
+    "actions": {
+      "confirm": "Confirm",
+      "cancel": "Cancel",
+      "close": "Close",
+      "ok": "OK"
+    }
+  },
+  "notification": {
+    "close_arialabel": "Closes notification",
+    "statusIconDescription": "Notification",
+    "timestamp": "Timestamp [{{timestamp}}]"
+  },
+  "wizard": {
+    "actions": {
+      "previous": "Previous",
+      "next": "Next",
+      "submit": "Submit",
+      "close": "Close",
+      "save": "Save",
+      "cancel": "Cancel",
+      "saveAndClose": "Save and Close"
+    }
+  },
+  "test": {
+    "menu": "Shell Test",
+    "feature": "Feature Test",
+    "form": "Form Test"
+  }
+}

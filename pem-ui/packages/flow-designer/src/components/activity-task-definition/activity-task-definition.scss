@@ -1,0 +1,29 @@
+.buttons-containers {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  margin: 0px;
+  justify-content: flex-end;
+  flex-direction: row;
+  position: absolute;
+  bottom: 0;
+}
+
+.context-mapping-btn {
+  margin-top: 1rem;
+  background-color: #ffffff;
+  top: 0.68rem;
+  height: 2.6rem;
+  width: 1.6rem;
+  padding-top: 0.7rem;
+}
+
+.attachment-mapping-btn {
+  top: 0;
+}
+
+.col-margin {
+  margin: 0.5rem;
+  display: flex;
+}

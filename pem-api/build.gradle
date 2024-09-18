@@ -1,0 +1,61 @@
+plugins {
+    id 'java'
+    id 'war'
+    id 'org.springframework.boot' version '3.2.5'
+    id 'io.spring.dependency-management' version '1.1.4'
+}
+
+group = 'com.precisely.pem'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    google()
+    mavenCentral()
+    maven {
+        url 'https://artifacts.alfresco.com/nexus/content/repositories/activiti-releases'
+    }
+
+}
+tasks.named("bootJar") {
+    mainClass = 'com.precisely.pem.PEMApplication'
+}
+
+tasks.named("bootWar") {
+    mainClass = 'com.precisely.pem.PEMApplication'
+}
+
+configurations {
+    all*.exclude module: 'spring-boot-starter-logging'
+}
+
+dependencies {
+    implementation project(":pem-entity")
+    implementation project(":pem-rest")
+    implementation project(":pem-common")
+    implementation project(":pem-services")
+    implementation project(":pem-activiti")
+    implementation project(":pem-systemdata")
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-log4j2', version: '3.2.4'
+    implementation 'org.springframework.boot:spring-boot-gradle-plugin:3.0.4'
+    implementation 'io.spring.dependency-management:io.spring.dependency-management.gradle.plugin:1.1.0'
+    testImplementation platform('org.junit:junit-bom:5.9.1')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    compileOnly 'org.projectlombok:lombok:1.18.24'
+    annotationProcessor 'org.projectlombok:lombok:1.18.24'
+    implementation('org.springframework.boot:spring-boot-starter-web')
+    providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
+}
+
+subprojects {
+    apply plugin: 'java'
+
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-web:3.2.4'
+        compileOnly 'org.projectlombok:lombok:1.18.24'
+        annotationProcessor 'org.projectlombok:lombok:1.18.24'
+    }
+}
+
+test {
+    useJUnitPlatform()
+}

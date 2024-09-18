@@ -1,0 +1,52 @@
+.element {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem;
+  box-shadow: 0px 0px 5px -2px;
+}
+
+.element:hover {
+  border: 1px solid hsl(205, 100%, 50%);
+}
+
+.element:first-of-type {
+  margin-top: 8px;
+}
+
+.element:last-child {
+  margin-bottom: 8px;
+}
+
+.drag-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: move;
+}
+
+.delete-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.form-fields {
+  margin: 0.5rem;
+}
+
+.canvas-form-fields {
+  width: 100%;
+}
+
+.custom-field-grid {
+  --cds-grid-gutter-start: none;
+  padding-inline: unset;
+  align-items: center;
+  margin: 0px;
+}
+
+.form-fields-Selected{
+  border: 1px solid hsl(205, 100%, 50%);
+}

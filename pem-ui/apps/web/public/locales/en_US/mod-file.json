@@ -1,0 +1,52 @@
+{
+  "sideNav": {
+    "list": "Files"
+  },
+  "breadcrumb": {
+    "list": "Files",
+    "upload": "Upload File"
+  },
+  "form": {
+    "documentName": "Name (required)",
+    "documentCategory": "Category",
+    "description": "Description",
+    "documentCategory_ACTIVITY": "Activity",
+    "documentCategory_LOGO": "Logo",
+    "isEncrypted": "Encrypted",
+    "documentContents": "File",
+    "partnerKey": "Partner",
+    "fileName": "Uploaded File"
+  },
+  "list": {
+    "pageTitle": "Files",
+    "pageDescription": "Click \"Upload\" to upload a new file",
+    "columns": {
+      "documentName": "Name",
+      "createdBy": "Owner",
+      "documentCategory": "Category",
+      "isEncrypted": "Encrypted",
+      "scanStatus": "Virus Scan Status",
+      "contentType": "Type",
+      "createTs": "Uploaded Date",
+      "contentLength": "Size (Kb)"
+    },
+    "filters": {
+      "documentCategory_ACTIVITY": "Activity",
+      "documentCategory_LOGO": "Logo"
+    },
+    "actions": {
+      "search": "Search by name"
+    }
+  },
+  "upload": {
+    "pageTitle": "Upload File",
+    "pageDescription": "Description",
+    "upload_label": "Upload a file",
+    "messages": {
+      "upload_sucess": "File uploaded successfully.",
+      "documentName_tooltip": "Unique name for the file. You can specify a version number for the file.",
+      "fileUpload_tooltip_ACTIVITY": "`.exe` extensions are blocked to upload.",
+      "fileUpload_tooltip_LOGO": "`.exe` extensions are blocked to upload."
+    }
+  }
+}

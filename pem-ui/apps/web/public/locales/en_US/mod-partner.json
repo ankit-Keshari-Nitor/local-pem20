@@ -1,0 +1,31 @@
+{
+  "breadcrumb": {
+    "partners": "Partners"
+  },
+  "list": {
+    "title": "Partners",
+    "pageDescription": "Partner list page",
+    "columns": {
+      "name": "Partner Company",
+      "website": "Website",
+      "status": "Status"
+    },
+    "filters": {
+      "status": "Status",
+      "APPROVED": "Active",
+      "PENDING": "Approval Pending",
+      "INACTIVE": "Inactive",
+      "REGISTRATION_PENDING": "Registration Pending",
+      "REJECTED": "Rejected"
+    },
+    "actions": {
+      "search": "Search by Company Name/Unique ID or User ID/Email",
+      "add": "Add",
+      "invite": "Invite",
+      "edit": "Edit",
+      "startActivity": "Start Activity",
+      "resetPassword": "Reset Password",
+      "deactivate": "Deactivate"
+    }
+  }
+}

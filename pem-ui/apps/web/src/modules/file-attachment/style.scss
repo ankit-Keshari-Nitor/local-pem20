@@ -1,0 +1,39 @@
+@use '@carbon/layout';
+@use '@carbon/react/scss/spacing' as *;
+@use '@carbon/colors';
+@use '@carbon/type';
+@use '@carbon/react/scss/theme' as *;
+
+.pem--table-10-rows {
+  height: ((3+10) * $spacing-09) + $spacing-01 !important;
+}
+
+.sfg--datatable-right-section .sfg--datatable-table-section {
+  height: 100%;
+}
+
+.cds--css-grid {
+  align-items: unset;
+}
+
+.cds--modal-lg .cds--modal-container {
+  inline-size: 60% !important;
+}
+
+.page-content.page-type-list {
+  display: contents;
+  flex-direction: column;
+  height: 100%;
+
+  .page-body,
+  .sfg--page-body {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+}
+
+.sfg--grid-container>div:last-child {
+  padding-left: 1rem;
+}

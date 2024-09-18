@@ -1,0 +1,127 @@
+plugins {
+    id 'base'
+    // Ref: https://github.com/OpenLiberty/ci.gradle
+    id "io.openliberty.tools.gradle.Liberty" version "3.8.2"
+}
+
+configurations {
+    dbjars //Custom Configuration for DB Jars
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    liberty_version = '23.0.0.9'
+    liberty.server.var.'server.http.port' = '9080'
+    liberty.server.var.'server.https.port' = '9443'
+    liberty.server.var.'server.ssl.protocol' = 'TLSv1.3,TLSv1.2'
+    liberty.server.var.'server.keystore.file' = 'key.p12'
+    liberty.server.var.'server.keystore.type' = 'PKCS12'
+
+    pemapi_app_name='pem-api'
+    liberty.server.var.'pemapi.app.id' = pemapi_app_name
+    liberty.server.var.'pemapi.app.location' = pemapi_app_name + '.war'
+    liberty.server.var.'pemapi.app.context.root' = ''
+
+    pemui_app_name='pem-ui'
+    liberty.server.var.'pemui.app.location' = pemui_app_name
+    liberty.server.var.'pemui.app.context.root' = 'pem'
+}
+
+dependencies {
+    libertyRuntime "com.ibm.websphere.appserver.runtime:wlp-webProfile10:${liberty_version}"
+    dbjars 'com.ibm.db2.jcc:db2jcc:db2jcc4'
+}
+
+liberty {
+    server {
+        name = 'pem'
+        //configDirectory = file('src/main/liberty/config')
+        features {
+            acceptLicense = true
+        }
+        
+        packageLiberty {
+        	packageName = "pem-2.0"
+        }
+    }
+}
+
+task installPemApi (dependsOn: [libertyCreate, ':pem-api:bootWar']) {
+//task installPemApi (dependsOn: libertyCreate) {
+    doLast {
+        copy {
+			from project(':pem-api').bootWar.outputs.files.singleFile
+            //from file("${projectDir}/../pem-api/build/libs/PEMApplication-1.0-SNAPSHOT.war")
+            into file("${buildDir}/wlp/usr/servers/${liberty.server.name}/apps")
+            rename { return "${liberty.server.var.'pemapi.app.location'}" }
+        }
+    }
+}
+
+task installUI (dependsOn: [libertyCreate, ':pem-ui:bundle']) {
+//task installUI (dependsOn: libertyCreate) {
+    doLast {
+        copy {
+            from zipTree(project(':pem-ui').tasks.getByName('bundle').outputs.files.singleFile)
+			//from zipTree("${projectDir}/../pem-ui/packages/pem-ui.zip")
+            into file("${buildDir}/wlp/usr/servers/${liberty.server.name}/apps/${pemui_app_name}")
+        }
+    }
+}
+
+task copyDBJars(type: Copy){ //Copying DB Jars into the dbdrivers directory for Dev Env
+    from configurations.dbjars
+    into "build/wlp/usr/servers/pem/resources/dbdrivers"
+    include '*.jar'
+}
+
+task setDev() {
+    println "Setting Dev Environment"//Task to Setup Dev Env
+}
+
+task uploadZipToArtifactory() {
+    def group_id = "com/precisely/pem"
+    def artifact_id = "pem"
+    def default_version = "1.0.0"
+    description = 'Uploads the zip file to Artifactory'
+    group = 'upload'
+    dependsOn tasks.assemble // Depends on the assemble task to ensure the zip file is generated
+
+    // Path to the zip file to upload
+    def zipFile = file("${buildDir}/libs/pem-2.0.zip")
+
+    if(project.hasProperty('version')){
+        def propertyValue = project.version
+        default_version = propertyValue
+    }
+    
+    def artifactoryUrl = "http://artifactory.syncdi1.us.syncsort.com/artifactory/pem-unapproved/{$group_id}/{$artifact_id}-{$default_version}.zip"
+    def username = 'pem-publisher'
+    def password = 'publisher-for-pem'
+
+    // Execute cURL command to upload the ZIP file to Artifactory
+    doLast {
+        // Construct the cURL command
+        def curlCommand = [
+            'curl',
+            '-u', "$username:$password",
+            '-T', "$zipFile",
+            '-X', 'PUT',
+            artifactoryUrl
+        ]
+
+        // Execute the cURL command
+        exec {
+            commandLine curlCommand
+        }
+    }
+}
+
+
+setDev.dependsOn copyDBJars
+
+libertyPackage.dependsOn installPemApi,installUI
+build.dependsOn installPemApi,installUI, libertyPackage

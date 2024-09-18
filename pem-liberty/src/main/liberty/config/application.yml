@@ -1,0 +1,34 @@
+spring:
+  jpa:
+    database-platform:
+    hibernate:
+      ddl-auto:
+    properties:
+      hibernate:
+        show-sql:
+    naming:
+      physical-strategy: 
+      implicit-strategy: 
+
+  datasource:
+    url: 
+    username: 
+    password: 
+    driver-class-name: 
+    initialization-mode: 
+  main:
+    allow-circular-references: true
+
+server:
+  port:
+
+springdoc:
+  swagger-ui:
+    path: /definition-documentation
+    tryItOutEnabled: true
+    filter: true
+  api-docs:
+    path: /pem-api-docs
+pem:
+  openapi:
+    dev-url:

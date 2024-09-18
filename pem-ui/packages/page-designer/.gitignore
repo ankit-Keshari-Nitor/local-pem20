@@ -1,0 +1,15 @@
+.gradle
+.project
+.settings
+.yarn-cache
+build
+node_modules
+es
+lib
+dist
+
+# testing
+/coverage
+
+# production
+/build

@@ -1,0 +1,17 @@
+@import '@carbon/styles';
+
+html {
+  height: 100%;
+}
+
+body {
+  height: 100%;
+}
+
+#root {
+  height: 100%;
+}
+//margin 0
+
+@import '@b2bi/styles/component-overrides.scss';
+@import '@b2bi/styles/utilities.scss';

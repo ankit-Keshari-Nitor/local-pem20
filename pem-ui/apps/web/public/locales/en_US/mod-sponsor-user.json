@@ -1,0 +1,30 @@
+{
+  "breadcrumb": {
+    "sponsorUsers": "Sponsor Users"
+  },
+  "list": {
+    "title": "Users",
+    "pageDescription": "Users list page",
+    "columns": {
+      "userId": "User ID (Email)",
+      "firstName": "Given name",
+      "lastName": "Surname",
+      "status": "Status"
+    },
+    "filters": {
+      "status": "Status",
+      "APPROVED": "Active",
+      "PENDING": "Approval Pending",
+      "INACTIVE": "Inactive",
+      "REGISTRATION_PENDING": "Registration Pending",
+      "REJECTED": "Rejected"
+    },
+    "actions": {
+      "search": "Search by given name",
+      "invite": "Invite",
+      "edit": "Edit",
+      "resetPassword": "Reset Password",
+      "deactivate": "Deactivate"
+    }
+  }
+}

@@ -1,0 +1,164 @@
+{
+  "breadcrumb": {
+    "monitoring": "Activity Monitoring",
+    "partnerTask": "Partners Task",
+    "viewPartner": "View Partners"
+  },
+  "tabs": {
+    "rolledOutActivities": "Rolled Out Activities",
+    "partnersActivities": "Partners Activities",
+    "internalActivities": "Internal Activities"
+  },
+  "subTabs": {
+    "notStartActivities": "Not Started Activities",
+    "inProgressActivities": "In-Progress Activities",
+    "completedActivities": "Completed Activities",
+    "closedActivities": "Closed Activities",
+    "sponsorAction": "Sponsor Actions",
+    "onScheduleActivities": "On Schedule Activities"
+  },
+  "dashboardList": {
+    "pageTitle": "Activity Monitoring",
+    "title": "Activity Monitoring",
+    "pageDescription": "Monitoring list page",
+    "sampleModalData": "Sample Modal",
+    "notImplemented": " Functionality Not Implemented",
+    "columns": {
+      "name": "Name",
+      "partners": "Partners",
+      "definitionName": "Activity Definition",
+      "status": "Status",
+      "action": "Action",
+      "dueDate": "Due Date",
+      "delays": "Delay (Days)",
+      "version": "Version"
+    },
+    "messages": {
+      "description": "Inherited User"
+    },
+    "filters": {
+      "status": "Status",
+      "notStarted": "Not Started",
+      "inProgress": "In Progress",
+      "completed": "Completed",
+      "closed": "Closed",
+      "definitionName": "Defination Name",
+      "partnerName": "Partner Name",
+      "sponsorAction": "Sponsor Action",
+      "draft": "DRAFT",
+      "final": "FINAL",
+      "delete": "DELETE"
+    },
+    "actions": {
+      "search": "Search by name",
+      "add": "Add Partner",
+      "viewDetails": "View details",
+      "addPartners": "Add partners",
+      "closeActivity": "Close activity"
+    },
+    "emptyStates": {
+      "initNoRecords": {
+        "title": "Start Adding"
+      }
+    }
+  },
+  "partnerTaskList": {
+    "title": "Activity MIT Overview",
+    "pageDescription": "Definitions list page",
+    "columns": {
+      "description": "Description",
+      "taskAndOwner": "Task & Owner",
+      "status": "Status",
+      "lastUpdated": "Last Updated",
+      "actions": "Actions"
+    },
+    "messages": {
+      "description": "Inherited User"
+    },
+    "filters": {
+      "filterOptions": "Filter Options",
+      "statusOptions": "Status Options",
+      "sponsor": "Sponsor",
+      "partner": "Partner",
+      "system": "System",
+      "skipped": "Skipped",
+      "inProgress": "In Progress",
+      "closed": "Closed",
+      "notStarted": "Not Started",
+      "delayed": "Delayed"
+    },
+    "actions": {
+      "search": "Search by task name",
+      "changeOwner": "Change Owner",
+      "viewContextData": "View Context Data"
+    },
+    "emptyStates": {
+      "initNoRecords": {
+        "title": "Start Adding The Activity"
+      }
+    },
+    "assginOwner": {
+      "modal": {
+        "pageTitle": "Assgin Owner",
+        "select": "Select",
+        "assginToMe": "Assgin To Me",
+        "other": "Other",
+        "none": "None"
+      }
+    }
+  },
+  "viewPartnerList": {
+    "title": "Activity Definition",
+    "pageDescription": "Definitions list page",
+    "totalTask": "Total Task",
+    "participants": "Participants",
+    "onSchedule": "On Schedule",
+    "delayed": "Delayed",
+    "completed": "Completed",
+    "sponsorAction": "Sponsor Action",
+    "startDate": "Start Date",
+    "description": "Description",
+    "contextData": "Context Data",
+    "activityDefinition": "Activity Definition",
+    "clickToView": "Click to view",
+    "columns": {
+      "partner": "Partner",
+      "currentTask": "Current Task",
+      "completed": "Completed",
+      "skipped": "Skipped",
+      "dueDate": "DueDate",
+      "delays": "Delays (Days)",
+      "status": "Status",
+      "lastUpdated": "Last Updated",
+      "action": "Action",
+      "playIcon": "Execution"
+    },
+    "messages": {
+      "description": "Inherited User"
+    },
+    "filters": {
+      "status": "Status",
+      "closed": "Close",
+      "completed": "Completed",
+      "inProgress": "In-Progress",
+      "pending": "Pending",
+      "error": "Error",
+      "delayed": "Delayed",
+      "definitionName": "Partner Name"
+    },
+    "actions": {
+      "search": "Search by name",
+      "addPartner": "Add Partner",
+      "sendAlert": "Send Alert",
+      "modifyDueDate": "Modify Due Date",
+      "closeActivity": "Close Activity",
+      "viewPartnerDetail": "View Partner Detail",
+      "reOpenTask": "Re-Open Task"
+    },
+    "emptyStates": {
+      "initNoRecords": {
+        "title": "Start Adding The Activity"
+      }
+    }
+  }
+}

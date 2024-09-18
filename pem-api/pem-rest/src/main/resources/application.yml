@@ -1,0 +1,90 @@
+# Custom property for the database name. Update this value for each specific database.
+database:
+  name: pem
+
+spring:
+  datasource:
+    # MySQL configuration
+    url: jdbc:mysql://localhost:3306/${database.name}?allowPublicKeyRetrieval=true&useSSL=false
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+    # Uncomment and configure one of the following blocks for other databases as needed:
+
+    # DB2 configuration
+    # url: jdbc:db2://10.15.106.148:50000/pemdev:progressiveStreaming=2;
+    # username: msauto
+    # password: password
+    # driver-class-name: com.ibm.db2.jcc.DB2Driver
+    # initialization-mode: always
+    # testWhileIdle: true
+    # validationQuery: SELECT 1
+
+    # Oracle configuration
+    # url: jdbc:oracle:thin:@//in-ol7-di-b2b01.in.syncsort.dev:1521/b2bi.in.syncsort.dev
+    # username: B2BPEM1
+    # password: B2BPEM11
+    # driver-class-name: oracle.jdbc.OracleDriver
+    # initialization-mode: always
+
+    # SQL Server configuration
+    # url: jdbc:sqlserver://10.15.106.193:1433;databaseName=${database.name};encrypt=false;trustServerCertificate=true;
+    # username: mrmauto2
+    # password: Passw0rd
+    # driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: none
+      format_sql: true
+    properties:
+      hibernate:
+        show-sql: true
+    naming:
+      physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
+
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog-master.xml
+    parameters:
+      databaseName: ${database.name}
+
+  main:
+    allow-bean-definition-overriding: true
+    allow-circular-references: true
+
+  tomcat:
+    max-swallow-size: -1
+
+  port: 9080
+
+springdoc:
+  swagger-ui:
+    path: /definition-documentation
+    tryItOutEnabled: true
+    filter: true
+  api-docs:
+    path: /pem-api-docs
+
+pem:
+  openapi:
+    dev-url: http://localhost:9080
+
+  activiti:
+    database-schema-update: false
+    db-history-used: false
+    history-level: FULL
+
+server:
+  port: 9080
+  connection-timeout: 60000
+
+logging:
+  level:
+    liquibase: INFO
+
+# Temporary configuration until integration with the identity server is complete
+participant-key: 92e08020-e3b4-4184-ad17-cb47fbba1e9f

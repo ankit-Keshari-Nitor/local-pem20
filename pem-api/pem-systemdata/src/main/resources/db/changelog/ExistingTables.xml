@@ -1,0 +1,716 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="20240623-1" author="IBM" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="vch_participant"/>
+            </not>
+        </preConditions>
+        <createTable tableName="vch_participant">
+            <column name="PARTICIPANT_KEY" type="varchar(50)"/>
+            <column name="BUSINESS_ROLE" type="varchar(30)"/>
+            <column name="COMMENTS" type="varchar(512)"/>
+            <column name="COMPANY_USER_KEY" type="varchar(50)"/>
+            <column name="CREATE_TS" type="timestamp"/>
+            <column name="CREATED_BY" type="varchar(50)"/>
+            <column name="MODIFIED_BY" type="varchar(50)"/>
+            <column name="MODIFY_TS" type="timestamp"/>
+            <column name="PARTICIPANT_ROLE" type="varchar(100)"/>
+            <column name="PARTICIPANT_STATUS" type="varchar(50)"/>
+            <column name="PARTNER_KEY" type="varchar(50)"/>
+            <column name="REASON_FOR_REQUEST" type="varchar(1024)"/>
+            <column name="REGISTRATION_MODE" type="varchar(20)"/>
+            <column name="SPONSOR_KEY" type="varchar(50)"/>
+            <column name="IS_SPONSOR_USER" type="varchar(1)"/>
+            <column name="EXTERNAL_ID" type="varchar(100)"/>
+            <column name="SOURCE_TYPE" type="varchar(50)"/>
+            <column name="EXTN_LAST_UPDATED" type="timestamp"/>
+            <column name="DATA_COLLECTION_PREF" type="varchar(30)"/>
+            <column name="TEMP_PARTICIPANT_ROLE" type="varchar(100)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20240623-2" author="IBM" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="vch_partner"/>
+            </not>
+        </preConditions>
+        <createTable tableName="vch_partner">
+            <column name="partner_key" type="varchar(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="create_ts" type="datetime(6)"/>
+            <column name="created_by" type="varchar(255)"/>
+            <column name="modified_by" type="varchar(255)"/>
+            <column name="modify_ts" type="datetime(6)"/>
+            <column name="admin_participant_key" type="varchar(255)"/>
+            <column name="company_key" type="varchar(255)"/>
+            <column name="partner_status" type="varchar(255)"/>
+            <column name="partner_type" type="varchar(255)"/>
+            <column name="partner_unique_id" type="varchar(255)"/>
+            <column name="registration_mode" type="varchar(255)"/>
+            <column name="sponsor_key" type="varchar(255)"/>
+            <column name="substatus" type="varchar(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20240623-3" author="IBM" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="vch_sponsor"/>
+            </not>
+        </preConditions>
+        <createTable tableName="vch_sponsor">
+            <column name="SPONSOR_KEY" type="varchar(50)"/>
+            <column name="ADMIN_PARTICIPANT_KEY" type="varchar(50)"/>
+            <column name="COMPANY_KEY" type="varchar(50)"/>
+            <column name="CREATE_TS" type="timestamp"/>
+            <column name="CREATED_BY" type="varchar(50)"/>
+            <column name="MODIFIED_BY" type="varchar(50)"/>
+            <column name="MODIFY_TS" type="timestamp"/>
+            <column name="DOMAIN_URL" type="varchar(255)"/>
+            <column name="REGISTRATION_MODE" type="varchar(20)"/>
+            <column name="SPONSOR_STATUS" type="varchar(20)"/>
+            <column name="TITLE" type="varchar(30)"/>
+            <column name="SUPPORT_ENABLED" type="varchar(1)"/>
+            <column name="SPONSOR_TYPE" type="varchar(50)"/>
+            <column name="MANAGED_BY" type="varchar(50)"/>
+            <column name="SUBSTATUS" type="varchar(20)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20240623-4" author="IBM" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="vch_company"/>
+            </not>
+        </preConditions>
+        <createTable tableName="vch_company">
+            <column name="COMPANY_KEY" type="varchar(50)"/>
+            <column name="COMPANY_NAME" type="varchar(300)"/>
+            <column name="CONTACT_KEY" type="varchar(50)"/>
+            <column name="CREATE_TS" type="timestamp"/>
+            <column name="CREATED_BY" type="varchar(50)"/>
+            <column name="MODIFIED_BY" type="varchar(50)"/>
+            <column name="MODIFY_TS" type="timestamp"/>
+            <column name="WEBSITE" type="varchar(255)"/>
+            <column name="EXTERNAL_ID" type="varchar(100)"/>
+            <column name="SOURCE_TYPE" type="varchar(30)"/>
+            <column name="EXTN_LAST_UPDATED" type="timestamp"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20240726-5" author="IBM" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="vch_role"/>
+            </not>
+        </preConditions>
+        <createTable tableName="vch_role">
+            <column name="ROLE_KEY" type="varchar(50)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="CATEGORY" type="varchar(255)"/>
+            <column name="CREATE_TS" type="timestamp"/>
+            <column name="CREATED_BY" type="varchar(50)"/>
+            <column name="MODIFIED_BY" type="varchar(50)"/>
+            <column name="MODIFY_TS" type="timestamp"/>
+            <column name="ROLE_NAME" type="varchar(255)"/>
+            <column name="ROLE_SCOPE" type="varchar(255)"/>
+            <column name="ROLE_TYPE" type="varchar(255)"/>
+            <column name="SPONSOR_KEY" type="varchar(50)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20240726-6" author="IBM" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="VCH_USER_ROLE"/>
+            </not>
+        </preConditions>
+        <createTable tableName="VCH_USER_ROLE">
+            <column name="USER_ROLE_KEY" type="varchar(50)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="CREATE_TS" type="timestamp"/>
+            <column name="CREATED_BY" type="varchar(50)"/>
+            <column name="MODIFIED_BY" type="varchar(50)"/>
+            <column name="MODIFY_TS" type="timestamp"/>
+            <column name="PARTICIPANT_KEY" type="varchar(50)"/>
+            <column name="RESOURCE_ROLE_KEY" type="varchar(50)"/>
+            <column name="ROLE_KEY" type="varchar(50)"/>
+            <column name="SPONSOR_KEY" type="varchar(50)"/>
+            <column name="DIVISION_KEY" type="varchar(50)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20240726-7" author="IBM" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="VCH_COMPANY_USER"/>
+            </not>
+        </preConditions>
+        <createTable tableName="VCH_COMPANY_USER">
+            <column name="COMPANY_USER_KEY" type="varchar(50)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="COMPANY_KEY" type="varchar(50)"/>
+            <column name="CONTACT_KEY" type="varchar(50)"/>
+            <column name="CREATE_TS" type="timestamp"/>
+            <column name="CREATED_BY" type="varchar(50)"/>
+            <column name="EMAIL" type="varchar(255)"/>
+            <column name="FAILED_LOGIN_COUNT" type="int"/>
+            <column name="FIRST_NAME" type="varchar(50)"/>
+            <column name="ITERATION_COUNT" type="int"/>
+            <column name="LAST_NAME" type="varchar(50)"/>
+            <column name="LOCK_RELEASE_DATE" type="timestamp"/>
+            <column name="MODIFIED_BY" type="varchar(50)"/>
+            <column name="MODIFY_TS" type="timestamp"/>
+            <column name="PASSPHRASE" type="varchar(255)"/>
+            <column name="PASSWORD_EXPIRY_DATE" type="timestamp"/>
+            <column name="SALT" type="varchar(255)"/>
+            <column name="USER_NAME" type="varchar(50)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20240623-8" author="IBM" dbms="db2">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="VCH_PARTICIPANT"/>
+            </not>
+        </preConditions>
+        <createTable tableName="VCH_PARTICIPANT">
+            <column name="PARTICIPANT_KEY" type="varchar(50)"/>
+            <column name="BUSINESS_ROLE" type="varchar(30)"/>
+            <column name="COMMENTS" type="varchar(512)"/>
+            <column name="COMPANY_USER_KEY" type="varchar(50)"/>
+            <column name="CREATE_TS" type="datetime(6)"/>
+            <column name="CREATED_BY" type="varchar(50)"/>
+            <column name="MODIFIED_BY" type="varchar(50)"/>
+            <column name="MODIFY_TS" type="datetime(6)"/>
+            <column name="PARTICIPANT_ROLE" type="varchar(100)"/>
+            <column name="PARTICIPANT_STATUS" type="varchar(50)"/>
+            <column name="PARTNER_KEY" type="varchar(50)"/>
+            <column name="REASON_FOR_REQUEST" type="varchar(1024)"/>
+            <column name="REGISTRATION_MODE" type="varchar(20)"/>
+            <column name="SPONSOR_KEY" type="varchar(50)"/>
+            <column name="IS_SPONSOR_USER" type="varchar(1)"/>
+            <column name="EXTERNAL_ID" type="varchar(100)"/>
+            <column name="SOURCE_TYPE" type="varchar(50)"/>
+            <column name="EXTN_LAST_UPDATED" type="datetime(6)"/>
+            <column name="DATA_COLLECTION_PREF" type="varchar(30)"/>
+            <column name="TEMP_PARTICIPANT_ROLE" type="varchar(100)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20240801-9" author="IBM" dbms="db2">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="VCH_ROLE"/>
+            </not>
+        </preConditions>
+        <createTable tableName="VCH_ROLE">
+            <column name="ROLE_KEY" type="varchar(50)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="CATEGORY" type="varchar(255)"/>
+            <column name="CREATE_TS" type="datetime(6)"/>
+            <column name="CREATED_BY" type="varchar(50)"/>
+            <column name="MODIFIED_BY" type="varchar(50)"/>
+            <column name="MODIFY_TS" type="datetime(6)"/>
+            <column name="ROLE_NAME" type="varchar(255)"/>
+            <column name="ROLE_SCOPE" type="varchar(255)"/>
+            <column name="ROLE_TYPE" type="varchar(255)"/>
+            <column name="SPONSOR_KEY" type="varchar(50)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20240801-10" author="IBM" dbms="db2">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="VCH_USER_ROLE"/>
+            </not>
+        </preConditions>
+        <createTable tableName="VCH_USER_ROLE">
+            <column name="USER_ROLE_KEY" type="varchar(50)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="CREATE_TS" type="datetime(6)"/>
+            <column name="CREATED_BY" type="varchar(50)"/>
+            <column name="MODIFIED_BY" type="varchar(50)"/>
+            <column name="MODIFY_TS" type="datetime(6)"/>
+            <column name="PARTICIPANT_KEY" type="varchar(50)"/>
+            <column name="RESOURCE_ROLE_KEY" type="varchar(50)"/>
+            <column name="ROLE_KEY" type="varchar(50)"/>
+            <column name="SPONSOR_KEY" type="varchar(50)"/>
+            <column name="DIVISION_KEY" type="varchar(50)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20240801-11" author="IBM" dbms="db2">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="VCH_COMPANY_USER"/>
+            </not>
+        </preConditions>
+        <createTable tableName="VCH_COMPANY_USER">
+            <column name="COMPANY_USER_KEY" type="varchar(50)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="COMPANY_KEY" type="varchar(50)"/>
+            <column name="CONTACT_KEY" type="varchar(50)"/>
+            <column name="CREATE_TS" type="datetime(6)"/>
+            <column name="CREATED_BY" type="varchar(50)"/>
+            <column name="EMAIL" type="varchar(255)"/>
+            <column name="FAILED_LOGIN_COUNT" type="int"/>
+            <column name="FIRST_NAME" type="varchar(50)"/>
+            <column name="ITERATION_COUNT" type="int"/>
+            <column name="LAST_NAME" type="varchar(50)"/>
+            <column name="LOCK_RELEASE_DATE" type="datetime(6)"/>
+            <column name="MODIFIED_BY" type="varchar(50)"/>
+            <column name="MODIFY_TS" type="datetime(6)"/>
+            <column name="PASSPHRASE" type="varchar(255)"/>
+            <column name="PASSWORD_EXPIRY_DATE" type="datetime(6)"/>
+            <column name="SALT" type="varchar(255)"/>
+            <column name="USER_NAME" type="varchar(50)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20240623-12" author="IBM" dbms="db2">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="VCH_PARTNER"/>
+            </not>
+        </preConditions>
+        <createTable tableName="VCH_PARTNER">
+            <column name="PARTNER_KEY" type="varchar(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="CREATE_TS" type="datetime(6)"/>
+            <column name="CREATED_BY" type="varchar(255)"/>
+            <column name="MODIFIED_BY" type="varchar(255)"/>
+            <column name="MODIFY_TS" type="datetime(6)"/>
+            <column name="ADMIN_PARTICIPANT_KEY" type="varchar(255)"/>
+            <column name="COMPANY_KEY" type="varchar(255)"/>
+            <column name="PARTNER_STATUS" type="varchar(255)"/>
+            <column name="PARTNER_TYPE" type="varchar(255)"/>
+            <column name="PARTNER_UNIQUE_ID" type="varchar(255)"/>
+            <column name="REGISTRATION_MODE" type="varchar(255)"/>
+            <column name="SPONSOR_KEY" type="varchar(255)"/>
+            <column name="SUBSTATUS" type="varchar(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20240623-13" author="IBM" dbms="db2">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="VCH_SPONSOR"/>
+            </not>
+        </preConditions>
+        <createTable tableName="VCH_SPONSOR">
+            <column name="SPONSOR_KEY" type="varchar(50)"/>
+            <column name="ADMIN_PARTICIPANT_KEY" type="varchar(50)"/>
+            <column name="COMPANY_KEY" type="varchar(50)"/>
+            <column name="CREATE_TS" type="datetime(6)"/>
+            <column name="CREATED_BY" type="varchar(50)"/>
+            <column name="MODIFIED_BY" type="varchar(50)"/>
+            <column name="MODIFY_TS" type="datetime(6)"/>
+            <column name="DOMAIN_URL" type="varchar(255)"/>
+            <column name="REGISTRATION_MODE" type="varchar(20)"/>
+            <column name="SPONSOR_STATUS" type="varchar(20)"/>
+            <column name="TITLE" type="varchar(30)"/>
+            <column name="SUPPORT_ENABLED" type="varchar(1)"/>
+            <column name="SPONSOR_TYPE" type="varchar(50)"/>
+            <column name="MANAGED_BY" type="varchar(50)"/>
+            <column name="SUBSTATUS" type="varchar(20)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20240623-14" author="IBM" dbms="db2">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="VCH_COMPANY"/>
+            </not>
+        </preConditions>
+        <createTable tableName="VCH_COMPANY">
+            <column name="COMPANY_KEY" type="varchar(50)"/>
+            <column name="COMPANY_NAME" type="varchar(300)"/>
+            <column name="CONTACT_KEY" type="varchar(50)"/>
+            <column name="CREATE_TS" type="datetime(6)"/>
+            <column name="CREATED_BY" type="varchar(50)"/>
+            <column name="MODIFIED_BY" type="varchar(50)"/>
+            <column name="MODIFY_TS" type="datetime(6)"/>
+            <column name="WEBSITE" type="varchar(255)"/>
+            <column name="EXTERNAL_ID" type="varchar(100)"/>
+            <column name="SOURCE_TYPE" type="varchar(30)"/>
+            <column name="EXTN_LAST_UPDATED" type="datetime(6)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20240623-15" author="IBM" dbms="oracle">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="VCH_PARTICIPANT"/>
+            </not>
+        </preConditions>
+        <createTable tableName="VCH_PARTICIPANT">
+            <column name="PARTICIPANT_KEY" type="VARCHAR2(50)"/>
+            <column name="BUSINESS_ROLE" type="VARCHAR2(30)"/>
+            <column name="COMMENTS" type="VARCHAR2(512)"/>
+            <column name="COMPANY_USER_KEY" type="VARCHAR2(50)"/>
+            <column name="CREATE_TS" type="TIMESTAMP(6)"/>
+            <column name="CREATED_BY" type="VARCHAR2(50)"/>
+            <column name="MODIFIED_BY" type="VARCHAR2(50)"/>
+            <column name="MODIFY_TS" type="TIMESTAMP(6)"/>
+            <column name="PARTICIPANT_ROLE" type="VARCHAR2(100)"/>
+            <column name="PARTICIPANT_STATUS" type="VARCHAR2(50)"/>
+            <column name="PARTNER_KEY" type="VARCHAR2(50)"/>
+            <column name="REASON_FOR_REQUEST" type="VARCHAR2(1024)"/>
+            <column name="REGISTRATION_MODE" type="VARCHAR2(20)"/>
+            <column name="SPONSOR_KEY" type="VARCHAR2(50)"/>
+            <column name="IS_SPONSOR_USER" type="VARCHAR2(1)"/>
+            <column name="EXTERNAL_ID" type="VARCHAR2(100)"/>
+            <column name="SOURCE_TYPE" type="VARCHAR2(50)"/>
+            <column name="EXTN_LAST_UPDATED" type="TIMESTAMP(6)"/>
+            <column name="DATA_COLLECTION_PREF" type="VARCHAR2(30)"/>
+            <column name="TEMP_PARTICIPANT_ROLE" type="VARCHAR2(100)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20240801-16" author="IBM" dbms="oracle">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="VCH_ROLE"/>
+            </not>
+        </preConditions>
+        <createTable tableName="VCH_ROLE">
+            <column name="ROLE_KEY" type="VARCHAR2(50)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="CATEGORY" type="VARCHAR2(255)"/>
+            <column name="CREATE_TS" type="TIMESTAMP(6)"/>
+            <column name="CREATED_BY" type="VARCHAR2(50)"/>
+            <column name="MODIFIED_BY" type="VARCHAR2(50)"/>
+            <column name="MODIFY_TS" type="TIMESTAMP(6)"/>
+            <column name="ROLE_NAME" type="VARCHAR2(255)"/>
+            <column name="ROLE_SCOPE" type="VARCHAR2(255)"/>
+            <column name="ROLE_TYPE" type="VARCHAR2(255)"/>
+            <column name="SPONSOR_KEY" type="VARCHAR2(50)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20240801-17" author="IBM" dbms="oracle">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="VCH_USER_ROLE"/>
+            </not>
+        </preConditions>
+        <createTable tableName="VCH_USER_ROLE">
+            <column name="USER_ROLE_KEY" type="VARCHAR2(50)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="CREATE_TS" type="TIMESTAMP(6)"/>
+            <column name="CREATED_BY" type="VARCHAR2(50)"/>
+            <column name="MODIFIED_BY" type="VARCHAR2(50)"/>
+            <column name="MODIFY_TS" type="TIMESTAMP(6)"/>
+            <column name="PARTICIPANT_KEY" type="VARCHAR2(50)"/>
+            <column name="RESOURCE_ROLE_KEY" type="VARCHAR2(50)"/>
+            <column name="ROLE_KEY" type="VARCHAR2(50)"/>
+            <column name="SPONSOR_KEY" type="VARCHAR2(50)"/>
+            <column name="DIVISION_KEY" type="VARCHAR2(50)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20240801-18" author="IBM" dbms="oracle">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="VCH_COMPANY_USER"/>
+            </not>
+        </preConditions>
+        <createTable tableName="VCH_COMPANY_USER">
+            <column name="COMPANY_USER_KEY" type="VARCHAR2(50)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="COMPANY_KEY" type="VARCHAR2(50)"/>
+            <column name="CONTACT_KEY" type="VARCHAR2(50)"/>
+            <column name="CREATE_TS" type="TIMESTAMP(6)"/>
+            <column name="CREATED_BY" type="VARCHAR2(50)"/>
+            <column name="EMAIL" type="VARCHAR2(255)"/>
+            <column name="FAILED_LOGIN_COUNT" type="int"/>
+            <column name="FIRST_NAME" type="VARCHAR2(50)"/>
+            <column name="ITERATION_COUNT" type="int"/>
+            <column name="LAST_NAME" type="VARCHAR2(50)"/>
+            <column name="LOCK_RELEASE_DATE" type="TIMESTAMP(6)"/>
+            <column name="MODIFIED_BY" type="VARCHAR2(50)"/>
+            <column name="MODIFY_TS" type="TIMESTAMP(6)"/>
+            <column name="PASSPHRASE" type="VARCHAR2(255)"/>
+            <column name="PASSWORD_EXPIRY_DATE" type="TIMESTAMP(6)"/>
+            <column name="SALT" type="VARCHAR2(255)"/>
+            <column name="USER_NAME" type="VARCHAR2(50)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20240623-19" author="IBM" dbms="oracle">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="VCH_PARTNER"/>
+            </not>
+        </preConditions>
+        <createTable tableName="VCH_PARTNER">
+            <column name="PARTNER_KEY" type="VARCHAR2(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="CREATE_TS" type="TIMESTAMP(6)"/>
+            <column name="CREATED_BY" type="VARCHAR2(255)"/>
+            <column name="MODIFIED_BY" type="VARCHAR2(255)"/>
+            <column name="MODIFY_TS" type="TIMESTAMP(6)"/>
+            <column name="ADMIN_PARTICIPANT_KEY" type="VARCHAR2(255)"/>
+            <column name="COMPANY_KEY" type="VARCHAR2(255)"/>
+            <column name="PARTNER_STATUS" type="VARCHAR2(255)"/>
+            <column name="PARTNER_TYPE" type="VARCHAR2(255)"/>
+            <column name="PARTNER_UNIQUE_ID" type="VARCHAR2(255)"/>
+            <column name="REGISTRATION_MODE" type="VARCHAR2(255)"/>
+            <column name="SPONSOR_KEY" type="VARCHAR2(255)"/>
+            <column name="SUBSTATUS" type="VARCHAR2(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20240623-20" author="IBM" dbms="oracle">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="VCH_SPONSOR"/>
+            </not>
+        </preConditions>
+        <createTable tableName="VCH_SPONSOR">
+            <column name="SPONSOR_KEY" type="VARCHAR2(50)"/>
+            <column name="ADMIN_PARTICIPANT_KEY" type="VARCHAR2(50)"/>
+            <column name="COMPANY_KEY" type="VARCHAR2(50)"/>
+            <column name="CREATE_TS" type="TIMESTAMP(6)"/>
+            <column name="CREATED_BY" type="VARCHAR2(50)"/>
+            <column name="MODIFIED_BY" type="VARCHAR2(50)"/>
+            <column name="MODIFY_TS" type="TIMESTAMP(6)"/>
+            <column name="DOMAIN_URL" type="VARCHAR2(255)"/>
+            <column name="REGISTRATION_MODE" type="VARCHAR2(20)"/>
+            <column name="SPONSOR_STATUS" type="VARCHAR2(20)"/>
+            <column name="TITLE" type="VARCHAR2(30)"/>
+            <column name="SUPPORT_ENABLED" type="VARCHAR2(1)"/>
+            <column name="SPONSOR_TYPE" type="VARCHAR2(50)"/>
+            <column name="MANAGED_BY" type="VARCHAR2(50)"/>
+            <column name="SUBSTATUS" type="VARCHAR2(20)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20240623-21" author="IBM" dbms="oracle">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="VCH_COMPANY"/>
+            </not>
+        </preConditions>
+        <createTable tableName="VCH_COMPANY">
+            <column name="COMPANY_KEY" type="VARCHAR2(50)"/>
+            <column name="COMPANY_NAME" type="VARCHAR2(300)"/>
+            <column name="CONTACT_KEY" type="VARCHAR2(50)"/>
+            <column name="CREATE_TS" type="TIMESTAMP(6)"/>
+            <column name="CREATED_BY" type="VARCHAR2(50)"/>
+            <column name="MODIFIED_BY" type="VARCHAR2(50)"/>
+            <column name="MODIFY_TS" type="TIMESTAMP(6)"/>
+            <column name="WEBSITE" type="VARCHAR2(255)"/>
+            <column name="EXTERNAL_ID" type="VARCHAR2(100)"/>
+            <column name="SOURCE_TYPE" type="VARCHAR2(30)"/>
+            <column name="EXTN_LAST_UPDATED" type="TIMESTAMP(6)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20240623-22" author="IBM" dbms="mssql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="VCH_PARTICIPANT"/>
+            </not>
+        </preConditions>
+        <createTable tableName="VCH_PARTICIPANT">
+            <column name="PARTICIPANT_KEY" type="VARCHAR(50)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="BUSINESS_ROLE" type="VARCHAR(30)"/>
+            <column name="COMMENTS" type="VARCHAR(512)"/>
+            <column name="COMPANY_USER_KEY" type="VARCHAR(50)"/>
+            <column name="CREATE_TS" type="DATETIME2"/>
+            <column name="CREATED_BY" type="VARCHAR(50)"/>
+            <column name="MODIFIED_BY" type="VARCHAR(50)"/>
+            <column name="MODIFY_TS" type="DATETIME2"/>
+            <column name="PARTICIPANT_ROLE" type="VARCHAR(100)"/>
+            <column name="PARTICIPANT_STATUS" type="VARCHAR(50)"/>
+            <column name="PARTNER_KEY" type="VARCHAR(50)"/>
+            <column name="REASON_FOR_REQUEST" type="VARCHAR(1024)"/>
+            <column name="REGISTRATION_MODE" type="VARCHAR(20)"/>
+            <column name="SPONSOR_KEY" type="VARCHAR(50)"/>
+            <column name="IS_SPONSOR_USER" type="CHAR(1)"/>
+            <column name="EXTERNAL_ID" type="VARCHAR(100)"/>
+            <column name="SOURCE_TYPE" type="VARCHAR(50)"/>
+            <column name="EXTN_LAST_UPDATED" type="DATETIME2"/>
+            <column name="DATA_COLLECTION_PREF" type="VARCHAR(30)"/>
+            <column name="TEMP_PARTICIPANT_ROLE" type="VARCHAR(100)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20240801-23" author="IBM" dbms="mssql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="VCH_ROLE"/>
+            </not>
+        </preConditions>
+        <createTable tableName="VCH_ROLE">
+            <column name="ROLE_KEY" type="VARCHAR(50)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="CATEGORY" type="VARCHAR(255)"/>
+            <column name="CREATE_TS" type="DATETIME2"/>
+            <column name="CREATED_BY" type="VARCHAR(50)"/>
+            <column name="MODIFIED_BY" type="VARCHAR(50)"/>
+            <column name="MODIFY_TS" type="DATETIME2"/>
+            <column name="ROLE_NAME" type="VARCHAR(255)"/>
+            <column name="ROLE_SCOPE" type="VARCHAR(255)"/>
+            <column name="ROLE_TYPE" type="VARCHAR(255)"/>
+            <column name="SPONSOR_KEY" type="VARCHAR(50)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20240801-24" author="IBM" dbms="mssql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="VCH_USER_ROLE"/>
+            </not>
+        </preConditions>
+        <createTable tableName="VCH_USER_ROLE">
+            <column name="USER_ROLE_KEY" type="VARCHAR(50)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="CREATE_TS" type="DATETIME2"/>
+            <column name="CREATED_BY" type="VARCHAR(50)"/>
+            <column name="MODIFIED_BY" type="VARCHAR(50)"/>
+            <column name="MODIFY_TS" type="DATETIME2"/>
+            <column name="PARTICIPANT_KEY" type="VARCHAR(50)"/>
+            <column name="RESOURCE_ROLE_KEY" type="VARCHAR(50)"/>
+            <column name="ROLE_KEY" type="VARCHAR(50)"/>
+            <column name="SPONSOR_KEY" type="VARCHAR(50)"/>
+            <column name="DIVISION_KEY" type="VARCHAR(50)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20240801-25" author="IBM" dbms="mssql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="VCH_COMPANY_USER"/>
+            </not>
+        </preConditions>
+        <createTable tableName="VCH_COMPANY_USER">
+            <column name="COMPANY_USER_KEY" type="VARCHAR(50)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="COMPANY_KEY" type="VARCHAR(50)"/>
+            <column name="CONTACT_KEY" type="VARCHAR(50)"/>
+            <column name="CREATE_TS" type="DATETIME2"/>
+            <column name="CREATED_BY" type="VARCHAR(50)"/>
+            <column name="EMAIL" type="VARCHAR(255)"/>
+            <column name="FAILED_LOGIN_COUNT" type="INT"/>
+            <column name="FIRST_NAME" type="VARCHAR(50)"/>
+            <column name="ITERATION_COUNT" type="INT"/>
+            <column name="LAST_NAME" type="VARCHAR(50)"/>
+            <column name="LOCK_RELEASE_DATE" type="DATETIME2"/>
+            <column name="MODIFIED_BY" type="VARCHAR(50)"/>
+            <column name="MODIFY_TS" type="DATETIME2"/>
+            <column name="PASSPHRASE" type="VARCHAR(255)"/>
+            <column name="PASSWORD_EXPIRY_DATE" type="DATETIME2"/>
+            <column name="SALT" type="VARCHAR(255)"/>
+            <column name="USER_NAME" type="VARCHAR(50)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20240623-26" author="IBM" dbms="mssql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="VCH_PARTNER"/>
+            </not>
+        </preConditions>
+        <createTable tableName="VCH_PARTNER">
+            <column name="PARTNER_KEY" type="VARCHAR(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="CREATE_TS" type="DATETIME2"/>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="MODIFY_TS" type="DATETIME2"/>
+            <column name="ADMIN_PARTICIPANT_KEY" type="VARCHAR(255)"/>
+            <column name="COMPANY_KEY" type="VARCHAR(255)"/>
+            <column name="PARTNER_STATUS" type="VARCHAR(255)"/>
+            <column name="PARTNER_TYPE" type="VARCHAR(255)"/>
+            <column name="PARTNER_UNIQUE_ID" type="VARCHAR(255)"/>
+            <column name="REGISTRATION_MODE" type="VARCHAR(255)"/>
+            <column name="SPONSOR_KEY" type="VARCHAR(255)"/>
+            <column name="SUBSTATUS" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20240623-27" author="IBM" dbms="mssql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="VCH_SPONSOR"/>
+            </not>
+        </preConditions>
+        <createTable tableName="VCH_SPONSOR">
+            <column name="SPONSOR_KEY" type="VARCHAR(50)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="ADMIN_PARTICIPANT_KEY" type="VARCHAR(50)"/>
+            <column name="COMPANY_KEY" type="VARCHAR(50)"/>
+            <column name="CREATE_TS" type="DATETIME2"/>
+            <column name="CREATED_BY" type="VARCHAR(50)"/>
+            <column name="MODIFIED_BY" type="VARCHAR(50)"/>
+            <column name="MODIFY_TS" type="DATETIME2"/>
+            <column name="DOMAIN_URL" type="VARCHAR(255)"/>
+            <column name="REGISTRATION_MODE" type="VARCHAR(20)"/>
+            <column name="SPONSOR_STATUS" type="VARCHAR(20)"/>
+            <column name="TITLE" type="VARCHAR(30)"/>
+            <column name="SUPPORT_ENABLED" type="CHAR(1)"/>
+            <column name="SPONSOR_TYPE" type="VARCHAR(50)"/>
+            <column name="MANAGED_BY" type="VARCHAR(50)"/>
+            <column name="SUBSTATUS" type="VARCHAR(20)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20240623-28" author="IBM" dbms="mssql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="VCH_COMPANY"/>
+            </not>
+        </preConditions>
+        <createTable tableName="VCH_COMPANY">
+            <column name="COMPANY_KEY" type="VARCHAR(50)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="COMPANY_NAME" type="VARCHAR(300)"/>
+            <column name="CONTACT_KEY" type="VARCHAR(50)"/>
+            <column name="CREATE_TS" type="DATETIME2"/>
+            <column name="CREATED_BY" type="VARCHAR(50)"/>
+            <column name="MODIFIED_BY" type="VARCHAR(50)"/>
+            <column name="MODIFY_TS" type="DATETIME2"/>
+            <column name="WEBSITE" type="VARCHAR(255)"/>
+            <column name="EXTERNAL_ID" type="VARCHAR(100)"/>
+            <column name="SOURCE_TYPE" type="VARCHAR(30)"/>
+            <column name="EXTN_LAST_UPDATED" type="DATETIME2"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20240801-29" author="IBM" dbms="db2,mysql,oracle,mssql">
+        <sqlFile path="db/changelog/sqls/Role.sql" />
+        <sqlFile path="db/changelog/sqls/CompanyUser.sql" />
+        <sqlFile path="db/changelog/sqls/PartnerData.sql" />
+        <sqlFile path="db/changelog/sqls/SponsorData.sql" />
+        <sqlFile path="db/changelog/sqls/CompanyData.sql" />
+        <sqlFile path="db/changelog/sqls/ParticipantData.sql" />
+        <sqlFile path="db/changelog/sqls/UserRoleData.sql" />
+    </changeSet>
+</databaseChangeLog>

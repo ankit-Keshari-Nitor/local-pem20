@@ -1,0 +1,58 @@
+{
+  "sideNav": {
+    "list": "Api Configurations"
+  },
+  "breadcrumb": {
+    "list": "Api Configurations",
+    "add": "New Api Configuration",
+    "details": "Api Configuration Details"
+  },
+
+  "form": {
+    "name": "Name",
+    "protocol": "Protocol",
+    "protocol_http": "http",
+    "protocol_https": "https",
+    "host": "Host",
+    "port": "Port",
+    "preemptiveAuth": "Preemptive authentication",
+    "userName": "User Name",
+    "password": "Password",
+    "verifyHost": "Verify Host",
+    "isInternalAuth": "",
+    "sslProtocol": "SSL Protocol",
+    "authenticationType": "Authenticate with",
+    "authenticationType_NONE": "None",
+    "authenticationType_USERNAME_PASSWORD": "UserName and Password",
+    "authenticationType_INTERNAL_TOKEN": "Internally generated token"
+  },
+  "list": {
+    "pageTitle": "Api Configurations",
+    "pageDescription": "Click \"Add\" to create a new Api Configurations",
+    "columns": {
+      "name": "Name",
+      "protocol": "Protocol",
+      "host": "Host",
+      "port": "Port"
+    },
+
+    "actions": {
+      "search": "Search by name"
+    }
+  },
+  "addEdit": {
+    "pageTitle_ADD": "New Api Configuration",
+    "pageTitle_EDIT": "Edit Api Configuration",
+    "pageDescription": "Description",
+    "messages": {
+      "upload_sucess": "Api Configuration added successfully."
+    }
+  },
+  "details": {
+    "pageTitle": "{{value}} Api Configuration Details",
+    "pageDescription": "Description",
+    "messages": {
+      "upload_sucess": "Api Configuration added successfully."
+    }
+  }
+}

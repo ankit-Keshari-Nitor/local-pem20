@@ -66,7 +66,8 @@ const DialogFlowDesigner = ({
                 <ComboBox
                   onChange={({ selectedItem }) => {
                     selectedItem != null && onDialogNodeClick(null, selectedItem);
-                    selectedItem != null && reactFlowInstance.fitView({ nodes: [{ id: selectedItem.id }], duration: 500 });
+                    selectedItem != null && reactFlowInstance.fitView({ nodes: [{ id: selectedItem.id }], duration: 500, minZoom: 20, maxZoom: 1.6 });
+                    selectedItem == null && reactFlowInstance.fitView({ nodes: null, duration: 500, minZoom: 20, maxZoom: 1 });
                   }}
                   id="task-combobox"
                   placeholder="Search"

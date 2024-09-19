@@ -8,6 +8,7 @@
     "details": "Api Configuration Details"
   },
   "title": "Context Data Mapping",
+  "title_ContextData": "Context Data",
   "tabs": {
     "sponsorServerInfo": "Sponsor Server info",
     "createNew": "Create New",

@@ -557,7 +557,10 @@ const ContextDataModal = ({ mode, context }) => {
   return (
     <>
       <Shell.Page name="context-mapping" id="context-mapping" className="context-mapping">
-        {mode === 'CONTEXT_DATA' ? <Shell.PageHeader title="Context Data" /> : <Shell.PageHeader title={pageUtil.t('mod-context-properties:title')} />}
+        <Shell.PageHeader
+          title={mode === 'CONTEXT_DATA' ? pageUtil.t('mod-context-properties:title_ContextData') : pageUtil.t('mod-context-properties:title')}
+          buttonOnClick={page.uiOnRequestClose}
+        />
         <Shell.PageBody>
           <Grid className="pem--cdm-grid">
             {context !== 'PROPERTY' && (
@@ -573,23 +576,28 @@ const ContextDataModal = ({ mode, context }) => {
               </>
             )}
             <Column lg={12} md={12}>
-              <CDS.Form name="property" context={page.form.property} className="right-panel">
+              <CDS.Form name="property" context={page.form.property}>
                 {page.ui.selectedNode && (
                   <>
                     {page.ui.selectedNode.value.type === CONTEXT_MAPPING_TYPES.CONSTANT && (
                       <>
                         <Layer>
                           <Layer>
-                            <TextInput id="context-constant" type="text" labelText="Set value for selected node" placeholder="Enter Value"></TextInput>
+                            <TextInput className="right-panel" id="context-constant" type="text" labelText="Set value for selected node" placeholder="Enter Value"></TextInput>
                           </Layer>
                         </Layer>
                       </>
                     )}
                     {page.ui.selectedNode.value.type === CONTEXT_TYPES.TEXT && (
-                      <CDS.TextInput name="textProperty" labelText="Set value for selected node" rules={{ onChange: page.uiOnPropertyChange }}></CDS.TextInput>
+                      <CDS.TextInput
+                        className="right-panel"
+                        name="textProperty"
+                        labelText="Set value for selected node"
+                        rules={{ onChange: page.uiOnPropertyChange }}
+                      ></CDS.TextInput>
                     )}
                     {page.ui.selectedNode.value.type === CONTEXT_TYPES.BOOLEAN && (
-                      <CDS.Toggle name="booleanProperty" labelText="Set value for selected node" rules={{ onChange: page.uiOnPropertyChange }}></CDS.Toggle>
+                      <CDS.Toggle className="right-panel" name="booleanProperty" labelText="Set value for selected node" rules={{ onChange: page.uiOnPropertyChange }}></CDS.Toggle>
                     )}
                     {page.ui.selectedNode.value.type === CONTEXT_TYPES.API_CONFIG && (
                       <>

@@ -8,8 +8,9 @@
   height: ((3+10) * $spacing-09) + $spacing-01 !important;
 }
 
-.sfg--datatable-right-section .sfg--datatable-table-section {
-  height: 100%;
+.cds--modal-container-body .sfg--datatable-right-section .sfg--datatable-table-section {
+  overflow-y: auto;
+  min-height: 430px;
 }
 
 .cds--css-grid {
@@ -36,4 +37,11 @@
 
 .sfg--grid-container>div:last-child {
   padding-left: 1rem;
+}
+
+
+.cds--modal-container-body .cds--pagination {
+  position: fixed;
+  bottom: 60px;
+  max-inline-size: -webkit-fill-available
 }

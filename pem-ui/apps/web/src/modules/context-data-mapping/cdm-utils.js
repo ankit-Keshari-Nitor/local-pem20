@@ -1,3 +1,5 @@
+// cdm-utils.js
+/* eslint-disable array-callback-return */
 const getContextDataMappingsForDialog = (dialog) => {
   const context = {};
 

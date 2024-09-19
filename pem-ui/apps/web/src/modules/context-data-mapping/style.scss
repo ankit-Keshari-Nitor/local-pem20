@@ -10,8 +10,9 @@
 
 .pem--cdm-tree-container {
   height: 100%;
-  margin: 1rem 1rem;
+  margin: 0rem 1rem;
   border-right: 1px solid #c6c6c6;
+  background-color: white;
 }
 
 .pem--table-header {
@@ -31,7 +32,7 @@
   height: ((3+10) * $spacing-09) + $spacing-01 !important;
 }
 
-.context-mapping  .cds--tab-content {
+.context-mapping .cds--tab-content {
   padding: 0rem !important;
 }
 
@@ -51,19 +52,33 @@
   display: flex;
 }
 
-
 .label {
   margin-top: 1rem;
 }
 
-.sfg--modal-body{
+.sfg--modal-body {
   overflow: hidden;
 }
 
-.sfg--datatable-right-section .sfg--datatable-table-section {
-  height: 100%;
+.cds--modal-container-body .sfg--datatable-right-section .sfg--datatable-table-section {
+  overflow-y: auto;
+  min-height: 430px;
 }
 
-.cds--modal-lg .cds--modal-container{
+.cds--modal-lg .cds--modal-container {
   inline-size: 72% !important;
+}
+
+.cds--modal-container-body .cds--pagination {
+  position: fixed;
+  bottom: 60px;
+  max-inline-size: -webkit-fill-available;
+}
+
+.right-panel {
+  position: fixed;
+  top: 0;
+  padding-top: 2rem;
+  width: -webkit-fill-available;
+  padding-right: 2rem;
 }

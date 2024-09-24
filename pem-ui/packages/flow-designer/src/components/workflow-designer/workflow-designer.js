@@ -1,7 +1,7 @@
 import React, { useState, useRef, useCallback, forwardRef } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { addEdge, useNodesState, useEdgesState, applyNodeChanges } from 'reactflow';
+import { addEdge, useNodesState, useEdgesState, applyNodeChanges  } from 'reactflow';
 import './workflow-designer.scss';
 import PageDesigner from '@b2bi/page-designer';
 import componentMapper from '@b2bi/carbon-mappers';
@@ -16,8 +16,7 @@ import {
   DIALOG_NODE_TYPES,
   DIALOG_EDGE_TYPES,
   NODE_TYPE,
-  branchCondition,
-  NODE_TYPES
+  branchCondition
 } from '../../constants';
 import { useEffect } from 'react';
 import useTaskStore from '../../store';
@@ -86,21 +85,21 @@ const WorkFlowDesigner = forwardRef(
     const nodeDataRef = useRef(storeData);
 
     // -------------------------------- For Updating Node Position -----------------------------
-    const isTaskNodePositionChange = useRef(false);
-    const isDialogNodePositionChange = useRef(false);
+    const isTaskNodePositionChnage = useRef(false);
+    const isDialogNodePositionChnage = useRef(false);
 
     const onTaskNodesChange = useCallback(
       (taskNodeChanges) => {
         setTaskNodes((oldNodes) => applyNodeChanges(taskNodeChanges, oldNodes));
-        isTaskNodePositionChange.current = true;
+        isTaskNodePositionChnage.current = true;
       },
       [setTaskNodes]
     );
-
+    console.log('storeData>>>',storeData);
     const onDialogNodesChange = useCallback(
       (dialogNodeChanges) => {
         setDialogNodes((oldNodes) => applyNodeChanges(dialogNodeChanges, oldNodes));
-        isDialogNodePositionChange.current = true;
+        isDialogNodePositionChnage.current = true;
       },
       [setDialogNodes]
     );
@@ -127,6 +126,7 @@ const WorkFlowDesigner = forwardRef(
         }
       }
       nodeDataRef.current = storeData;
+    
 
       // setTimeout(() => {
       //   //this is sending the new schema to web page  - activity-definition.js
@@ -137,16 +137,16 @@ const WorkFlowDesigner = forwardRef(
     }, [setTaskNodes, setTaskEdges, storeData, updateActivitySchema]);
 
     useEffect(() => {
-      if (isTaskNodePositionChange.current) {
+      if (isTaskNodePositionChnage.current) {
         store.setTaskNodes(nodes);
-        isTaskNodePositionChange.current = false;
+        isTaskNodePositionChnage.current = false;
       }
     }, [nodes]);
 
     useEffect(() => {
-      if (isDialogNodePositionChange.current) {
+      if (isDialogNodePositionChnage.current) {
         store.setDialogNodes(selectedTaskNode.id, dialogNodes);
-        isDialogNodePositionChange.current = false;
+        isDialogNodePositionChnage.current = false;
       }
     }, [dialogNodes]);
 
@@ -178,11 +178,11 @@ const WorkFlowDesigner = forwardRef(
       isdialog ? store.setDialogNodes(selectedTaskNodeId, newNodes) : store.setTaskNodes(newNodes);
 
       // Delete connected Edges
-      let sourceEdge;
+      let sourcEdge;
       let targetEdge;
       const newEdges = edgesData.filter((n) => {
         if (n.source === id) {
-          sourceEdge = n;
+          sourcEdge = n;
           return false;
         } else if (n.target === id) {
           targetEdge = n;
@@ -190,19 +190,20 @@ const WorkFlowDesigner = forwardRef(
           return true;
         }
       });
+
       // Delete node bypass for connecting Edges
       let updatedEdge = newEdges;
-      if (targetEdge?.source && sourceEdge?.target) {
+      if (targetEdge?.source && sourcEdge?.target) {
         const newEdge = {
-          markerEnd: sourceEdge?.markerEnd,
-          type: sourceEdge?.type,
-          id: `${targetEdge?.source}_to_${sourceEdge?.target}`,
+          markerEnd: sourcEdge?.markerEnd,
+          type: sourcEdge?.type,
+          id: `${targetEdge?.source}_to_${sourcEdge?.target}`,
           source: targetEdge?.source,
-          target: sourceEdge?.target,
-          data: isdialog ? { id: selectedTaskNodeId } : sourceEdge?.data,
-          style: sourceEdge?.style,
-          sourceHandle: targetEdge.sourceHandle,
-          targetHandle: sourceEdge.targetHandle
+          target: sourcEdge?.target,
+          data: isdialog ? { id: selectedTaskNodeId } : sourcEdge?.data,
+          style: sourcEdge?.style,
+          sourceHandle: 'start-node-right',
+          targetHandle: 'end-node-left'
         };
         updatedEdge = [...newEdges, newEdge];
       }
@@ -223,138 +224,7 @@ const WorkFlowDesigner = forwardRef(
         nodeDataRef.current.edges = updatedEdge;
       }
       isdialog ? setDialogEdges(updatedEdge) : setTaskEdges(updatedEdge);
-      isdialog ? store.setDialogEdges(selectedTaskNodeId, updatedEdge) : store.setTaskEdges(updatedEdge);
-    };
-
-    // Copying Node from contextMenu
-    const copyNode = (id, isdialog, selectedTaskNodeId) => {
-      setIsdialogNodeDelete(isdialog);
-      const dialogData = isdialog && nodeDataRef.current.nodes.filter((node) => node.id === selectedTaskNodeId)[0];
-      const nodesData = isdialog ? dialogData?.data?.dialogNodes : nodeDataRef.current.nodes;
-      //const edgesData = isdialog ? dialogData?.data?.dialogEdges : nodeDataRef.current.edges;
-
-      // Copying Node
-      const [originalNode] = nodesData.filter((n) => n.id === id);
-      const newNode = {
-        id: 'dup-' + originalNode.id,
-        type: originalNode.type,
-        position: { x: originalNode.position.x + 170, y: originalNode.position.y },
-        data: {
-          ...NODE_TYPES[originalNode.type],
-          id: originalNode.data?.id,
-          category: isdialog ? 'dialog' : 'task',
-          editableProps: originalNode.data?.editableProps,
-          onContextMenuClick: originalNode.data?.onContextMenuClick,
-          exitValidationQuery: originalNode.data?.exitValidationQuery
-        }
-      };
-      if (!isdialog) {
-        // Dialog Nodes
-        const dialogNodes = originalNode.data?.dialogNodes.map((dialogNode) => {
-          const { data, ...rest } = dialogNode;
-          const newDialogNode = {
-            ...rest,
-            id: 'dup-' + dialogNode.id
-          };
-          switch (dialogNode.type) {
-            case 'START':
-            case 'END':
-              newDialogNode.data = {
-                ...dialogNode.data
-              };
-              break;
-            case 'FORM':
-              newDialogNode.data = {
-                ...NODE_TYPES[dialogNode.type],
-                editableProps: dialogNode.data.editableProps,
-                onContextMenuClick: (id, menu) => onNodeContextOptionClick(id, menu, true, 'dup-' + originalNode.id),
-                id: dialogNode.data.id,
-                form: dialogNode.data.form,
-                exitValidationQuery: dialogNode.data.exitValidationQuery
-              };
-              break;
-            case 'API':
-              newDialogNode.data = {
-                ...NODE_TYPES[dialogNode.type],
-                editableProps: dialogNode.data.editableProps,
-                onContextMenuClick: (id, menu) => onNodeContextOptionClick(id, menu, true, 'dup-' + originalNode.id),
-                id: dialogNode.data.id,
-                exitValidationQuery: dialogNode.data.exitValidationQuery
-              };
-              break;
-            case 'XSLT':
-              newDialogNode.data = {
-                ...NODE_TYPES[dialogNode.type],
-                editableProps: dialogNode.data.editableProps,
-                onContextMenuClick: (id, menu) => onNodeContextOptionClick(id, menu, true, 'dup-' + originalNode.id),
-                id: dialogNode.data.id,
-                exitValidationQuery: dialogNode.data.exitValidationQuery
-              };
-              break;
-            case 'BRANCH_START':
-              newDialogNode.data = {
-                ...NODE_TYPES[dialogNode.type],
-                editableProps: dialogNode.data.editableProps,
-                onContextMenuClick: (id, menu) => onNodeContextOptionClick(id, menu, true, 'dup-' + originalNode.id),
-                id: dialogNode.data.id,
-                form: dialogNode.data.form,
-                exitValidationQuery: dialogNode.data.exitValidationQuery
-              };
-              break;
-            case 'BRANCH_END':
-              newDialogNode.data = {
-                ...NODE_TYPES[dialogNode.type],
-                editableProps: dialogNode.data.editableProps,
-                onContextMenuClick: (id, menu) => onNodeContextOptionClick(id, menu, true, 'dup-' + originalNode.id),
-                id: dialogNode.data.id,
-                form: dialogNode.data.form,
-                exitValidationQuery: dialogNode.data.exitValidationQuery
-              };
-              break;
-            default:
-              break;
-          }
-          return newDialogNode;
-        });
-        // Dialog Edges
-        const dialogEdges = originalNode.data?.dialogEdges.map((dialogedge) => {
-          const neeDialogEdge = {
-            ...dialogedge,
-            id: 'dup-' + dialogedge.id,
-            source: 'dup-' + dialogedge.source,
-            target: 'dup-' + dialogedge.target,
-            data: {
-              ...dialogedge.data,
-              id: 'dup-' + dialogedge.data.id
-            }
-          };
-
-          return neeDialogEdge;
-        });
-
-        newNode.data.dialogEdges = dialogEdges;
-        newNode.data.dialogNodes = dialogNodes;
-      }
-
-      const newNodes = [...nodesData, { ...newNode }];
-      if (isdialog) {
-        const taskNodeData = nodeDataRef.current.nodes.map((node) => {
-          if (node.id === selectedTaskNodeId) {
-            const {
-              data: { dialogNodes, ...restdata },
-              ...rest
-            } = node;
-            return { ...rest, data: { ...restdata, dialogNodes: newNodes } };
-          } else {
-            return node;
-          }
-        });
-        nodeDataRef.current.nodes = taskNodeData;
-      } else {
-        nodeDataRef.current.nodes = newNodes;
-      }
-      isdialog ? setDialogNodes(newNodes) : setTaskNodes(newNodes);
-      isdialog ? store.setDialogNodes(selectedTaskNodeId, newNodes) : store.setTaskNodes(newNodes);
+      isdialog ? store.setDialogEdges(selectedTaskNode.id, updatedEdge) : store.setTaskEdges(updatedEdge);
     };
 
     const onNodeContextOptionClick = (id, mode, isdialog, selectedTaskNodeId = selectedTaskNode?.id) => {
@@ -362,8 +232,8 @@ const WorkFlowDesigner = forwardRef(
         case 'DELETE':
           deleteNode(id, isdialog, selectedTaskNodeId);
           break;
-        case 'COPY':
-          copyNode(id, isdialog, selectedTaskNodeId);
+        case 'CLONE':
+          alert('Clone operation is in progress');
           break;
         default:
           alert(`${mode} is to be implemented`);
@@ -641,7 +511,7 @@ const WorkFlowDesigner = forwardRef(
         setSelectedTaskNode(node);
         setOpenTaskPropertiesBlock(true);
         setShowActivityDefineDrawer(false);
-        isTaskNodePositionChange.current = false;
+        isTaskNodePositionChnage.current = false;
       }
     };
 

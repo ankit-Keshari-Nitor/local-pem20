@@ -1,18 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import { Modal, Tabs, TabList, Tab, TabPanels, TabPanel, Button } from '@carbon/react';
+import React, { useEffect, useRef, useState } from 'react';
+import { Modal, Tabs, TabList, Tab, TabPanels, TabPanel, Button, Grid, Column } from '@carbon/react';
 import FormRenderer from '@data-driven-forms/react-form-renderer/form-renderer';
 
 import './block-definition-form.scss';
 import useTaskStore from '../../store';
-import { COMPONENT_MAPPER, FORM_TEMPLATE, INITIAL_QUERY, NODE_TYPE } from '../../constants';
+import { COMPONENT_MAPPER, INITIAL_QUERY, NODE_TYPE } from '../../constants';
 import ConditionalBuilder from '../condition-builder';
+import { FormSpy } from '@data-driven-forms/react-form-renderer';
 
 export default function BlockDefinitionForm({ id, selectedNode, selectedTaskNode = null, schema, readOnly, setOpenPropertiesBlock, onDesignFormBtnClick, setNotificationProps }) {
-  let newSchema = {...schema};
-  newSchema.fields = newSchema.fields.map((item) => ({ ...item, isReadOnly: readOnly, helperText: readOnly ? '': item.helperText }));
+  let newSchema = { ...schema };
+  newSchema.fields = newSchema.fields.map((item) => ({ ...item, isReadOnly: readOnly, helperText: readOnly ? '' : item.helperText }));
   const [openCancelDialog, setOpenCancelDialog] = useState(false);
   const editTask = useTaskStore((state) => state.editTaskNodePros);
   const editDialog = useTaskStore((state) => state.editDialogNodePros);
+  const formValidator = useRef({});
+  const queryValidator = useRef({});
   let initialValues = {};
   initialValues.name = selectedNode.data.id;
 
@@ -24,44 +27,147 @@ export default function BlockDefinitionForm({ id, selectedNode, selectedTaskNode
     setErrorMessage(selectedNode?.data?.exitValidationMessage);
   }, [selectedNode]);
 
-  const onSubmitDefinitionForm = (values) => {
-    if (selectedNode.type === NODE_TYPE.API || selectedNode.type === NODE_TYPE.DIALOG || selectedNode.type === NODE_TYPE.XSLT) {
-      editDialog(selectedNode, selectedTaskNode, 'editableProps', values);
-    } else {
-      editTask(selectedNode, 'editableProps', values);
-    }
-    setNotificationProps({
-      open: true,
-      title: 'Success',
-      subtitle: `${values?.name} details saved successfully!`,
-      kind: 'success',
-      onCloseButtonClick: () => setNotificationProps(null)
-    });
-    setOpenPropertiesBlock(false);
-  };
-
   const onCancelDefinitionForm = () => {
     setOpenCancelDialog(true);
   };
 
-  const onSubmitExitValidationForm = (modifiedQuery, errorMessage) => {
-    if (selectedNode.type === NODE_TYPE.API || selectedNode.type === NODE_TYPE.DIALOG || selectedNode.type === NODE_TYPE.XSLT) {
-      editDialog(selectedNode, selectedTaskNode, 'exitValidationQuery', query);
-      editDialog(selectedNode, selectedTaskNode, 'validateExitValidationQuery', modifiedQuery);
-      editDialog(selectedNode, selectedTaskNode, 'exitValidationMessage', errorMessage);
+  const queryValidation = (query) => {
+    queryValidator.current = {};
+    const { rules } = query;
+    rules.map((item) => {
+      if (item.rules) {
+        queryValidation(item);
+      } else {
+        let leftOp = Array.isArray(item.operator) ? item.operator[0] : '';
+        let rightOp = item.value;
+        let operator = Array.isArray(item.operator) ? item.operator[1] : item.operator;
+        switch (item.field) {
+          case 'string':
+            if (leftOp === '' || rightOp === '' || operator === '') {
+              queryValidator.current = {
+                ...queryValidator.current,
+                [item.id]: { valid: false, reasons: 'You have not selected the Relational Operator. Select the appropriate operator' }
+              };
+            } 
+            break;
+          case 'number':
+            if (leftOp === '' || rightOp === '' || operator === '') {
+              queryValidator.current = {
+                ...queryValidator.current,
+                [item.id]: { valid: false, reasons: 'You have not selected the Relational Operator. Select the appropriate operator' }
+              };
+            } else  if (!isNaN(leftOp)|| !isNaN(rightOp)) {
+              queryValidator.current = {
+                ...queryValidator.current,
+                [item.id]: { valid: false, reasons: 'Invalid Numeric value' }
+              };
+            } 
+            break;
+          case 'boolean':
+            if (leftOp !== "true" || leftOp !== "false" || rightOp !== "true" || rightOp !== "false") {
+              queryValidator.current = {
+                ...queryValidator.current,
+                [item.id]: { valid: false, reasons: 'Invalid Boolean value' }
+              };
+            }
+            break;
+
+          default:
+            break;
+        }
+      }
+    });
+  };
+
+  // const onSubmitExitValidationForm = (modifiedQuery, errorMessage) => {
+  //   if (selectedNode.type === NODE_TYPE.API || selectedNode.type === NODE_TYPE.DIALOG || selectedNode.type === NODE_TYPE.XSLT) {
+  //     editDialog(selectedNode, selectedTaskNode, 'exitValidationQuery', query);
+  //     editDialog(selectedNode, selectedTaskNode, 'validateExitValidationQuery', modifiedQuery);
+  //     editDialog(selectedNode, selectedTaskNode, 'exitValidationMessage', errorMessage);
+  //     setOpenPropertiesBlock(false);
+  //   } else {
+  //     editTask(selectedNode, 'exitValidationQuery', query);
+  //     editTask(selectedNode, 'validateExitValidationQuery', modifiedQuery);
+  //     editTask(selectedNode, 'exitValidationMessage', errorMessage);
+  //   }
+  //   setNotificationProps({
+  //     open: true,
+  //     title: 'Success',
+  //     subtitle: `${selectedNode?.data?.editableProps?.name ? selectedNode?.data?.editableProps?.name : selectedNode.data.id} Exit Validations saved successfully!`,
+  //     kind: 'success',
+  //     onCloseButtonClick: () => setNotificationProps(null)
+  //   });
+  // };
+  const OnPropertySave = () => {
+    queryValidation(query);
+    if (Object.keys(formValidator.current).length === 0 && Object.keys(queryValidator.current).length === 0) {
+      if (selectedNode.type === NODE_TYPE.API || selectedNode.type === NODE_TYPE.DIALOG || selectedNode.type === NODE_TYPE.XSLT) {
+        editDialog(selectedNode, selectedTaskNode, 'editableProps', initialValues);
+        editDialog(selectedNode, selectedTaskNode, 'exitValidationQuery', query);
+      } else {
+        editTask(selectedNode, 'editableProps', initialValues);
+        editTask(selectedNode, 'exitValidationQuery', query);
+      }
+      setNotificationProps({
+        open: true,
+        title: 'Success',
+        subtitle: `${initialValues?.name} details saved successfully!`,
+        kind: 'success',
+        onCloseButtonClick: () => setNotificationProps(null)
+      });
       setOpenPropertiesBlock(false);
     } else {
-      editTask(selectedNode, 'exitValidationQuery', query);
-      editTask(selectedNode, 'validateExitValidationQuery', modifiedQuery);
-      editTask(selectedNode, 'exitValidationMessage', errorMessage);
+      let errorMsg =
+        Object.keys(queryValidator.current).length > 0 && Object.keys(formValidator.current).length > 0
+          ? 'Define and ExitValidation tab has some inappropriate data'
+          : Object.keys(queryValidator.current).length > 0
+            ? 'ExitValidation tab has some inappropriate data'
+            : 'Define tab has some inappropriate data';
+      setNotificationProps({
+        open: true,
+        title: 'Error',
+        subtitle: errorMsg,
+        kind: 'error',
+        onCloseButtonClick: () => setNotificationProps(null)
+      });
     }
-    setNotificationProps({
-      open: true,
-      title: 'Success',
-      subtitle: `${selectedNode?.data?.editableProps?.name ? selectedNode?.data?.editableProps?.name :selectedNode.data.id} Exit Validations saved successfully!`,
-      kind: 'success',
-      onCloseButtonClick: () => setNotificationProps(null)
+  };
+
+  const FORM_TEMPLATE = ({ formFields }) => {
+    let newFormFieldsObj = formFields.map(({ props, ...rest }) => {
+      if (Object.keys(formValidator.current).includes(rest.key)) {
+        return {
+          ...rest,
+          props: {
+            ...props,
+            invalid: true,
+            invalidText: formValidator.current[rest.key]
+          }
+        }
+      } else {
+        return {
+          ...rest,
+          props: {
+            ...props,
+          }
+        }
+      }
     });
+    return (
+      <form>
+        {newFormFieldsObj.map((formField, idx) => (
+          <div key={idx} className="form-field">
+            {formField}
+          </div>
+        ))}
+        <FormSpy
+          onChange={(props) => {
+            formValidator.current = props.errors;
+            initialValues = props.values;
+          }}
+        />
+      </form>
+    );
   };
 
   return (
@@ -75,33 +181,19 @@ export default function BlockDefinitionForm({ id, selectedNode, selectedTaskNode
         <TabPanels>
           {/* Define Form */}
           <TabPanel>
-            {Object.keys(selectedNode?.data?.editableProps).length > 0 ? (
-              <FormRenderer
-                id={id}
-                initialValues={selectedNode?.data?.editableProps}
-                FormTemplate={FORM_TEMPLATE}
-                componentMapper={COMPONENT_MAPPER}
-                schema={newSchema}
-                onSubmit={onSubmitDefinitionForm}
-                onCancel={setOpenCancelDialog}
-              />
-            ) : (
-              <FormRenderer
-                id={id}
-                initialValues={initialValues}
-                FormTemplate={FORM_TEMPLATE}
-                componentMapper={COMPONENT_MAPPER}
-                schema={newSchema}
-                onSubmit={onSubmitDefinitionForm}
-                onCancel={setOpenCancelDialog}
-              />
-            )}
+            <FormRenderer
+              id={id}
+              initialValues={Object.keys(selectedNode?.data?.editableProps).length > 0 ? selectedNode?.data?.editableProps : initialValues}
+              FormTemplate={FORM_TEMPLATE}
+              componentMapper={COMPONENT_MAPPER}
+              schema={newSchema}
+            />
           </TabPanel>
           {/* Exit Validation Form */}
           <TabPanel>
             <ConditionalBuilder
               setOpenCancelDialog={onCancelDefinitionForm}
-              onSubmitExitValidationForm={onSubmitExitValidationForm}
+              queryValidator={queryValidator.current}
               readOnly={readOnly}
               query={query}
               setQuery={setQuery}
@@ -109,6 +201,16 @@ export default function BlockDefinitionForm({ id, selectedNode, selectedTaskNode
               setErrorMessage={setErrorMessage}
             />
           </TabPanel>
+          <Grid fullWidth className="button-container-container">
+            <Column lg={16} className="buttons-container">
+              <Button kind="secondary" data-testid="cancel" name="cancel" type="button" onClick={onCancelDefinitionForm} className="button" disabled={readOnly}>
+                Cancel
+              </Button>
+              <Button data-testid="save" color="primary" variant="contained" type="submit" onClick={OnPropertySave} className="button" disabled={readOnly}>
+                Save
+              </Button>
+            </Column>
+          </Grid>
         </TabPanels>
       </Tabs>
       <Modal

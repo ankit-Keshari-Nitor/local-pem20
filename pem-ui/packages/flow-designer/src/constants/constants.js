@@ -19,7 +19,6 @@ import textField from '@data-driven-forms/carbon-component-mapper/text-field';
 import textarea from '@data-driven-forms/carbon-component-mapper/textarea';
 import select from '@data-driven-forms/carbon-component-mapper/select';
 import checkbox from '@data-driven-forms/carbon-component-mapper/checkbox';
-import { Button, Column, Grid } from '@carbon/react';
 import CrossEdge from './../components/edges/cross-edge';
 import './style.scss';
 import { MarkerType, getConnectedEdges } from 'reactflow';
@@ -559,36 +558,9 @@ export const COMPONENT_MAPPER = {
   [componentTypes.CHECKBOX]: checkbox
 };
 
-export const FORM_TEMPLATE = ({ formFields, schema }) => {
-  const { handleSubmit, onCancel } = useFormApi();
-  const readOnly = schema?.fields[0]?.isReadOnly;
-  return (
-    <form onSubmit={handleSubmit}>
-      {formFields.map((formField, idx) => (
-        <div key={idx} className="form-field">
-          {formField}
-        </div>
-      ))}
-      <FormSpy>
-        {() => (
-          <Grid fullWidth className="button-container-container">
-            <Column lg={16} className="buttons-container">
-              <Button kind="secondary" data-testid="cancel" name="cancel" type="button" onClick={onCancel} className="button" disabled={readOnly}>
-                Cancel
-              </Button>
-              <Button data-testid="save" color="primary" variant="contained" type="submit" className="button" disabled={readOnly}>
-                Save
-              </Button>
-            </Column>
-          </Grid>
-        )}
-      </FormSpy>
-    </form>
-  );
-};
-
 // Query Builder Constants
 export const DEFAULT_OPERATORS = [
+  {name: '', label: 'Select'},
   { name: 'equals', label: 'Equals (=)' },
   { name: 'notEquals', label: 'Not Equals (!=)' },
   { name: 'greaterThan', label: 'Greater than (>)' },
@@ -615,6 +587,7 @@ export const QUERY_FIELDS = [
     label: 'String',
     operators: DEFAULT_OPERATORS.filter((op) =>
       [
+        'Select',
         'Equals (=)',
         'Not Equals (!=)',
         // 'Greater than (>)',
@@ -639,6 +612,7 @@ export const QUERY_FIELDS = [
     label: 'Number',
     operators: DEFAULT_OPERATORS.filter((op) =>
       [
+        'Select',
         'Equals (=)',
         'Not Equals (!=)',
         'Greater than (>)',
@@ -657,7 +631,7 @@ export const QUERY_FIELDS = [
   {
     name: 'boolean',
     label: 'Boolean',
-    operators: DEFAULT_OPERATORS.filter((op) => ['Equals (=)', 'Not Equals (!=)'].includes(op.label))
+    operators: DEFAULT_OPERATORS.filter((op) => ['Select', 'Equals (=)', 'Not Equals (!=)'].includes(op.label))
   }
 
   // Commenting code for date as backend is not supporting this as of now

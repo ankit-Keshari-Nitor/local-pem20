@@ -330,6 +330,7 @@ export const PARTNER_FORM_SCHEMA = {
       labelText: 'Name (required)',
       helperText: 'Name should not contain &,<,>,",\',.,{,}, characters.',
       isRequired: true,
+      maxCount: 50,
       validate: [
         {
           type: validatorTypes.REQUIRED,
@@ -342,8 +343,8 @@ export const PARTNER_FORM_SCHEMA = {
         },
         {
           type: validatorTypes.MAX_LENGTH,
-          threshold: 100,
-          message: 'Name must be no longer then 100 characters'
+          threshold: 50,
+          message: 'Name must be no longer then 50 characters'
         }
       ]
     },
@@ -353,11 +354,11 @@ export const PARTNER_FORM_SCHEMA = {
       labelText: 'Description',
       enableCounter: true,
       isRequired: true,
-      maxCount: 100,
+      maxCount: 255,
       validate: [
         {
           type: validatorTypes.MAX_LENGTH,
-          threshold: 100,
+          threshold: 255,
           message: 'Description must be no longer then 100 characters'
         }
       ]

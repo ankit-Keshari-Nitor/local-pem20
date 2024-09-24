@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { TextInput, Button, TextArea, Column, Grid } from '@carbon/react';
 import './activity-task-definition.scss';
 import { ElippsisIcon } from '../../icons';
-import { ACTIVITY_TASK_SCHEMA, COMPONENT_MAPPER, FORM_TEMPLATE } from '../../constants';
+import { ACTIVITY_TASK_SCHEMA } from '../../constants';
 import Shell from '@b2bi/shell';
 
 const ActivityTaskDefinition = ({ id, onSubmitDefinitionForm, setShowActivityDefineDrawer, activityDefinitionData, readOnly }) => {
@@ -86,7 +86,6 @@ const ActivityTaskDefinition = ({ id, onSubmitDefinitionForm, setShowActivityDef
       onSubmitDefinitionForm(formState);
     }
   };
-  console.log('dat ---', formState.contextData);
   return (
     <form>
       <Grid className="tab-panel-grid">

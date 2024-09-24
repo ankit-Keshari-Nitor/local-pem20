@@ -433,6 +433,7 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
                 componentMapper={componentMapper}
                 replaceComponent={replaceComponent}
                 propsPanelActiveTab={propsPanelActiveTab}
+                activityDefinitionData={activityDefinitionData}
               />
             </div>
           )}

@@ -7,6 +7,7 @@ import AppAuthHandler from './AppAuthHandler';
 import AppConfiguration from './AppConfiguration';
 // import { modals as PocModals } from '@b2bi/poc';
 import { modals as PEMModals } from './modules/modals';
+// import { oidcConfig } from './oidcConfig';
 
 const flattenRoutes = (flattenedRoutes, nestedRoutes, parentPath) => {
   nestedRoutes.forEach((nestedRoute) => {
@@ -39,31 +40,22 @@ const routes = [
     children: [...flattenedRoutes]
   }
 ];
-
 function App() {
   return (
     <React.StrictMode>
-      <Shell.EnvironmentProvider config={{}}>
-        <Shell.DataServiceProvider>
-          <Shell.ApplicationInfoProvider>
-            <Shell.AuthProvider handler={AppAuthHandler()}>
-              <Shell.ConfigurationProvider locales={Shell.SupportedLocales} locale={'en_US'}>
-                <Shell.ResourceProvider resourceMappings={{}}>
-                  <Shell.ModalProvider modals={[...PEMModals]}>
-                    <Shell.SidePageProvider sidePages={[...PemSidePages]}>
-                      <Shell.NotificationProvider>
-                        <AppConfiguration>
-                          <Shell.RouterProvider routes={routes} />
-                        </AppConfiguration>
-                      </Shell.NotificationProvider>
-                    </Shell.SidePageProvider>
-                  </Shell.ModalProvider>
-                </Shell.ResourceProvider>
-              </Shell.ConfigurationProvider>
-            </Shell.AuthProvider>
-          </Shell.ApplicationInfoProvider>
-        </Shell.DataServiceProvider>
-      </Shell.EnvironmentProvider>
+      <Shell.ApplicationProvider
+        envConfig={{}}
+        authHandler={AppAuthHandler()}
+        authConfig={{}}
+        locales={Shell.SupportedLocales}
+        locale={'en_US'}
+        resourceMappings={{}}
+        features={[]}
+        modals={[...PEMModals]}
+        appConfigurator={AppConfiguration}
+        routes={routes}
+        sidePages={[...PemSidePages]}
+      ></Shell.ApplicationProvider>
     </React.StrictMode>
   );
 }

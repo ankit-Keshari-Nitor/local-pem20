@@ -33,7 +33,7 @@ const AppConfiguration = ({ children, ...props }) => {
   //setSideNav(sideNavConfig);
 
   useEffect(() => {
-    setInterceptor({
+    setInterceptor('PEMV1',{
       request: (config) => {
         if (config.url?.startsWith('/rest')) {
           config.headers = addPemHeaders(config.headers);

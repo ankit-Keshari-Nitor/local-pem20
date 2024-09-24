@@ -56,6 +56,7 @@ import {
 import { collectPaletteEntries } from '../../utils/helpers';
 import { ElippsisIcon } from '../../icon';
 import { TrashCan, Information, Help, Add as CarbonPlus, Close } from '@carbon/icons-react';
+import Shell from '@b2bi/shell';
 
 export default function PropsPanel({
   layout,
@@ -65,7 +66,8 @@ export default function PropsPanel({
   onFieldDelete,
   componentMapper,
   replaceComponent,
-  propsPanelActiveTab
+  propsPanelActiveTab,
+  activityDefinitionData
 }) {
   const [editableProps, setEditableProps] = React.useState({});
   const [advanceProps, setAdvanceProps] = React.useState([]);
@@ -112,6 +114,7 @@ export default function PropsPanel({
     { text: '15' },
     { text: '16' }
   ];
+  const pageUtil = Shell.PageUtil();
   useEffect(() => {
     setEditableProps(selectedFieldProps?.component?.editableProps);
     setAdvanceProps(selectedFieldProps?.component?.advanceProps);
@@ -238,7 +241,9 @@ export default function PropsPanel({
   };
 
   const OpenMappingDialog = (id, key, propsName, currentPathDetail, columnId = null, columnKey = null) => {
-    setOpenMappingDialog(true);
+    pageUtil.showPageModal('CONTEXT_DATA_MAPPING.CONTEXT_DATA', {
+      data: JSON.parse(activityDefinitionData?.definition?.contextData)
+    });
     setMappedId(id);
     setMappedKey(key);
     setMappedPropsName(propsName);

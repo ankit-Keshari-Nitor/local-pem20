@@ -46,7 +46,8 @@ const FileAttachment = () => {
           view: 'table',
           selectedRow: '',
           selectedFile: undefined,
-          selectedIndex: 0
+          selectedIndex: 0,
+          errorState: undefined
         },
         form: {
           file: {
@@ -84,6 +85,7 @@ const FileAttachment = () => {
           }
         },
         uiOnRequestSubmit: function () {
+          this.setUI('errorState', undefined);
           if (this.ui.selectedIndex === 1) {
             this.form.file.handleSubmit(this.uiUpload)();
           } else if (this.ui.selectedIndex === 0) {
@@ -105,7 +107,6 @@ const FileAttachment = () => {
           }
         },
         uiUpload: function () {
-
           const formData = new FormData();
           let params = this.form.file.getValues();
           if (params.uploadFile !== undefined) {
@@ -126,19 +127,23 @@ const FileAttachment = () => {
               this.form.file.reset(pageUtil.getSubsetJson(this.form.file.attributes));
               pageUtil.showNotificationMessage('toast', 'success', pageUtil.t('mod-sponsor-server:field.uploadField.success'));
             }).catch((error) => {
-              pageUtil.showNotificationMessage('toast', 'error', error.response.statusText);
+              this.setUI('errorState', error.response?.data?.errorDescription)
+              //  pageUtil.showNotificationMessage('toast', 'error', error.response?.data?.errorDescription);
             });
           } else {
-            pageUtil.showNotificationMessage('toast', 'error', "Please attach the file.");
+            this.setUI('errorState', 'Please attach the file.')
+            // pageUtil.showNotificationMessage('toast', 'error', "Please attach the file.");
           }
         },
         uiOnAddFile: function (event, files) {
+          this.setUI('errorState', undefined);
           this.setUI('selectedFile', files.addedFiles[0]);
         },
         uiOnDeleteFile: function (...args) {
           this.setUI('selectedFile', undefined);
         },
         uiTabChange: function (...args) {
+          this.setUI('errorState', undefined);
           this.setUI('selectedIndex', args[0].selectedIndex);
           if (args[0].selectedIndex === 0) {
             page.datatable.activityFileList.refresh();
@@ -234,7 +239,7 @@ const FileAttachment = () => {
       paginationConfig: {
         type: 'simple',
         mode: 'client',
-        pageSize: 5,
+        pageSize: 10,
         pageSizes: [5, 10, 20, 50],
         onChange: (...args) => {
           return page.datatable.activityFileList.paginationChange.apply(page, args);
@@ -281,7 +286,7 @@ const FileAttachment = () => {
             <TabPanels>
               <TabPanel>
                 <Shell.DataTable
-                  className={`pem--datatable--file-list`}
+                  className={`pem--datatable--file-list modal-height`}
                   controller={page.datatable.activityFileList}
                   data={page.model.activityFileList.data}
                   config={pageConfig.activityFileList}
@@ -294,6 +299,7 @@ const FileAttachment = () => {
                 <CDS.Form name="file" context={page.form.file}>
                   <Layer level={0} className="sfg--page-details-container" style={{ margin: '1rem 0rem' }}>
                     <Grid className="sfg--grid-container sfg--grid--form">
+                      <Column lg={16}>  {page.ui.errorState !== undefined && (<span className='errorMessage'>{page.ui.errorState}</span>)}</Column>
                       <Column lg={6}>
                         <Grid>
                           <Column lg={6} style={{ width: '320px' }}>
@@ -334,7 +340,7 @@ const FileAttachment = () => {
                         {''}
                         <p className="cds--file--label">{pageUtil.t('mod-file:upload.upload_label')}</p>
                         <CDS.FileUpload
-                          labelText={pageUtil.t('mod-file:form.fileName')}
+                          // labelText={pageUtil.t('mod-file:form.fileName')}
                           name="uploadFile"
                           accept={['.jpg', '.png', '.jpeg', '.bmp', '.gif']}
                           maxFileSize={'2mb'}

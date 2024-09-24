@@ -199,18 +199,18 @@ const ContextDataModal = ({ mode, context }) => {
                   if (context === 'PROPERTY') {
                     const propertyRef = JSONPath({ path: `${this.ui.selectedNode.activeNodeId}`, json: this.model.originalData, wrap: false });
                     this.ui.selectedNode.value.value = response.data;
-                    propertyRef.pValue = response.data;
+                    propertyRef.pValue = page.ui.selectedNode?.value?.type === 'API_CONFIG' ? response.data.apiConfigurationKey : response.data.documentKey;
                     modalConfig.onAction('submit', { data: this.model.originalData });
                   } else {
                     modalConfig.onAction('submit', { data: response.data });
                   }
                 })
-                .catch((err) => {});
+                .catch((err) => { });
           } else {
             modalConfig.onAction('submit', { data: this.model.originalData });
           }
         },
-        uiSelectCDM: function () {},
+        uiSelectCDM: function () { },
         uiOnSelectJPath: function (event, selectedNode) {
           if (event.currentTarget.type === 'binding') {
             this.setUI('selectedJPath', selectedNode.activeNodeId);
@@ -378,7 +378,7 @@ const ContextDataModal = ({ mode, context }) => {
             type: 'batch',
             resourceKey: '',
             label: 'Add',
-            onAction: (...args) => {}
+            onAction: (...args) => { }
           }
         ],
         search: {
@@ -617,7 +617,7 @@ const ContextDataModal = ({ mode, context }) => {
                                 <span className="pem--table-title">{pageUtil.t('mod-context-properties:tabs.titleTwo')}</span>
                               </div>
                               <Shell.DataTable
-                                className={'sfg--datatable--sponsorServer-list'}
+                                className={'sfg--datatable--sponsorServer-list modal-height'}
                                 data-testid="sponsorServerList"
                                 controller={page.datatable.sponsorServerList}
                                 data={page.model.sponsorServerList.data}
@@ -652,7 +652,7 @@ const ContextDataModal = ({ mode, context }) => {
                                 <span className="pem--table-title">{pageUtil.t('mod-context-properties:tabs.titleOne')}</span>
                               </div>
                               <Shell.DataTable
-                                className={'sfg--datatable--header-logo-list'}
+                                className={'sfg--datatable--header-logo-list modal-height'}
                                 data-testid="headerLogoList"
                                 controller={page.datatable.headerLogoList}
                                 data={page.model.headerLogoList.data}
@@ -687,7 +687,7 @@ const ContextDataModal = ({ mode, context }) => {
                                 <span className="pem--table-title">{pageUtil.t('mod-context-properties:tabs.titleOne')}</span>
                               </div>
                               <Shell.DataTable
-                                className={'sfg--datatable--activity-file-list'}
+                                className={'sfg--datatable--activity-file-list modal-height'}
                                 data-testid="activityFileList"
                                 controller={page.datatable.activityFileList}
                                 data={page.model.activityFileList.data}

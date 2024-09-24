@@ -162,7 +162,7 @@ const DefinitionList = ({ mode, context }) => {
           return page._filterBatchActions.apply(page, args);
         },
         filterRowActions: (...args) => {
-          return page._filterBatchActions.apply(page, args);
+          return page._filterRowActions.apply(page, args);
         },
         rowActions: [
           {
@@ -361,8 +361,18 @@ const DefinitionList = ({ mode, context }) => {
           }
         },
 
-        init: function () {},
-        _filterBatchActions: function (selectedRow, batchActionsObj) {},
+        init: function () { },
+        _filterRowActions: function (selectedRow, rowActions) {
+          if (selectedRow.defaultVersion.status !== 'DRAFT') {
+            rowActions.edit.isVisible = false
+          }
+          if (selectedRow.defaultVersion.status === 'DELETE') {
+            rowActions.delete.isVisible = false;
+            rowActions.testActivity.isVisible = false;
+            rowActions.shareUnshared.isVisible = false
+          }
+        },
+        _filterBatchActions: function (selectedRow, batchActionsObj) { },
         uiImport: function () {
           pageUtil.showPageModal('FUNCTIONALITY_NOT_IMPLEMENTED_MODAL.View', {});
         },

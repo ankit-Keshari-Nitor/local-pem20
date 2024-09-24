@@ -153,7 +153,7 @@ const CarbonValueEditor = (allProps) => {
               onChange={(e) => handleOnChange(e.target.value)}
               {...extraProps}
             >
-              <SelectItem value="" text="Select Value" />
+              <SelectItem value="" text="Select" />
               <SelectItem value="true" text="True" />
               <SelectItem value="false" text="False" />
             </Select>

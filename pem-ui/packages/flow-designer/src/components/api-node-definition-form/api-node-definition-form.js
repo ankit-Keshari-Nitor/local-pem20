@@ -82,7 +82,7 @@ export default function APINodeDefinitionForm({ id, selectedNode, selectedTaskNo
       setHeaders([]);
     }
     if (selectedNode.data?.api?.file && selectedNode.data?.api?.file !== 'null' && selectedNode.data?.api?.file !== '') {
-      setFile(Json.parse(selectedNode.data?.api?.file))
+      setFile(JSON.parse(selectedNode.data?.api?.file))
     } else { setFile() }
   }, [selectedNode]);
 
@@ -536,7 +536,7 @@ export default function APINodeDefinitionForm({ id, selectedNode, selectedTaskNo
                       <TableContainer>
                         <div className="header-container">
                           <h3 className='edit-header'>Edit Header</h3>
-                          <div className="header-actions">
+                          {!readOnly && (<div className="header-actions">
                             {selectedHeaders.length > 0 && (
                               <Button disabled={readOnly} kind="secondary" onClick={handleRemoveSelected}>
                                 Remove
@@ -545,19 +545,19 @@ export default function APINodeDefinitionForm({ id, selectedNode, selectedTaskNo
                             <Button disabled={readOnly} kind="primary" onClick={handleAddHeader}>
                               Add
                             </Button>
-                          </div>
+                          </div>)}
                         </div>
                         <Table>
                           <TableHead>
                             <TableRow>
-                              <TableHeader>
+                              {!readOnly && (<TableHeader>
                                 <Checkbox
                                   id="select-all"
                                   labelText=""
                                   checked={headers.length > 0 && selectedHeaders.length === headers.length} // Update checkbox based on selected rows
                                   onChange={(e) => handleSelectAll(e.target.checked)}
                                 />
-                              </TableHeader>
+                              </TableHeader>)}
                               <TableHeader>Name</TableHeader>
                               <TableHeader>Value</TableHeader>
                             </TableRow>
@@ -572,12 +572,12 @@ export default function APINodeDefinitionForm({ id, selectedNode, selectedTaskNo
                             ) : (
                               headers.map((header, index) => (
                                 <TableRow key={header.id}>
-                                  <TableSelectRow
+                                  {!readOnly && (<TableSelectRow
                                     disabled={readOnly}
                                     id={`header-select-${header.id}`}
                                     onSelect={() => handleRowSelect(header.id)}
                                     checked={selectedHeaders.includes(header.id)}
-                                  />
+                                  />)}
                                   <TableCell>
                                     <TextInput
                                       disabled={readOnly}
@@ -685,13 +685,14 @@ export default function APINodeDefinitionForm({ id, selectedNode, selectedTaskNo
                         renderIcon={VectorIcon}
                         size="sm"
                         hasIconOnly
+                        disabled={readOnly}
                         iconDescription="Context Mapping"
                         tooltipAlignment="center"
                       />
                     </Column>
                     <Column lg={14}>
                       {file == undefined ? (
-                        <Button className="attachment-btn" onClick={onOpenFiles}> Select from available files or upload new file</Button>
+                        <Button disabled={readOnly} className="attachment-btn" onClick={onOpenFiles}> Select from available files or upload new file</Button>
                       ) : (
                         <FileUploaderItem
                           errorBody={`500kb max file size. Select a new file and try again.`}
@@ -701,6 +702,7 @@ export default function APINodeDefinitionForm({ id, selectedNode, selectedTaskNo
                           status="edit"
                           size={file.filesize}
                           onDelete={onDeleteFile}
+                          disabled={readOnly}
                         />
                       )}
                     </Column>

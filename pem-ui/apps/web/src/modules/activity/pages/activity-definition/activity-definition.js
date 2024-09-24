@@ -234,7 +234,7 @@ export default function ActivityDefinition() {
         const currentNode = activityObj.schema.nodes.find((node) => node.id === activityDesignerStack[1].id);
 
         setActivityStatistics(
-          getNodeTypesCount(currentNode.data.dialogNodes.filter((node) => !countExcludedNodes[node.type])).map((countItem) => (
+          getNodeTypesCount(currentNode?.data?.dialogNodes.filter((node) => !countExcludedNodes[node.type])).map((countItem) => (
             <>
               <div className="activity-task-count">
                 <CircleSolid className={`node-type-${countItem.type.toLowerCase()}`}></CircleSolid>{' '}

@@ -34,8 +34,6 @@ const ActivityTaskDefinition = ({ id, onSubmitDefinitionForm, setShowActivityDef
           data: JSON.parse(data)
         })
         .then((modalData) => {
-          console.log(modalData);
-
           setFormState((prev) => ({
             ...prev,
             contextData: JSON.stringify(modalData.data?.data)
@@ -86,7 +84,7 @@ const ActivityTaskDefinition = ({ id, onSubmitDefinitionForm, setShowActivityDef
       onSubmitDefinitionForm(formState);
     }
   };
-  console.log('dat ---', formState.contextData);
+
   return (
     <form>
       <Grid className="tab-panel-grid">
@@ -119,53 +117,39 @@ const ActivityTaskDefinition = ({ id, onSubmitDefinitionForm, setShowActivityDef
             rules={{ required: false, minLength: 0, maxLength: 80 }}
             value={formState.description}
             name="description"
+            disabled={readOnly}
             onChange={handlePropertyFormChange}
           />
         </Column>
-        {formState.contextData !== '' ? (
-          <>
-            <Column className="col-margin" lg={15}>
-              <TextArea
-                id="contextData"
-                data-testid="contextData"
-                labelText={pageUtil.t('mod-context-data-properties:form.contextData')}
-                rows={3}
-                name="contextData"
-                enableCounter={true}
-                value={formState.contextData}
-                onChange={handlePropertyFormChange}
-                invalid={!!errors.errors.contextData}
-                invalidText={errors.errors.contextData}
-              />
-            </Column>
-            <Column lg={1}>
-              <Button
-                onClick={() => {
-                  validateContextData(formState.contextData);
-                }}
-                className="context-mapping-btn"
-                kind="tertiary"
-                renderIcon={ElippsisIcon}
-                size="sm"
-                hasIconOnly
-                iconDescription={pageUtil.t('mod-context-data-properties:form.iconDescription')}
-                tooltipAlignment="center"
-              />
-            </Column>
-          </>
-        ) : (
-          <Column className="col-margin" lg={16}>
-            <TextArea
-              id="contextData"
-              data-testid="contextData"
-              labelText={pageUtil.t('mod-context-data-properties:form.contextData')}
-              rows={3}
-              name="contextData"
-              enableCounter={true}
-              value={formState.contextData}
-              onChange={handlePropertyFormChange}
-              invalid={!!errors.errors.contextData}
-              invalidText={errors.errors.contextData}
+        <Column className="col-margin" lg={formState.contextData !== '' ? 15 : 16}>
+          <TextArea
+            id="contextData"
+            data-testid="contextData"
+            labelText={pageUtil.t('mod-context-data-properties:form.contextData')}
+            rows={5}
+            name="contextData"
+            disabled={readOnly}
+            enableCounter={true}
+            value={formState.contextData}
+            onChange={handlePropertyFormChange}
+            invalid={!!errors.errors.contextData}
+            invalidText={errors.errors.contextData}
+          />
+        </Column>
+        {formState.contextData !== '' && (
+          <Column lg={1}>
+            <Button
+              onClick={() => {
+                validateContextData(formState.contextData);
+              }}
+              className="context-mapping-btn"
+              kind="tertiary"
+              renderIcon={ElippsisIcon}
+              size="sm"
+              hasIconOnly
+              disabled={readOnly}
+              iconDescription={pageUtil.t('mod-context-data-properties:form.iconDescription')}
+              tooltipAlignment="center"
             />
           </Column>
         )}

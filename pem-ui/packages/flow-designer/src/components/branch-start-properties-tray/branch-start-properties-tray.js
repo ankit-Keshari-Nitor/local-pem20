@@ -109,7 +109,9 @@ export default function BranchStartPropertiesTrayTwo({ readOnly, selectedNode, s
 
   // Function to delete connector
   const deleteConnector = (connectorId) => {
-    deleteBranchNodeConnector(selectedNode, selectedTaskNode, connectorId, branchCondition);
+    if (!readOnly) {
+      deleteBranchNodeConnector(selectedNode, selectedTaskNode, connectorId, branchCondition);
+    }
   };
 
   const handleNodeNameChange = (e, targetId) => {
@@ -134,6 +136,7 @@ export default function BranchStartPropertiesTrayTwo({ readOnly, selectedNode, s
   };
 
   const moveDialogItem = (fromIndex, toIndex) => {
+    console.log('moveDialogItem');
     const updatedBranchConnectors = [...selectedBranchConnector];
     const [movedItem] = updatedBranchConnectors.splice(fromIndex, 1);
     updatedBranchConnectors.splice(toIndex, 0, movedItem);
@@ -152,15 +155,17 @@ export default function BranchStartPropertiesTrayTwo({ readOnly, selectedNode, s
       {/* Name input */}
       <Grid>
         <Column lg={8} className="branch-input-container">
-        <TextInput
+          <TextInput
             id="branch-name"
             type="text"
             labelText="Branch Name (required)"
             value={branchName}
+            disabled={readOnly}
             onChange={handleBranchNameChange}
             invalid={branchNameError}
             invalidText="Branch Name is required"
-          />        </Column>
+          />{' '}
+        </Column>
       </Grid>
       {/* Conditional Builder and Dialog Sequence */}
       <Grid className="properties-container">
@@ -202,11 +207,18 @@ export default function BranchStartPropertiesTrayTwo({ readOnly, selectedNode, s
                               <DraggableConnectorItem connector={connector} index={index} moveDialogItem={moveDialogItem} />
                             </Column>
                             <Column lg={10} className="text-input-container">
-                              <TextInput id={`text-value-${connector.target}`} value={connector.targetNodeName} onChange={(e) => handleNodeNameChange(e, connector.target)} />
+                              <TextInput
+                                id={`text-value-${connector.target}`}
+                                disabled={readOnly}
+                                value={connector.targetNodeName}
+                                onChange={(e) => handleNodeNameChange(e, connector.target)}
+                              />
                             </Column>
-                            <Column lg={3} className="delete-icon-container" onClick={() => deleteConnector(connector.connectorId)}>
-                              <TrashCan className="trash-icon" />
-                            </Column>
+                            {!readOnly && (
+                              <Column lg={3} className="delete-icon-container" onClick={() => deleteConnector(connector.connectorId)}>
+                                <TrashCan className="trash-icon" />
+                              </Column>
+                            )}
                           </Grid>
                         </DropConnector>
                       ))}

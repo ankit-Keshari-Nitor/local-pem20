@@ -8,7 +8,7 @@
     "confirmation": "Confirmation",
     "columns": {
       "activityName": "Activity Name",
-      "status": "Status",
+      "status": "Current Status",
       "defaultVersion": "Default Version",
       "actions": "Actions"
     },

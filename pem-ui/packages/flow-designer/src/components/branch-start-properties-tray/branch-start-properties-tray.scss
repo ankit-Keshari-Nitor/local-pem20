@@ -37,6 +37,7 @@
   background-color: #e0e0e0;
   padding: 1rem 0rem;
 }
+
 .pem-node-name {
   font-family: IBM Plex Sans;
   font-size: 15px;
@@ -92,4 +93,14 @@
 
 .button {
   width: 100%;
+}
+
+.delete-icon-container svg path {
+  transition: fill 0.3s ease;
+}
+
+/* Change icon color on button hover */
+.delete-icon-container:hover svg path {
+  fill: var(--cds-text-inverse, #ffffff);
+  /* Replace with your desired hover color */
 }

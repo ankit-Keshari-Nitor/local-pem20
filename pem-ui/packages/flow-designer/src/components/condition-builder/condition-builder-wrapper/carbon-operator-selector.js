@@ -72,6 +72,7 @@ const CarbonOperatorSelector = ({
               value={valueAsArray.length > 1 ? valueAsArray[0] : ''}
               title={title}
               className={className}
+              disabled={disabled}
               placeholder={'Left Operand'}
               onChange={(e) => {
                 let myString = e.target.value;
@@ -95,6 +96,7 @@ const CarbonOperatorSelector = ({
               value={valueAsArray.length > 1 ? valueAsArray[0] : ''}
               title={title}
               className={className}
+              disabled={disabled}
               placeholder={'Left Operand'}
               onChange={(e) => handleChange(e.target.value)}
               {...extraProps}
@@ -129,7 +131,7 @@ const CarbonOperatorSelector = ({
       leftOperandInput = (
         <>
           <div style={{ marginTop: '2.5rem' }}>
-            <DatePicker datePickerType="single" className={className} value={valueAsArray[0]} onChange={(e) => handleChange(e)}>
+            <DatePicker datePickerType="single" className={className} value={valueAsArray[0]} onChange={(e) => handleChange(e)} disabled={disabled}>
               <DatePickerInput id="txt-input" labelText="" placeholder="mm/dd/yyyy" />
             </DatePicker>
           </div>
@@ -163,3 +165,4 @@ const CarbonOperatorSelector = ({
 };
 
 export default CarbonOperatorSelector;
+ 

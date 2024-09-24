@@ -4,13 +4,17 @@
 @use '@carbon/type';
 @use '@carbon/react/scss/theme' as *;
 
-.pem--table-10-rows {
+//10-row table
+.modal-height {
   height: ((3+10) * $spacing-09) + $spacing-01 !important;
 }
 
-.cds--modal-container-body .sfg--datatable-right-section .sfg--datatable-table-section {
-  overflow-y: auto;
-  min-height: 430px;
+.sfg--page-details-container {
+  height: ((3+9.35) * $spacing-09) + $spacing-01 !important;
+}
+
+.cds--modal-content {
+  overflow-y: hidden !important;
 }
 
 .cds--css-grid {
@@ -21,27 +25,25 @@
   inline-size: 60% !important;
 }
 
+.sfg--grid-container>div:last-child {
+  padding-left: 1rem;
+}
+
+.errorMessage {
+  padding-left: 1.5rem;
+  color: var(--cds-support-error, '#da1e28');
+}
+
 .page-content.page-type-list {
-  display: contents;
+  display: flex;
   flex-direction: column;
   height: 100%;
 
   .page-body,
   .sfg--page-body {
-    flex-grow: 1;
+    flex-grow: 1 !important;
     display: flex;
     flex-direction: column;
     overflow: hidden;
   }
-}
-
-.sfg--grid-container>div:last-child {
-  padding-left: 1rem;
-}
-
-
-.cds--modal-container-body .cds--pagination {
-  position: fixed;
-  bottom: 60px;
-  max-inline-size: -webkit-fill-available
 }

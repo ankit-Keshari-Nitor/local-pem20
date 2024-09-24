@@ -110,7 +110,7 @@ const getInitialNodeEdges = (taskId, sourceId, targetId, category, onNodeContext
   return { nodes, edges };
 };
 
-const getEdgesConnect = (edgeId, edgesData, nodeData) => {
+const getEdgesConnect = (edgeId, edgesData, newNode) => {
   let oldEdge;
   const remainEdges = edgesData.filter((edge) => {
     if (edge.id !== edgeId) {
@@ -124,22 +124,22 @@ const getEdgesConnect = (edgeId, edgesData, nodeData) => {
     {
       markerEnd: oldEdge?.markerEnd,
       type: oldEdge?.type,
-      id: `${oldEdge?.source}_to_${nodeData?.id}`,
+      id: `${oldEdge?.source}_to_${newNode?.id}`,
       source: oldEdge?.source,
-      target: nodeData?.id,
+      target: newNode?.id,
       data: oldEdge?.data,
       sourceHandle: oldEdge.sourceHandle,
-      targetHandle: oldEdge.targetHandle
+      targetHandle: 'left'
     },
     {
       markerEnd: oldEdge?.markerEnd,
       type: oldEdge?.type,
-      id: `${nodeData?.id}_to_${oldEdge?.target}`,
-      source: nodeData?.id,
+      id: `${newNode?.id}_to_${oldEdge?.target}`,
+      source: newNode?.id,
       target: oldEdge?.target,
       data: oldEdge?.data,
       sourceHandle: 'right',
-      targetHandle: 'end-node-left'
+      targetHandle: oldEdge.targetHandle
     }
   ];
   return [...remainEdges, ...newEdges];

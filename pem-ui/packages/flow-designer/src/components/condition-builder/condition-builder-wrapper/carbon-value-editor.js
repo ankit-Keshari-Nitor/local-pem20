@@ -1,10 +1,10 @@
+ 
 import * as React from 'react';
 import { Checkbox, TextArea, TextInput, Toggle, TreeView, TreeNode, Button, DatePicker, DatePickerInput, Select, SelectItem } from '@carbon/react';
 import { ValueSelector, getFirstOption, standardClassnames, useValueEditor } from 'react-querybuilder';
 import { ElippsisIcon } from '../../../icons';
 import { useState } from 'react';
 import WrapperModal from '../../helpers';
-
 const CarbonValueEditor = (allProps) => {
   const {
     fieldData,
@@ -26,9 +26,7 @@ const CarbonValueEditor = (allProps) => {
     extraProps,
     ...props
   } = allProps;
-
   const [openCancelDialog, setOpenCancelDialog] = useState(false);
-
   const { valueAsArray, multiValueHandler } = useValueEditor({
     handleOnChange,
     inputType,
@@ -39,16 +37,13 @@ const CarbonValueEditor = (allProps) => {
     parseNumbers,
     values
   });
-
   if (operator[1] === 'null' || operator[1] === 'notNull') {
     return null;
   }
-
   const operandSelector = (selectedValue) => {
     handleOnChange(selectedValue);
     setOpenCancelDialog(false);
   };
-
   const Temp = (
     <TreeView label="Demo Data">
       <TreeNode label="Enabled-1">
@@ -59,10 +54,8 @@ const CarbonValueEditor = (allProps) => {
       </TreeNode>
     </TreeView>
   );
-
   const placeHolderText = fieldData?.placeholder ?? '';
   const inputTypeCoerced = ['in', 'notIn'].includes(operator[1]) ? 'text' : inputType || 'text';
-
   if ((operator[1] === 'between' || operator[1] === 'notBetween') && (type === 'select' || type === 'text')) {
     const editors = ['from', 'to'].map((key, i) => {
       if (type === 'text') {
@@ -99,7 +92,6 @@ const CarbonValueEditor = (allProps) => {
       </span>
     );
   }
-
   let rightOperandInput = null;
   switch (allProps?.field) {
     case 'string':
@@ -113,6 +105,7 @@ const CarbonValueEditor = (allProps) => {
               value={value}
               title={title}
               className={className}
+              disabled={disabled}
               placeholder={'Right Operand'}
               onChange={(e) => {
                 let myString = e.target.value;
@@ -137,6 +130,7 @@ const CarbonValueEditor = (allProps) => {
               value={value}
               title={title}
               className={className}
+              disabled={disabled}
               placeholder={'Right Operand'}
               onChange={(e) => handleOnChange(e.target.value)}
               {...extraProps}
@@ -171,7 +165,7 @@ const CarbonValueEditor = (allProps) => {
       rightOperandInput = (
         <>
           <div style={{ marginTop: '2.5rem' }}>
-            <DatePicker datePickerType="single" className={className} value={value} onChange={(e) => handleOnChange(e)}>
+            <DatePicker datePickerType="single" className={className} value={value} onChange={(e) => handleOnChange(e)} disabled={disabled}>
               <DatePickerInput id="operand-input" labelText="" placeholder="mm/dd/yyyy" />
             </DatePicker>
           </div>
@@ -207,7 +201,6 @@ const CarbonValueEditor = (allProps) => {
       rightOperandInput = <Checkbox className={className} title={title} onChange={(e) => handleOnChange(e.target.checked)} isChecked={!!value} {...extraProps} />;
       break;
   }
-
   // Right Operand
   return (
     <>
@@ -219,5 +212,5 @@ const CarbonValueEditor = (allProps) => {
     </>
   );
 };
-
 export default CarbonValueEditor;
+ 

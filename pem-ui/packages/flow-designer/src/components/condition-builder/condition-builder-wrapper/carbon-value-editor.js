@@ -97,7 +97,7 @@ const CarbonValueEditor = (allProps) => {
     case 'string':
       rightOperandInput = (
         <>
-          <div style={{ marginTop: '2.5rem' }}>
+          <div style={{ marginTop: '1rem' }}>
             <TextInput
               id="operand-input"
               labelText=""
@@ -122,7 +122,7 @@ const CarbonValueEditor = (allProps) => {
     case 'numeric':
       rightOperandInput = (
         <>
-          <div style={{ marginTop: '2.5rem' }}>
+          <div style={{ marginTop: '1rem' }}>
             <TextInput
               id="operand-input"
               labelText=""
@@ -142,7 +142,7 @@ const CarbonValueEditor = (allProps) => {
     case 'boolean':
       rightOperandInput = (
         <>
-          <div style={{ marginTop: '2.5rem' }}>
+          <div style={{ marginTop: '-0.5rem' }}>
             <Select
               id="operand-input"
               labelText=""
@@ -164,7 +164,7 @@ const CarbonValueEditor = (allProps) => {
     case 'date':
       rightOperandInput = (
         <>
-          <div style={{ marginTop: '2.5rem' }}>
+          <div style={{ marginTop: '1rem' }}>
             <DatePicker datePickerType="single" className={className} value={value} onChange={(e) => handleOnChange(e)} disabled={disabled}>
               <DatePickerInput id="operand-input" labelText="" placeholder="mm/dd/yyyy" />
             </DatePicker>
@@ -205,7 +205,7 @@ const CarbonValueEditor = (allProps) => {
   return (
     <>
       {rightOperandInput}
-      <Button size="md" className="opt-btn" kind="secondary" renderIcon={ElippsisIcon} onClick={() => setOpenCancelDialog(true)} style={{ marginTop: '2.5rem' }}></Button>
+      <Button size="md" className="opt-btn" kind="secondary" renderIcon={ElippsisIcon} onClick={() => setOpenCancelDialog(true)} style={{ marginTop: '1rem' }}></Button>
       <WrapperModal openCancelDialog={openCancelDialog} setOpenCancelDialog={setOpenCancelDialog}>
         {Temp}
       </WrapperModal>

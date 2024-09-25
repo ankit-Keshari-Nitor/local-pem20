@@ -578,7 +578,9 @@ export const DEFAULT_OPERATORS = [
   { name: 'in', label: '[EAP?] in' },
   { name: 'notIn', label: '[EAP?] not in' },
   { name: 'between', label: '[EAP?] between' },
-  { name: 'notBetween', label: '[EAP?] not between' }
+  { name: 'notBetween', label: '[EAP?] not between' },
+  { name: 'after', label: '[EAP?] After' },
+  { name: 'before', label: '[EAP?] Before' }
 ];
 
 export const QUERY_FIELDS = [
@@ -632,27 +634,28 @@ export const QUERY_FIELDS = [
     name: 'boolean',
     label: 'Boolean',
     operators: DEFAULT_OPERATORS.filter((op) => ['Select', 'Equals (=)', 'Not Equals (!=)'].includes(op.label))
+  },
+  {
+    name: 'date',
+    label: 'Date',
+    operators: DEFAULT_OPERATORS.filter((op) =>
+      [
+        'Select',
+        'Equals (=)',
+        'Not Equals (!=)',
+        '[EAP?] After',
+        '[EAP?] Before',
+        // 'Greater than (>)',
+        // 'Greater than or equal (>=)',
+        // 'Less than (<)',
+        // 'Less than or equal (<=)',
+        // '[EAP?] is null',
+        // '[EAP?] is not null',
+        // '[EAP?] between',
+        // '[EAP?] not between'
+      ].includes(op.label)
+    )
   }
-
-  // Commenting code for date as backend is not supporting this as of now
-  // {
-  //   name: 'date',
-  //   label: 'Date',
-  //   operators: DEFAULT_OPERATORS.filter((op) =>
-  //     [
-  //       'Equals (=)',
-  //       'Not Equals (!=)',
-  //       'Greater than (>)',
-  //       'Greater than or equal (>=)',
-  //       'Less than (<)',
-  //       'Less than or equal (<=)',
-  //       '[EAP?] is null',
-  //       '[EAP?] is not null',
-  //       '[EAP?] between',
-  //       '[EAP?] not between'
-  //     ].includes(op.label)
-  //   )
-  // }
 ];
 
 export const INITIAL_QUERY = {

@@ -126,7 +126,6 @@ const WorkFlowDesigner = forwardRef(
         }
       }
       nodeDataRef.current = storeData;
-
       // setTimeout(() => {
       //   //this is sending the new schema to web page  - activity-definition.js
       //   //updateActivitySchema({ nodes, edges });
@@ -508,7 +507,8 @@ const WorkFlowDesigner = forwardRef(
           }
           return copyNode;
         });
-        const formData = node.data?.form?.length ? JSON.parse(node.data.form).fields : [];
+        // const formData = node.data?.form?.length ? JSON.parse(node.data.form).fields : [];  old schema code
+        const formData = node.data?.form?.length ? node.data.form[0].children : [];
         setDialogNodes([...copyNodes]);
         setSelectedDialogNode(node);
         setFormFields(formData);
@@ -535,7 +535,8 @@ const WorkFlowDesigner = forwardRef(
 
     //Form Designer page Open from Property panel for Dialog Node
     const onDesignFormBtnClick = (e, node) => {
-      const formData = node.data?.form?.length ? JSON.parse(node.data.form).fields : [];
+      // const formData = node.data?.form?.length ? JSON.parse(node.data.form).fields : []; // old schema code
+      const formData = node.data?.form?.length ? node.data.form[0].children : [];
       setFormFields(formData);
       setIsPageDesignerActive(true);
       setActivityDesignerStack((prevValue) => {

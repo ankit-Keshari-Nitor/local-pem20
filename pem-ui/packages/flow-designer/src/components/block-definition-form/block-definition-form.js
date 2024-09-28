@@ -4,7 +4,7 @@ import FormRenderer from '@data-driven-forms/react-form-renderer/form-renderer';
 
 import './block-definition-form.scss';
 import useTaskStore from '../../store';
-import { COMPONENT_MAPPER, INITIAL_QUERY, NODE_TYPE } from '../../constants';
+import { COMPONENT_MAPPER, INITIAL_QUERY, NODE_TYPE, queryValidation } from '../../constants';
 import ConditionalBuilder from '../condition-builder';
 import { FormSpy } from '@data-driven-forms/react-form-renderer';
 
@@ -31,54 +31,6 @@ export default function BlockDefinitionForm({ id, selectedNode, selectedTaskNode
     setOpenCancelDialog(true);
   };
 
-  const queryValidation = (query) => {
-    queryValidator.current = {};
-    const { rules } = query;
-    rules.map((item) => {
-      if (item.rules) {
-        queryValidation(item);
-      } else {
-        let leftOp = Array.isArray(item.operator) ? item.operator[0] : '';
-        let rightOp = item.value;
-        let operator = Array.isArray(item.operator) ? item.operator[1] : item.operator;
-        switch (item.field) {
-          case 'string':
-            if (leftOp === '' || rightOp === '' || operator === '') {
-              queryValidator.current = {
-                ...queryValidator.current,
-                [item.id]: { valid: false, reasons: 'You have not selected the Relational Operator. Select the appropriate operator' }
-              };
-            } 
-            break;
-          case 'number':
-            if (leftOp === '' || rightOp === '' || operator === '') {
-              queryValidator.current = {
-                ...queryValidator.current,
-                [item.id]: { valid: false, reasons: 'You have not selected the Relational Operator. Select the appropriate operator' }
-              };
-            } else  if (!isNaN(leftOp)|| !isNaN(rightOp)) {
-              queryValidator.current = {
-                ...queryValidator.current,
-                [item.id]: { valid: false, reasons: 'Invalid Numeric value' }
-              };
-            } 
-            break;
-          case 'boolean':
-            if (leftOp !== "true" || leftOp !== "false" || rightOp !== "true" || rightOp !== "false") {
-              queryValidator.current = {
-                ...queryValidator.current,
-                [item.id]: { valid: false, reasons: 'Invalid Boolean value' }
-              };
-            }
-            break;
-
-          default:
-            break;
-        }
-      }
-    });
-  };
-
   // const onSubmitExitValidationForm = (modifiedQuery, errorMessage) => {
   //   if (selectedNode.type === NODE_TYPE.API || selectedNode.type === NODE_TYPE.DIALOG || selectedNode.type === NODE_TYPE.XSLT) {
   //     editDialog(selectedNode, selectedTaskNode, 'exitValidationQuery', query);
@@ -99,7 +51,7 @@ export default function BlockDefinitionForm({ id, selectedNode, selectedTaskNode
   //   });
   // };
   const OnPropertySave = () => {
-    queryValidation(query);
+    queryValidator.current = queryValidation(query, {});
     if (Object.keys(formValidator.current).length === 0 && Object.keys(queryValidator.current).length === 0) {
       if (selectedNode.type === NODE_TYPE.API || selectedNode.type === NODE_TYPE.DIALOG || selectedNode.type === NODE_TYPE.XSLT) {
         editDialog(selectedNode, selectedTaskNode, 'editableProps', initialValues);
@@ -143,14 +95,14 @@ export default function BlockDefinitionForm({ id, selectedNode, selectedTaskNode
             invalid: true,
             invalidText: formValidator.current[rest.key]
           }
-        }
+        };
       } else {
         return {
           ...rest,
           props: {
-            ...props,
+            ...props
           }
-        }
+        };
       }
     });
     return (

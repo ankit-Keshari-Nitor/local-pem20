@@ -136,7 +136,6 @@ export default function BranchStartPropertiesTrayTwo({ readOnly, selectedNode, s
   };
 
   const moveDialogItem = (fromIndex, toIndex) => {
-    console.log('moveDialogItem');
     const updatedBranchConnectors = [...selectedBranchConnector];
     const [movedItem] = updatedBranchConnectors.splice(fromIndex, 1);
     updatedBranchConnectors.splice(toIndex, 0, movedItem);

@@ -560,7 +560,7 @@ export const COMPONENT_MAPPER = {
 
 // Query Builder Constants
 export const DEFAULT_OPERATORS = [
-  {name: '', label: 'Select'},
+  { name: '', label: 'Select' },
   { name: 'equals', label: 'Equals (=)' },
   { name: 'notEquals', label: 'Not Equals (!=)' },
   { name: 'greaterThan', label: 'Greater than (>)' },
@@ -578,7 +578,9 @@ export const DEFAULT_OPERATORS = [
   { name: 'in', label: '[EAP?] in' },
   { name: 'notIn', label: '[EAP?] not in' },
   { name: 'between', label: '[EAP?] between' },
-  { name: 'notBetween', label: '[EAP?] not between' }
+  { name: 'notBetween', label: '[EAP?] not between' },
+  { name: 'after', label: '[EAP?] After' },
+  { name: 'before', label: '[EAP?] Before' }
 ];
 
 export const QUERY_FIELDS = [
@@ -632,27 +634,28 @@ export const QUERY_FIELDS = [
     name: 'boolean',
     label: 'Boolean',
     operators: DEFAULT_OPERATORS.filter((op) => ['Select', 'Equals (=)', 'Not Equals (!=)'].includes(op.label))
+  },
+  {
+    name: 'date',
+    label: 'Date',
+    operators: DEFAULT_OPERATORS.filter((op) =>
+      [
+        'Select',
+        'Equals (=)',
+        'Not Equals (!=)',
+        '[EAP?] After',
+        '[EAP?] Before'
+        // 'Greater than (>)',
+        // 'Greater than or equal (>=)',
+        // 'Less than (<)',
+        // 'Less than or equal (<=)',
+        // '[EAP?] is null',
+        // '[EAP?] is not null',
+        // '[EAP?] between',
+        // '[EAP?] not between'
+      ].includes(op.label)
+    )
   }
-
-  // Commenting code for date as backend is not supporting this as of now
-  // {
-  //   name: 'date',
-  //   label: 'Date',
-  //   operators: DEFAULT_OPERATORS.filter((op) =>
-  //     [
-  //       'Equals (=)',
-  //       'Not Equals (!=)',
-  //       'Greater than (>)',
-  //       'Greater than or equal (>=)',
-  //       'Less than (<)',
-  //       'Less than or equal (<=)',
-  //       '[EAP?] is null',
-  //       '[EAP?] is not null',
-  //       '[EAP?] between',
-  //       '[EAP?] not between'
-  //     ].includes(op.label)
-  //   )
-  // }
 ];
 
 export const INITIAL_QUERY = {
@@ -667,16 +670,16 @@ export const QUERY_COMBINATOR = [
 
 export const selector =
   (nodeId, isConnectable = true, maxConnections = Infinity) =>
-    (s) => {
-      // If the user props say this handle is not connectable, we don't need to
-      // bother checking anything else.
-      if (!isConnectable) return false;
+  (s) => {
+    // If the user props say this handle is not connectable, we don't need to
+    // bother checking anything else.
+    if (!isConnectable) return false;
 
-      const node = s.nodeInternals.get(nodeId);
-      const connectedEdges = getConnectedEdges([node], s.edges);
+    const node = s.nodeInternals.get(nodeId);
+    const connectedEdges = getConnectedEdges([node], s.edges);
 
-      return connectedEdges.length < maxConnections;
-    };
+    return connectedEdges.length < maxConnections;
+  };
 
 export const requestMethods = [
   { id: 'select', label: '--Select--', value: '' },
@@ -699,3 +702,59 @@ export const apiConfig = [
 ];
 
 export const branchCondition = 'branchCondition';
+
+export const queryValidation = (query, queryValidator) => {
+  const { rules } = query;
+  rules.forEach((item) => {
+    if (item.rules) {
+      queryValidator = queryValidation(item, queryValidator);
+    } else {
+      let leftOp = Array.isArray(item.operator) ? item.operator[0] : '';
+      let rightOp = item.value;
+      let operator = Array.isArray(item.operator) ? item.operator[1] : item.operator;
+      switch (item.field) {
+        case 'string':
+          if (leftOp === '' || rightOp === '' || operator === '') {
+            queryValidator = {
+              ...queryValidator,
+              [item.id]: { valid: false, reasons: 'You have not selected the Relational Operator. Select the appropriate operator' }
+            };
+          }
+          break;
+        case 'number':
+          if (leftOp === '' || rightOp === '' || operator === '') {
+            queryValidator = {
+              ...queryValidator,
+              [item.id]: { valid: false, reasons: 'You have not selected the Relational Operator. Select the appropriate operator' }
+            };
+          } else if (isNaN(leftOp) || isNaN(rightOp)) {
+            queryValidator = {
+              ...queryValidator,
+              [item.id]: { valid: false, reasons: 'Invalid Numeric value' }
+            };
+          }
+          break;
+        case 'boolean':
+          if (leftOp !== 'true' || leftOp !== 'false' || rightOp !== 'true' || rightOp !== 'false') {
+            queryValidator = {
+              ...queryValidator,
+              [item.id]: { valid: false, reasons: 'Invalid Boolean value' }
+            };
+          }
+          break;
+        case 'date':
+          console.log('leftOp Date>>>>', query);
+          if (leftOp === '' || rightOp === '' || operator === '') {
+            queryValidator = {
+              ...queryValidator,
+              [item.id]: { valid: false, reasons: 'Invalid value' }
+            };
+          }
+          break;
+        default:
+          break;
+      }
+    }
+  });
+  return queryValidator;
+};

@@ -96,7 +96,9 @@ $rqb-branch-width: $rqb-border-width !default;
   .rule,
   .ruleGroup .ruleGroup {
     position: relative;
-    padding: 1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-bottom: 1rem;
     background-color: #8d8d8d1f;
     gap: 1rem;
 
@@ -285,10 +287,10 @@ $rqb-branch-style: $rqb-border-style !default;
 
 .rule-remove,
 .ruleGroup-remove {
-  background: #8d8d8d1f;
+  background-color: unset;
   padding-inline-end: 0.5rem;
   padding-inline-start: 0.5rem;
-  margin-top: 0.5rem;
+  margin-top: 1rem;
 }
 
 .opt-btn {
@@ -435,4 +437,12 @@ $rqb-branch-style: $rqb-border-style !default;
 
 .button {
   width: 100%;
+}
+
+.rule-fields>.cds--select>.cds--label {
+  margin-top: 0.5rem !important;
+}
+
+.rule-operators>.cds--select>.cds--label {
+  margin-top: 0.5rem !important;
 }

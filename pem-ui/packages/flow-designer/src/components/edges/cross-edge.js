@@ -11,8 +11,8 @@ function CrossEdge({ id, sourceX, sourceY, targetX, targetY, sourcePosition, tar
   const { setEdges } = useReactFlow();
   const deleteTaskEdge = useTaskStore((state) => state.deleteTaskEdge);
   const deleteDialogEdge = useTaskStore((state) => state.deleteDialogEdge);
-  const addDialogNodes = useTaskStore((state) => state.addDialogNodes);
-  const addTaskNodes = useTaskStore((state) => state.addTaskNodes);
+  const addNewDialogNodes = useTaskStore((state) => state.addNewDialogNodes);
+  const addNewTaskNodes = useTaskStore((state) => state.addNewTaskNodes);
   const addNewTaskEdges = useTaskStore((state) => state.addNewTaskEdges);
   const addNewDialogEdges = useTaskStore((state) => state.addNewDialogEdges);
   const [edgePath, labelX, labelY] = getSmoothStepPath({
@@ -73,11 +73,11 @@ function CrossEdge({ id, sourceX, sourceY, targetX, targetY, sourcePosition, tar
       newNodeObj.data.dialogNodes = initialNodeData.nodes;
       newNodeObj.data.dialogEdges = initialNodeData.edges;
       newNodeObj.data.onContextMenuClick = (id, menu) => data.onContextMenuClick(id, menu, false);
-      addTaskNodes(newNodeObj);
+      addNewTaskNodes(newNodeObj, id);
       addNewTaskEdges(newNodeObj, id);
     } else {
       newNodeObj.data.onContextMenuClick = (id, menu) => data.onContextMenuClick(id, menu, true, data.id);
-      addDialogNodes({ id: data.id }, newNodeObj);
+      addNewDialogNodes({ id: data.id }, newNodeObj, id);
       addNewDialogEdges(newNodeObj, id, data.id);
     }
     setOpen(false);

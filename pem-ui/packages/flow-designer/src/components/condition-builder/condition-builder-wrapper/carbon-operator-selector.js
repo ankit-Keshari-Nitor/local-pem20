@@ -28,7 +28,6 @@ const CarbonOperatorSelector = ({
   ...extraProps
 }) => {
   const [openCancelDialog, setOpenCancelDialog] = useState(false);
-
   const { valueAsArray, multiValueHandler } = useValueEditor({
     handleOnChange,
     inputType: 'text',
@@ -65,7 +64,7 @@ const CarbonOperatorSelector = ({
     case 'string':
       leftOperandInput = (
         <>
-          <div style={{ marginTop: '2.5rem' }}>
+          <div style={{ marginTop: '1rem' }}>
             <TextInput
               id="txt-input"
               labelText=""
@@ -89,7 +88,7 @@ const CarbonOperatorSelector = ({
     case 'number':
       leftOperandInput = (
         <>
-          <div style={{ marginTop: '2.5rem' }}>
+          <div style={{ marginTop: '1rem' }}>
             <TextInput
               id="txt-input"
               labelText=""
@@ -108,7 +107,7 @@ const CarbonOperatorSelector = ({
     case 'boolean':
       leftOperandInput = (
         <>
-          <div style={{ marginTop: '1rem' }}>
+          <div style={{ marginTop: '0rem' }}>
             <Select
               id="txt-input"
               labelText=""
@@ -130,7 +129,7 @@ const CarbonOperatorSelector = ({
     case 'date':
       leftOperandInput = (
         <>
-          <div style={{ marginTop: '2.5rem' }}>
+          <div style={{ marginTop: '1rem' }}>
             <DatePicker datePickerType="single" className={className} value={valueAsArray[0]} onChange={(e) => handleChange(e)} disabled={disabled}>
               <DatePickerInput id="txt-input" labelText="" placeholder="mm/dd/yyyy" />
             </DatePicker>
@@ -143,7 +142,7 @@ const CarbonOperatorSelector = ({
   return (
     <>
       {leftOperandInput}
-      <Button size="md" className="opt-btn" kind="secondary" renderIcon={ElippsisIcon} onClick={() => setOpenCancelDialog(true)} style={{ marginTop: '2.5rem' }}></Button>
+      <Button size="md" className="opt-btn" kind="secondary" renderIcon={ElippsisIcon} onClick={() => setOpenCancelDialog(true)} style={{ marginTop: '1rem' }}></Button>
       <WrapperModal openCancelDialog={openCancelDialog} setOpenCancelDialog={setOpenCancelDialog}>
         {Temp}
       </WrapperModal>
@@ -152,7 +151,7 @@ const CarbonOperatorSelector = ({
         id="selector-label"
         className={className}
         title={title}
-        labelText="Select Operator"
+        labelText=""
         value={valueAsArray.length > 1 ? valueAsArray[1] : valueAsArray[0]}
         disabled={disabled}
         onChange={(e) => multiValueHandler(e.target.value, 1)}

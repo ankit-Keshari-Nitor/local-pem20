@@ -112,7 +112,8 @@ const getNodeSpecificDataObj = (node) => {
 // Function to get node data
 const nodeObjects = (node, readOnly) => {
   // Modify the Gateway to Branch_start and Branch_end
-  const nodeType = node.type.toUpperCase() === 'GATEWAY' ? node.gatewayType === 'branchStart' ? node.type = 'BRANCH_START' : node.type = 'BRANCH_END' : node.type.toUpperCase();
+  const nodeType =
+    node.type.toUpperCase() === 'GATEWAY' ? (node.gatewayType === 'branchStart' ? (node.type = 'BRANCH_START') : (node.type = 'BRANCH_END')) : node.type.toUpperCase();
   let data = nodeType === 'START' || nodeType === 'END' ? { readOnly } : { ...NODE_DATA[node.type.toUpperCase()], readOnly };
   let { diagram, id, type, ...rest } = node;
   let newNode = {
@@ -150,7 +151,7 @@ const nodeObjects = (node, readOnly) => {
         name: rest?.name,
         description: rest?.description
       };
-      data.api = rest?.api
+      data.api = rest?.api;
       break;
     case 'FORM':
       data.editableProps = { name: rest?.name, description: rest?.description };
@@ -205,6 +206,14 @@ const getEdge = (edge, readOnly, nodes, category) => {
   };
 };
 
+const getDateFormat = (date) => {
+  let month = (date.getMonth() + 1).toString();
+  month = month.length > 1 ? month : '0' + month;
+  let day = date.getDate().toString();
+  day = day.length > 1 ? day : '0' + day;
+  return date.getFullYear() + '-' + month + '-' + day;
+};
+
 // Function to handle the conversion of Conditions that will send to API
 const exitConditionObjectForApi = (query) => {
   const { rules, id, not, ...rest } = query;
@@ -214,12 +223,18 @@ const exitConditionObjectForApi = (query) => {
         group: exitConditionObjectForApi(item)
       };
     } else {
+      let lhsValue = Array.isArray(item.operator) ? item.operator[0] : '';
+      let rhsValue = item.value;
+      if (item.field === 'date') {
+        lhsValue = Array.isArray(item.operator) ? getDateFormat(lhsValue[0]) : '';
+        rhsValue = getDateFormat(rhsValue);
+      }
       return {
         rule: {
           dataType: item.field,
-          lhs: Array.isArray(item.operator) ? item.operator[0] : '',
+          lhs: lhsValue,
           operator: Array.isArray(item.operator) ? item.operator[1] : item.operator,
-          rhs: item.value
+          rhs: rhsValue
         }
       };
     }
@@ -309,11 +324,17 @@ const exitConditionObject = ({ group }) => {
       return exitConditionObject({ group });
     }
     const { lhs, rhs, operator, dataType } = rule;
+    let lhsValue = lhs;
+    let rhsValue = rhs;
+    if (dataType.toLowerCase() === 'date') {
+      lhsValue = new Date(lhs.replace(/-/g, '/'));
+      rhsValue = new Date(rhs.replace(/-/g, '/'));
+    }
     return {
       field: dataType.toLowerCase(),
-      value: rhs,
+      value: rhsValue,
       valueSource: 'value',
-      operator: [lhs, operator]
+      operator: [lhsValue, operator]
     };
   });
 
@@ -338,7 +359,7 @@ const branchConditionObject = (edge, object = []) => {
   }
   // If object array is not empty, concatenate edge to the object array
   return object.concat(edge);
-}
+};
 
 // Function to handle conversion of all the nodes and edges data of subprocess getting data from API
 const generateActivitySchemaForSubProcess = (taskNode, readOnly) => {
@@ -349,7 +370,9 @@ const generateActivitySchemaForSubProcess = (taskNode, readOnly) => {
     if (edge.condition && edge.condition.length > 0) {
       let nodeIndex = newChildNodes.findIndex((n) => n.id === edge.source);
       if (nodeIndex > -1) {
-        newChildNodes[nodeIndex].type === 'BRANCH_START' ? newChildNodes[nodeIndex].data.branchCondition = branchConditionObject(edge, newChildNodes[nodeIndex].data?.branchCondition) : newChildNodes[nodeIndex].data.exitValidationQuery = exitConditionObject(JSON.parse(edge.condition));
+        newChildNodes[nodeIndex].type === 'BRANCH_START'
+          ? (newChildNodes[nodeIndex].data.branchCondition = branchConditionObject(edge, newChildNodes[nodeIndex].data?.branchCondition))
+          : (newChildNodes[nodeIndex].data.exitValidationQuery = exitConditionObject(JSON.parse(edge.condition)));
 
         //newChildNodes[nodeIndex].data.exitValidationQuery = exitConditionObject(JSON.parse(edge.condition));
       }
@@ -378,7 +401,9 @@ export const generateActivitySchema = (nodes, edges, readOnly) => {
     if (edge.condition && edge.condition.length > 0) {
       let nodeIndex = newNodes.findIndex((n) => n.id === edge.source);
       if (nodeIndex > -1) {
-        newNodes[nodeIndex].type === 'BRANCH_START' ? newNodes[nodeIndex].data.branchCondition = branchConditionObject(edge, newNodes[nodeIndex].data?.branchCondition) : newNodes[nodeIndex].data.exitValidationQuery = exitConditionObject(JSON.parse(edge.condition));
+        newNodes[nodeIndex].type === 'BRANCH_START'
+          ? (newNodes[nodeIndex].data.branchCondition = branchConditionObject(edge, newNodes[nodeIndex].data?.branchCondition))
+          : (newNodes[nodeIndex].data.exitValidationQuery = exitConditionObject(JSON.parse(edge.condition)));
       }
     }
     return getEdge(edge, readOnly, nodes, 'task');

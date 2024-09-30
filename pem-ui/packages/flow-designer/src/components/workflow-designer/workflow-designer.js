@@ -96,7 +96,6 @@ const WorkFlowDesigner = forwardRef(
       },
       [setTaskNodes]
     );
-    console.log('storeData>>>',storeData);
     const onDialogNodesChange = useCallback(
       (dialogNodeChanges) => {
         setDialogNodes((oldNodes) => applyNodeChanges(dialogNodeChanges, oldNodes));
@@ -127,7 +126,6 @@ const WorkFlowDesigner = forwardRef(
         }
       }
       nodeDataRef.current = storeData;
-
       // setTimeout(() => {
       //   //this is sending the new schema to web page  - activity-definition.js
       //   //updateActivitySchema({ nodes, edges });
@@ -157,25 +155,7 @@ const WorkFlowDesigner = forwardRef(
       const edgesData = isdialog ? dialogData?.data?.dialogEdges : nodeDataRef.current.edges;
 
       // Delete Node
-      const newNodes = nodesData.filter((n) => n.id !== id);
-      if (isdialog) {
-        const taskNodeData = nodeDataRef.current.nodes.map((node) => {
-          if (node.id === selectedTaskNodeId) {
-            const {
-              data: { dialogNodes, ...restdata },
-              ...rest
-            } = node;
-            return { ...rest, data: { ...restdata, dialogNodes: newNodes } };
-          } else {
-            return node;
-          }
-        });
-        nodeDataRef.current.nodes = taskNodeData;
-      } else {
-        nodeDataRef.current.nodes = newNodes;
-      }
-      isdialog ? setDialogNodes(newNodes) : setTaskNodes(newNodes);
-      isdialog ? store.setDialogNodes(selectedTaskNodeId, newNodes) : store.setTaskNodes(newNodes);
+      let newNodes = nodesData.filter((n) => n.id !== id);
 
       // Delete connected Edges
       let sourceEdge;
@@ -190,6 +170,49 @@ const WorkFlowDesigner = forwardRef(
           return true;
         }
       });
+
+      // If source node is branch start
+      newNodes = newNodes.map((n) => {
+        if (n.type === NODE_TYPE.BRANCH_START && n.id === targetEdge?.source) {
+          let branchCondition;
+          n.data.branchCondition = n.data.branchCondition.filter((nb) => {
+            if (nb.target === id) {
+              branchCondition = nb;
+              return false;
+            } else {
+              return true;
+            }
+          });
+          if (sourceEdge?.target) {
+            n.data.branchCondition.push({
+              ...branchCondition,
+              target: sourceEdge?.target,
+              connectorId: n.id + '_to_' + sourceEdge?.target
+            });
+          }
+        }
+        return n;
+      });
+
+      if (isdialog) {
+        const taskNodeData = nodeDataRef.current.nodes.map((node) => {
+          if (node.id === selectedTaskNodeId) {
+            const {
+              data: { dialogNodes, ...restData },
+              ...rest
+            } = node;
+            return { ...rest, data: { ...restData, dialogNodes: newNodes } };
+          } else {
+            return node;
+          }
+        });
+        nodeDataRef.current.nodes = taskNodeData;
+      } else {
+        nodeDataRef.current.nodes = newNodes;
+      }
+      isdialog ? setDialogNodes(newNodes) : setTaskNodes(newNodes);
+      isdialog ? store.setDialogNodes(selectedTaskNodeId, newNodes) : store.setTaskNodes(newNodes);
+
       // Delete node bypass for connecting Edges
       let updatedEdge = newEdges;
       if (targetEdge?.source && sourceEdge?.target) {
@@ -199,7 +222,7 @@ const WorkFlowDesigner = forwardRef(
           id: `${targetEdge?.source}_to_${sourceEdge?.target}`,
           source: targetEdge?.source,
           target: sourceEdge?.target,
-          data: isdialog ? { id: selectedTaskNodeId } : sourceEdge?.data,
+          data: sourceEdge?.data,
           style: sourceEdge?.style,
           sourceHandle: targetEdge.sourceHandle,
           targetHandle: sourceEdge.targetHandle
@@ -484,7 +507,8 @@ const WorkFlowDesigner = forwardRef(
           }
           return copyNode;
         });
-        const formData = node.data?.form?.length ? JSON.parse(node.data.form).fields : [];
+        // const formData = node.data?.form?.length ? JSON.parse(node.data.form).fields : [];  old schema code
+        const formData = node.data?.form?.length ? node.data.form[0].children : [];
         setDialogNodes([...copyNodes]);
         setSelectedDialogNode(node);
         setFormFields(formData);
@@ -511,7 +535,8 @@ const WorkFlowDesigner = forwardRef(
 
     //Form Designer page Open from Property panel for Dialog Node
     const onDesignFormBtnClick = (e, node) => {
-      const formData = node.data?.form?.length ? JSON.parse(node.data.form).fields : [];
+      // const formData = node.data?.form?.length ? JSON.parse(node.data.form).fields : []; // old schema code
+      const formData = node.data?.form?.length ? node.data.form[0].children : [];
       setFormFields(formData);
       setIsPageDesignerActive(true);
       setActivityDesignerStack((prevValue) => {

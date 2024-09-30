@@ -330,7 +330,7 @@ export const PARTNER_FORM_SCHEMA = {
       labelText: 'Name (required)',
       helperText: 'Name should not contain &,<,>,",\',.,{,}, characters.',
       isRequired: true,
-      maxCount: 50,
+      maxCount: 30,
       validate: [
         {
           type: validatorTypes.REQUIRED,
@@ -338,12 +338,12 @@ export const PARTNER_FORM_SCHEMA = {
         },
         {
           type: validatorTypes.PATTERN,
-          pattern: /^[^&<>"'.{}]+$/i,
+          pattern: /^[a-zA-Z0-9_-\s]+$/,
           message: 'Name should not contain &,<,>,",\',.,{,}, characters.'
         },
         {
           type: validatorTypes.MAX_LENGTH,
-          threshold: 50,
+          threshold: 30,
           message: 'Name must be no longer then 50 characters'
         }
       ]
@@ -360,13 +360,25 @@ export const PARTNER_FORM_SCHEMA = {
           type: validatorTypes.MAX_LENGTH,
           threshold: 255,
           message: 'Description must be no longer then 100 characters'
-        }
+        },
+        {
+          type: validatorTypes.PATTERN,
+          pattern: /^[a-zA-Z0-9!@#$%^&*(){}|:;.'?,-=/\s]+$/,
+          message: 'Description should not contain <,> characters.'
+        },
       ]
     },
     {
       component: componentTypes.TEXT_FIELD,
       name: 'estimate_days',
-      labelText: 'Estimate (Days)'
+      labelText: 'Estimate (Days)',
+      validate: [
+        {
+          type: validatorTypes.PATTERN,
+          pattern: /^[0-9]{1,3}$/g,
+          message: 'Estimate days should not contain more then 3 digits'
+        }
+      ]
     },
     {
       component: componentTypes.SELECT,

@@ -376,6 +376,56 @@ export const getFormFieldDetails = (path, layout) => {
   return res;
 };
 
+export const componentNames = {
+  ['Single line input']: 'TEXTINPUT',
+  ['Textarea']: 'TEXTAREA',
+  ['Password']: 'PASSWORD',
+  ['Checkbox']: 'CHECKBOX',
+  ['Drop-down']: 'DROPDOWN',
+  ['Toggle']: 'TOGGLE',
+  ['Hyperlink']: 'HYPERLINK',
+  ['File Upload']: 'FILEUPLOAD',
+  ['Date']: 'DATE',
+  ['Information']: 'INFORMATION',
+  ['Help']: 'HELP',
+  ['group']: 'GROUP',
+  ['accordion']: 'ACCORDION',
+  ['tab']: 'TAB',
+  ['button']: 'BUTTON',
+  ['checkbox']: 'CHECKBOX',
+  ['radio']: 'RADIO',
+  ['Number']: 'NUMBER',
+  ['switch']: 'SWITCH',
+  ['data-table']: 'DATATABLE',
+  ['File Download']: 'FILEDOWNLOAD',
+  ['Label']: 'LABEL'
+}
+
+export const componentReNames = {
+  ['TEXTINPUT']: 'Single line input',
+  ['TEXTAREA']: 'Textarea',
+  ['PASSWORD']: 'Password',
+  ['CHECKBOX']: 'Checkbox',
+  ['DROPDOWN']: 'Drop-down',
+  ['TOGGLE']: 'Toggle',
+  ['HYPERLINK']: 'Hyperlink',
+  ['FILEUPLOAD']: 'File Upload',
+  ['DATE']: 'Date',
+  ['INFORMATION']: 'Information',
+  ['HELP']: 'Help',
+  ['GROUP']: 'group',
+  ['ACCORDION']: 'accordion',
+  ['TAB']: 'tab',
+  ['BUTTON']: 'button',
+  ['CHECKBOX']: 'checkbox',
+  ['RADIO']: 'radio',
+  ['NUMBER']: 'Number',
+  ['SWITCH']: 'switch',
+  ['DATATABLE']: 'data-table',
+  ['FILEDOWNLOAD']: 'File Download',
+  ['LABEL']: 'Label'
+}
+
 export const nestedLayoutView = (childLayout, childSchema) => {
   childLayout.forEach((item, index) => {
     switch (item.type) {
@@ -439,32 +489,153 @@ export const nestedLayoutView = (childLayout, childSchema) => {
   return childSchema;
 };
 
+export const nestedLayoutViewForAPi = (childLayout, childSchema) => {
+  childLayout.forEach((item, index) => {
+    switch (item.type) {
+      case ROW: 
+      case COLUMN: 
+      case ACCORDION:
+      case TAB:
+      case SUBTAB:
+        nestedLayoutViewForAPi(childLayout[index]?.children, childSchema);
+        break;
+      default: {
+        const { label, type, group, ...others } = item.component;
+        childSchema.push({
+          "cType": "COLUMN",
+          "props": {
+              "id": uuid(),
+              "uId": uuid(),
+              "lg": "6",
+              "md": "8",
+              "sm": "16"
+          },
+          "children": [{
+            "cType": componentNames[type],
+            "props": {
+              "id": others.id,
+              "uId": item.id,
+              ...others
+          },
+          }]
+        })
+      }
+    }
+  });
+  return childSchema;
+};
+
 export const convertToSchema = (layout) => {
-  const schema = nestedLayoutView(layout, []);
-  return { fields: schema };
+  //const schema = nestedLayoutView(layout, []);
+  const schema = nestedLayoutViewForAPi(layout, []);
+  const FinalSchema =  [{
+    "cType": "FORM",
+    "props": {
+        "id": uuid(),
+        "uId": uuid(),
+        "name": "test"
+    },
+    "children": [
+        {
+            "cType": "GRID",
+            "props": {
+                "id": uuid(),
+                "uId": uuid(),
+                "defaultColumnSizeLg": "6",
+                "defaultColumnSizeMd": "8",
+                "defaultColumnSizeSm": "16",
+                "narrow": true,
+                "condensed": true,
+                "fullWidth": true
+            },
+            "children": schema
+        }
+      ]
+    }]
+    return FinalSchema;
+  //return { fields: schema };
 };
 
 export const getFormObject = (schema, formObj) => {
-  schema.forEach((item, index)=> {
-    switch (item.type) {
-      case ROW: {
-        formObj.push({
-          id: item.id,
-          type: item.type,
-          maintype: GROUP,
-          children: []
-        })
-        getFormObject(schema[index]?.children, formObj[index].children);
+  // old schema code
+  // schema.forEach((item, index)=> {
+  //   switch (item.type) {
+  //     case ROW: {
+  //       formObj.push({
+  //         id: item.id,
+  //         type: item.type,
+  //         maintype: GROUP,
+  //         children: []
+  //       })
+  //       getFormObject(schema[index]?.children, formObj[index].children);
+  //       break;
+  //     }
+  //     case COLUMN: {
+  //       formObj.push({
+  //         id: item.id,
+  //         type: item.type,
+  //         defaultsize: item.size,
+  //         children: []
+  //       })
+  //       getFormObject(schema[index]?.children, formObj[index].children);
+  //       break;
+  //     }
+  //     case ACCORDION: {
+  //       const {children, ...others} = item;
+  //       formObj.push({
+  //         id: item.id,
+  //         type: item.type,
+  //         maintype: ACCORDION,
+  //         component: {
+  //           ...others
+  //         },
+  //         children: []
+  //       })
+  //       getFormObject(children, formObj[index].children);
+  //       break;
+  //     }
+  //     case TAB: {
+  //       const {children, ...others} = item;
+  //       formObj.push({
+  //         id: item.id,
+  //         type: item.type,
+  //         maintype: TAB,
+  //         component: {
+  //           ...others
+  //         },
+  //         children: []
+  //       })
+  //       getFormObject(children, formObj[index].children);
+  //       break;
+  //     }
+  //     case SUBTAB: {
+  //       const {children, ...others} = item;
+  //       formObj.push({
+  //         ...others,
+  //         children: []
+  //       })
+  //       getFormObject(children, formObj[index].children);
+  //       break;
+  //     }
+  //     default: {
+  //       formObj.push({
+  //         id: item.id,
+  //         type: COMPONENT,
+  //         component: {
+  //           ...item
+  //         }
+  //       })
+  //     }
+  //   }
+  // });
+    schema.forEach((item, index)=> {
+    switch (item.cType) {
+      case "GRID": {
+        getFormObject(schema[index]?.children, formObj);
         break;
       }
-      case COLUMN: {
-        formObj.push({
-          id: item.id,
-          type: item.type,
-          defaultsize: item.size,
-          children: []
-        })
-        getFormObject(schema[index]?.children, formObj[index].children);
+      case "COLUMN": {
+        getFormObject(schema[index]?.children, formObj);
         break;
       }
       case ACCORDION: {
@@ -506,10 +677,11 @@ export const getFormObject = (schema, formObj) => {
       }
       default: {
         formObj.push({
-          id: item.id,
+          id: item.props.id,
           type: COMPONENT,
           component: {
-            ...item
+            type: componentReNames[item.cType],
+            ...item.props
           }
         })
       }

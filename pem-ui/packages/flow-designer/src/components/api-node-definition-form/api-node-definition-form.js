@@ -743,7 +743,8 @@ export default function APINodeDefinitionForm({ id, selectedNode, selectedTaskNo
           <TabPanel>
             <ConditionalBuilder
               setOpenCancelDialog={onCancelDefinitionForm}
-              onSubmitExitValidationForm={onSubmitExitValidationForm}
+              //onSubmitExitValidationForm={onSubmitExitValidationForm}
+              queryValidator={{}}
               readOnly={readOnly}
               query={query}
               setQuery={setQuery}

@@ -29,6 +29,31 @@ const taskStore = (set, get) => ({
       return { tasks: { nodes: state.tasks.nodes, edges: getEdgesConnect(edgeId, state.tasks.edges, taskNode) } };
     });
   },
+  addNewTaskNodes: (node, id) => {
+    set((state) => {
+      const ids = id.split('_to_');
+      const newNodes = state.tasks.nodes.map((n) => {
+        if (n.type === NODE_TYPE.BRANCH_START && n.id === ids[0]) {
+          let branchCondition;
+          n.data.branchCondition = n.data.branchCondition.filter((nb) => {
+            if (nb.target === ids[1]) {
+              branchCondition = nb;
+              return false;
+            } else {
+              return true;
+            }
+          });
+          n.data.branchCondition.push({
+            ...branchCondition,
+            target: node.id,
+            connectorId: n.id + '_to_' + node.id
+          });
+        }
+        return n;
+      });
+      return { tasks: { nodes: newNodes.concat(node), edges: state.tasks.edges } };
+    });
+  },
   setTaskNodes: (nodes) => {
     set((state) => ({
       tasks: { nodes: nodes, edges: state.tasks.edges }
@@ -69,6 +94,45 @@ const taskStore = (set, get) => ({
             ...rest
           } = node;
           const newDialogNode = [...dialogNodes, dialogNode];
+          return { ...rest, data: { ...restData, dialogNodes: newDialogNode } };
+        } else {
+          return node;
+        }
+      });
+      return { tasks: { nodes: taskNodeData, edges: state.tasks.edges } };
+    });
+  },
+  addNewDialogNodes: (taskNode, dialogNode, id) => {
+    set((state) => {
+      const ids = id.split('_to_');
+      const taskNodeData = state.tasks.nodes.map((node) => {
+        if (node.id === taskNode.id) {
+          const {
+            data: { dialogNodes, ...restData },
+            ...rest
+          } = node;
+
+          const newDialogNodes = dialogNodes.map((n) => {
+            if (n.type === NODE_TYPE.BRANCH_START && n.id === ids[0]) {
+              let branchCondition;
+              n.data.branchCondition = n.data.branchCondition.filter((nb) => {
+                if (nb.target === ids[1]) {
+                  branchCondition = nb;
+                  return false;
+                } else {
+                  return true;
+                }
+              });
+              n.data.branchCondition.push({
+                ...branchCondition,
+                target: dialogNode.id,
+                connectorId: n.id + '_to_' + dialogNode.id
+              });
+            }
+            return n;
+          });
+
+          const newDialogNode = [...newDialogNodes, dialogNode];
           return { ...rest, data: { ...restData, dialogNodes: newDialogNode } };
         } else {
           return node;
@@ -206,7 +270,8 @@ const taskStore = (set, get) => ({
           } = copyNode;
           dialogNodes?.map((dialogNodeData) => {
             if (dialogNodeData.id === dialogNode.id) {
-              dialogNodeData.data['form'] = JSON.stringify(formLayout);
+              //dialogNodeData.data['form'] = JSON.stringify(formLayout);   old schema code
+              dialogNodeData.data['form'] = formLayout;
             }
             return dialogNodeData;
           });
@@ -422,7 +487,6 @@ const taskStore = (set, get) => ({
   },
   // Function to update the task node name from dialog sequence container task flow designer
   updateTaskNodeName: (taskId, props, value) => {
-
     set((state) => {
       const copyNodes = state.tasks.nodes;
       copyNodes.map((copyNode) => {

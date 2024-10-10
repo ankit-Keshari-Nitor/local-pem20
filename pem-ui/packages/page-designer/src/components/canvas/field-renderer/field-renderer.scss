@@ -8,6 +8,10 @@
 
 .element:hover {
   border: 1px solid hsl(205, 100%, 50%);
+
+  .add-row {
+    display: block;
+  }
 }
 
 .element:first-of-type {
@@ -25,11 +29,35 @@
   cursor: move;
 }
 
-.delete-icon {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.icon-pointer {
   cursor: pointer;
+}
+
+.delete-icon {
+  margin-left: -0.5rem;
+}
+
+.actions-icons{
+  margin-top: 1rem;
+  margin-right: -1rem;
+}
+
+.action-container {
+  position: absolute;
+  right: 5rem;
+  bottom: -1rem;
+  border-radius: -12px;
+  width: 8rem;
+  height: 3rem;
+  background: white;
+  box-shadow: 0px 0px 6px -4px #000000;
+}
+
+.add-row {
+  display: none;
+  position: absolute;
+  left: 33rem;
+  bottom: -2rem;
 }
 
 .form-fields {
@@ -37,7 +65,8 @@
 }
 
 .canvas-form-fields {
-  width: 100%;
+  position: relative;
+  width: 93%;
 }
 
 .custom-field-grid {

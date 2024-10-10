@@ -58,6 +58,7 @@ export const reorderChildren = (children, splitDropZonePath, splitItemPath) => {
 export const removeChildFromChildren = (children, splitDropZonePath) => {
   if (splitDropZonePath.length === 1) {
     const itemIndex = Number(splitDropZonePath[0]);
+    children[0].defaultsize = 16;
     return remove(children, itemIndex);
   }
 
@@ -124,10 +125,11 @@ export const addChildToChildren = (children, splitDropZonePath, item) => {
     const dropZoneIndex = Number(splitDropZonePath[0]);
     let newLayoutStructure = item;
     if (children[0]?.type === 'column') {
+      children[0].defaultsize = '8';
       newLayoutStructure = {
         type: COLUMN,
         id: uuid(),
-        defaultsize: '16',
+        defaultsize: '8',
         children: item.length ? [item] : []
       };
     }
@@ -277,7 +279,8 @@ export const handleMoveToDifferentParent = (layout, splitDropZonePath, splitItem
 
 export const handleMoveSidebarComponentIntoParent = (layout, splitDropZonePath, item) => {
   let newLayoutStructure;
-  if (item.component.type === GROUP) {
+  console.log('item>>>',item);
+  if (item?.component?.type === GROUP) {
     switch (splitDropZonePath.length) {
       case 1: {
         newLayoutStructure = {
@@ -315,12 +318,12 @@ export const handleMoveSidebarComponentIntoParent = (layout, splitDropZonePath, 
       }
     }
   } else {
-    if (item.component.type === GROUP) {
+    if (item?.component?.type === GROUP) {
       newLayoutStructure = {
         maintype: item.component.type,
         ...item
       };
-    } else if (item.component.type === ACCORDION) {
+    } else if (item?.component?.type === ACCORDION) {
       newLayoutStructure = {
         id: uuid(),
         type: item.component.type,
@@ -328,7 +331,7 @@ export const handleMoveSidebarComponentIntoParent = (layout, splitDropZonePath, 
         children: [],
         component: item.component
       };
-    } else if (item.component.type === TAB) {
+    } else if (item?.component?.type === TAB) {
       newLayoutStructure = {
         id: uuid(),
         type: item.component.type,
@@ -399,7 +402,7 @@ export const componentNames = {
   ['data-table']: 'DATATABLE',
   ['File Download']: 'FILEDOWNLOAD',
   ['Label']: 'LABEL'
-}
+};
 
 export const componentReNames = {
   ['TEXTINPUT']: 'Single line input',
@@ -424,7 +427,7 @@ export const componentReNames = {
   ['DATATABLE']: 'data-table',
   ['FILEDOWNLOAD']: 'File Download',
   ['LABEL']: 'Label'
-}
+};
 
 export const nestedLayoutView = (childLayout, childSchema) => {
   childLayout.forEach((item, index) => {
@@ -492,8 +495,8 @@ export const nestedLayoutView = (childLayout, childSchema) => {
 export const nestedLayoutViewForAPi = (childLayout, childSchema) => {
   childLayout.forEach((item, index) => {
     switch (item.type) {
-      case ROW: 
-      case COLUMN: 
+      case ROW:
+      case COLUMN:
       case ACCORDION:
       case TAB:
       case SUBTAB:
@@ -502,23 +505,25 @@ export const nestedLayoutViewForAPi = (childLayout, childSchema) => {
       default: {
         const { label, type, group, ...others } = item.component;
         childSchema.push({
-          "cType": "COLUMN",
-          "props": {
-              "id": uuid(),
-              "uId": uuid(),
-              "lg": "6",
-              "md": "8",
-              "sm": "16"
+          cType: 'COLUMN',
+          props: {
+            id: uuid(),
+            uId: uuid(),
+            lg: '6',
+            md: '8',
+            sm: '16'
           },
-          "children": [{
-            "cType": componentNames[type],
-            "props": {
-              "id": others.id,
-              "uId": item.id,
-              ...others
-          },
-          }]
-        })
+          children: [
+            {
+              cType: componentNames[type],
+              props: {
+                id: others.id,
+                uId: item.id,
+                ...others
+              }
+            }
+          ]
+        });
       }
     }
   });
@@ -528,31 +533,33 @@ export const nestedLayoutViewForAPi = (childLayout, childSchema) => {
 export const convertToSchema = (layout) => {
   //const schema = nestedLayoutView(layout, []);
   const schema = nestedLayoutViewForAPi(layout, []);
-  const FinalSchema =  [{
-    "cType": "FORM",
-    "props": {
-        "id": uuid(),
-        "uId": uuid(),
-        "name": "test"
-    },
-    "children": [
+  const FinalSchema = [
+    {
+      cType: 'FORM',
+      props: {
+        id: uuid(),
+        uId: uuid(),
+        name: 'test'
+      },
+      children: [
         {
-            "cType": "GRID",
-            "props": {
-                "id": uuid(),
-                "uId": uuid(),
-                "defaultColumnSizeLg": "6",
-                "defaultColumnSizeMd": "8",
-                "defaultColumnSizeSm": "16",
-                "narrow": true,
-                "condensed": true,
-                "fullWidth": true
-            },
-            "children": schema
+          cType: 'GRID',
+          props: {
+            id: uuid(),
+            uId: uuid(),
+            defaultColumnSizeLg: '6',
+            defaultColumnSizeMd: '8',
+            defaultColumnSizeSm: '16',
+            narrow: true,
+            condensed: true,
+            fullWidth: true
+          },
+          children: schema
         }
       ]
-    }]
-    return FinalSchema;
+    }
+  ];
+  return FinalSchema;
   //return { fields: schema };
 };
 
@@ -628,18 +635,18 @@ export const getFormObject = (schema, formObj) => {
   //     }
   //   }
   // });
-    schema.forEach((item, index)=> {
+  schema.forEach((item, index) => {
     switch (item.cType) {
-      case "GRID": {
+      case 'GRID': {
         getFormObject(schema[index]?.children, formObj);
         break;
       }
-      case "COLUMN": {
+      case 'COLUMN': {
         getFormObject(schema[index]?.children, formObj);
         break;
       }
       case ACCORDION: {
-        const {children, ...others} = item;
+        const { children, ...others } = item;
         formObj.push({
           id: item.id,
           type: item.type,
@@ -648,12 +655,12 @@ export const getFormObject = (schema, formObj) => {
             ...others
           },
           children: []
-        })
+        });
         getFormObject(children, formObj[index].children);
         break;
       }
       case TAB: {
-        const {children, ...others} = item;
+        const { children, ...others } = item;
         formObj.push({
           id: item.id,
           type: item.type,
@@ -662,16 +669,16 @@ export const getFormObject = (schema, formObj) => {
             ...others
           },
           children: []
-        })
+        });
         getFormObject(children, formObj[index].children);
         break;
       }
       case SUBTAB: {
-        const {children, ...others} = item;
+        const { children, ...others } = item;
         formObj.push({
           ...others,
           children: []
-        })
+        });
         getFormObject(children, formObj[index].children);
         break;
       }
@@ -683,12 +690,12 @@ export const getFormObject = (schema, formObj) => {
             type: componentReNames[item.cType],
             ...item.props
           }
-        })
+        });
       }
     }
   });
   return formObj;
-}
+};
 
 export const findChildComponentById = (array, id) => {
   for (const item of array) {
@@ -806,24 +813,45 @@ export const defaultProps = (item) => {
       item.component.max = { value: '20', message: `${item.component.label} must be no longer than 20 characters.` };
       break;
     case 'Textarea':
-      item.component.height = 1; 
+      item.component.height = 1;
       item.component.max = { value: '20', message: `${item.component.label} must be no longer than 20 characters.` };
       break;
     case 'File Upload':
-      item.component.maxFileSize = '100kb';  
+      item.component.maxFileSize = '100kb';
       break;
     case 'Date':
-      item.component.dateFormat = 'm/d/Y';  
-      break;  
+      item.component.dateFormat = 'm/d/Y';
+      break;
     case 'Number':
       item.component.max = { value: '20', message: `${item.component.label} value should be between 0 - 20.` };
       item.component.min = { value: '0', message: `${item.component.label} value should be between 0 - 20.` };
       break;
     case 'Toggle':
       item.component.toggleValue = 'true';
-      break;  
+      break;
     default:
       break;
   }
 };
 
+export const copyComponent = (originalComponent, newComponent) => {
+  originalComponent.map((component, index) => {
+    if (component?.children?.length > 0) {
+      newComponent.push({
+        ...component,
+        id: uuid(),
+        children: []
+      });
+      return copyComponent(component.children, newComponent[index].children);
+    }
+    if (component.type === COMPONENT) {
+      const newId = uuid();
+      return newComponent.push({
+        ...component,
+        component: { ...component.component, id: newId },
+        id: newId
+      });
+    }
+  });
+  return newComponent;
+};

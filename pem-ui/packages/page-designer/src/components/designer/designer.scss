@@ -97,6 +97,27 @@
   justify-content: center;
 }
 
+.hover-plus-icon:hover {
+  cursor: pointer;
+}
+
+.component-group {
+  border: 1px solid;
+  background-color: #EEEEEE;
+  position: absolute;
+  top: 4rem;
+  border-radius: 4px;
+}
+
+.component-group-item {
+  cursor: pointer;
+  padding: 0.5rem
+}
+
+.component-group-item:hover{
+  background-color:#dcdada;
+}
+
 .release-text {
   display: flex;
   justify-content: center;
@@ -184,7 +205,7 @@
 }
 
 .column-zone {
-  border: 1px solid #8d8d8d;
+  border: 1px dotted #8d8d8d;
   margin: 0.5rem;
 }
 

@@ -279,7 +279,6 @@ export const handleMoveToDifferentParent = (layout, splitDropZonePath, splitItem
 
 export const handleMoveSidebarComponentIntoParent = (layout, splitDropZonePath, item) => {
   let newLayoutStructure;
-  console.log('item>>>',item);
   if (item?.component?.type === GROUP) {
     switch (splitDropZonePath.length) {
       case 1: {
@@ -347,9 +346,18 @@ export const handleMoveSidebarComponentIntoParent = (layout, splitDropZonePath, 
         ]
       };
     } else {
-      newLayoutStructure = {
-        ...item
-      };
+      if (splitDropZonePath.length > 1) {
+        newLayoutStructure = {
+          ...item
+        };
+      } else {
+        newLayoutStructure = {
+          type: ROW,
+          id: uuid(),
+          maintype: 'group',
+          children: [{ type: COLUMN, id: uuid(), defaultsize: '16', children: [{ ...item }] }]
+        };
+      }
     }
   }
   return addChildToChildren(layout, splitDropZonePath, newLayoutStructure);
@@ -786,14 +794,25 @@ export const collectPaletteEntries = (formFields) => {
   return Object.entries(formFields)
     .map(([type, formField]) => {
       const { config: fieldConfig } = formField;
-      return {
-        type: SIDEBAR_ITEM,
-        component: {
-          type: type,
-          label: fieldConfig.label,
-          icon: fieldConfig.icon
-        }
-      };
+      if (fieldConfig.type !== 'group') {
+        return {
+          type: SIDEBAR_ITEM,
+          component: {
+            type: type,
+            label: fieldConfig.label,
+            icon: fieldConfig.icon
+          }
+        };
+      } else {
+        return {
+          type: 'default',
+          component: {
+            type: type,
+            label: fieldConfig.label,
+            icon: fieldConfig.icon
+          }
+        };
+      }
     })
     .filter(({ type }) => type !== 'default');
 };

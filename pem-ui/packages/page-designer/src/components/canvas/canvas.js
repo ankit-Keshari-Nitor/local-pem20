@@ -21,9 +21,9 @@ export default function Canvas({
   const renderComponent = (component, currentPath, renderRow) => {
     return (
       <div
-        onClick={(e) => {
-          !previewMode && onFieldSelect(e, component, currentPath);
-        }}
+        // onClick={(e) => {
+        //   !previewMode && onFieldSelect(e, component, currentPath);
+        // }}
         className={classNames(previewMode ? 'form-fields' : 'canvas-form-fields')}
       >
         <FieldRenderer

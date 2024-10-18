@@ -107,13 +107,13 @@ const FieldRenderer = ({
                   <Column lg={6}>
                     <span
                       className="icon-pointer"
-                      onClick={(e) => (data.children.length >= 2 ? onFieldDelete(e, `${path}-1`) : handleSchemaChanges(data.id, CUSTOM_COLUMN, '', 1, path))}
+                      onClick={(e) => (data.children.length >= 2 ? onFieldDelete(e, `${path}-1`, 0) : handleSchemaChanges(data.id, CUSTOM_COLUMN, '', 1, path))}
                     >
                       <SplitIcon />
                     </span>
                   </Column>
                   <Column lg={5}>
-                    <span className="icon-pointer delete-icon" onClick={(e) => onFieldDelete(e, path, data.id)}>
+                    <span className="icon-pointer delete-icon" onClick={(e) => onFieldDelete(e, path, 1, data.id)}>
                       <TrashCan />
                     </span>
                   </Column>

@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { v4 as uuid } from 'uuid';
 import './designer.scss';
 
@@ -59,6 +59,12 @@ import { FormPropsPanel } from '../props-panel';
 
 export default function Designer({ componentMapper, onClickPageDesignerBack, activityDefinitionData, saveFormDesignerData, formFields }) {
   const initialLayout = [
+    // {
+    //   type: 'FORM',
+    //   id: uuid(),
+    //   name: 'form-test',
+    //   children: []
+    // },
     {
       type: 'row',
       id: '85a143ba-6fa6-43e0-995d-b49a4d05972c',
@@ -84,6 +90,8 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
   const [deletedFieldPath, setDeletedFieldPath] = useState();
   const [componentsNames, setComponentsNames] = useState([]);
   const [propsPanelActiveTab, setPropsPanelActiveTab] = useState(0);
+  const [isRowDelete, setIsRowDelete] = useState(false);
+  const rowDataForDelete = useRef();
   console.log('layout>>>', layout);
   const handleDrop = useCallback(
     (dropZone, item) => {
@@ -344,8 +352,18 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
       }
     }
   };
-  const onFieldDelete = (e, path, deletedElement) => {
+
+  const onFieldDelete = (e, path, actionCode, deletedElement) => {
+    /*
+      actionCode:0 - For Merge Action
+      actionCode:1 - For Delete Action
+    */
     e.stopPropagation();
+    rowDataForDelete.current = { path, deletedElement, actionCode };
+    setIsRowDelete(true);
+  };
+
+  const onRowDelete = ({ path, deletedElement }) => {
     setDeletedFieldPath(path);
     const splitDropZonePath = path.split('-');
     setLayout(handleRemoveItemFromLayout(layout, splitDropZonePath));
@@ -353,6 +371,7 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
     setComponentsNames(newElements);
     setSelectedFiledProps();
     setFormFieldProps(false);
+    rowDataForDelete.current = null;
   };
 
   const onRowCopy = (e, path, originalComponent) => {
@@ -374,13 +393,13 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
     const newItem = {
       id: newId,
       type: COMPONENT,
-      component: { id: newId, name: 'form-control-' + newId.substring(0, 2), labelText: "Group", label: "Group", type: "group" }
+      component: { id: newId, name: 'form-control-' + newId.substring(0, 2), labelText: 'Group', label: 'Group', type: 'group' }
     };
     setLayout(handleMoveSidebarComponentIntoParent(layout, [newPath], newItem));
   };
   const onGroupChange = (e, componentGroup, path) => {
     e.stopPropagation();
-    const newPath = path.split('-')
+    const newPath = path.split('-');
     const newItemId = uuid();
     const newItem = collectPaletteEntries(componentMapper).filter((items) => items.component.type === componentGroup)[0];
     const newFormField = {
@@ -390,7 +409,7 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
     };
     setLayout(handleMoveSidebarComponentIntoParent(layout, newPath, newFormField));
     onFieldSelect(e, newFormField, path, newFormField);
-  }
+  };
 
   const replaceComponent = (e, path, newItem, oldElementId) => {
     e.stopPropagation();
@@ -521,7 +540,27 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
           )}
         </div>
       </div>
-
+      {/* Confirmation Row Deletion Model */}
+      <Modal
+        open={isRowDelete}
+        onRequestClose={() => setIsRowDelete(false)}
+        onRequestSubmit={() => {
+          onRowDelete(rowDataForDelete.current);
+          setIsRowDelete(false);
+        }}
+        isFullWidth
+        modalHeading="Confirmation"
+        primaryButtonText={rowDataForDelete?.current?.actionCode ? 'Delete' : 'Merge'}
+        secondaryButtonText="Cancel"
+      >
+        <p
+          style={{
+            padding: '0px 0px 1rem 1rem'
+          }}
+        >
+          {rowDataForDelete?.current?.actionCode ? 'Are you sure you want to delete' : 'Are you sure you want to merge'}
+        </p>
+      </Modal>
       {/* View Schema Modal */}
       <Modal open={open} onRequestClose={() => setOpen(false)} passiveModal modalLabel="Schema" primaryButtonText="Close" secondaryButtonText="Cancel">
         <ViewSchema layout={layout} />

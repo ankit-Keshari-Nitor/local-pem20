@@ -89,3 +89,46 @@ export const OPTION = [
     value: ''
   }
 ];
+
+export const GROUP_MENU = [
+  {
+    key: 'Label',
+    value: 'Label'
+  },
+  {
+    key: 'Single line input',
+    value: 'Input Element'
+  },
+  {
+    key: 'radio',
+    value: 'Radio Checkbox Dropdown'
+  },
+  {
+    key: 'Table',
+    value: 'Table'
+  },
+  {
+    key: 'Image',
+    value: 'Image'
+  },
+  {
+    key: 'Toggle',
+    value: 'Toggle'
+  },
+  {
+    key: 'Hyperlink',
+    value: 'Hyperlink'
+  },
+  {
+    key: 'File Upload',
+    value: 'Upload'
+  },
+  {
+    key: 'File Download',
+    value: 'Download'
+  },
+  {
+    key: 'Help',
+    value: 'Help Info'
+  }
+];

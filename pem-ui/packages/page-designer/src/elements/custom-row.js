@@ -5,7 +5,7 @@ import Column from './custom-column';
 import { Grid, Column as CarbonColumn } from '@carbon/react';
 import classNames from 'classnames';
 
-const Row = ({ data, handleDrop, path, componentMapper, onFieldSelect, renderRow, onFieldDelete, previewMode, onChangeHandle, isSelected, setIsSelected }) => {
+const Row = ({ data, handleDrop, path, componentMapper, onFieldSelect, renderRow, onFieldDelete, previewMode, onChangeHandle, isSelected, setIsSelected, onGroupChange }) => {
   const ref = useRef(null);
   const [{ isDragging }, drag] = useDrag({
     type: ROW,
@@ -27,8 +27,8 @@ const Row = ({ data, handleDrop, path, componentMapper, onFieldSelect, renderRow
   const renderColumn = (column, currentPath, renderRow) => {
     return (
       <CarbonColumn
-        onClick={(e) => onFieldSelect(e, column, currentPath)}
-        lg={column.customsize ? Number(column.customsize) : Number(column.defaultsize)}
+        // onClick={(e) => onFieldSelect(e, column, currentPath)}
+        lg={column.customsize ? Number(column.customsize)-1 : Number(column.defaultsize)-1}
         className={classNames(!previewMode && 'column-zone')}
       >
         <Column
@@ -45,6 +45,7 @@ const Row = ({ data, handleDrop, path, componentMapper, onFieldSelect, renderRow
           colSize={column.customsize}
           isSelected={isSelected}
           setIsSelected={setIsSelected}
+          onGroupChange={onGroupChange}
         />
       </CarbonColumn>
     );

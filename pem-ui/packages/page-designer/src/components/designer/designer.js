@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { v4 as uuid } from 'uuid';
 import './designer.scss';
 
@@ -19,7 +19,9 @@ import {
   capitalizeFirstLetter,
   defaultProps,
   convertToSchema,
-  getFormObject
+  getFormObject,
+  copyComponent,
+  collectPaletteEntries
 } from '../../utils/helpers';
 import {
   SIDEBAR_ITEM,
@@ -53,24 +55,48 @@ import ViewSchema from './../view-schema';
 import { Button, Grid, Modal, Column, Layer, IconButton } from '@carbon/react';
 import FormPreview from '../preview-mode';
 import { View, CloseLarge } from '@carbon/icons-react';
+import { FormPropsPanel } from '../props-panel';
 
 export default function Designer({ componentMapper, onClickPageDesignerBack, activityDefinitionData, saveFormDesignerData, formFields }) {
-  //const initialLayout = INITIAL_DATA.layout;
+  const initialLayout = [
+    // {
+    //   type: 'FORM',
+    //   id: uuid(),
+    //   name: 'form-test',
+    //   children: []
+    // },
+    {
+      type: 'row',
+      id: '85a143ba-6fa6-43e0-995d-b49a4d05972c',
+      maintype: 'group',
+      children: [
+        {
+          type: 'column',
+          id: '0a128e51-b971-4fd5-ad64-7d4b5693ed93',
+          defaultsize: '16',
+          children: []
+        }
+      ]
+    }
+  ];
   const initialComponents = INITIAL_DATA.components;
-  const [layout, setLayout] = useState(getFormObject(formFields, []));
+  //const [layout, setLayout] = useState(getFormObject(formFields, []));
+  const [layout, setLayout] = useState(initialLayout);
   const [components, setComponents] = useState(initialComponents);
   const [selectedFieldProps, setSelectedFiledProps] = useState();
+  const [formFieldProps, setFormFieldProps] = useState(true);
   const [open, setOpen] = useState(false);
   const [openPreview, setOpenPreview] = useState(false);
   const [deletedFieldPath, setDeletedFieldPath] = useState();
   const [componentsNames, setComponentsNames] = useState([]);
   const [propsPanelActiveTab, setPropsPanelActiveTab] = useState(0);
-
+  const [isRowDelete, setIsRowDelete] = useState(false);
+  const rowDataForDelete = useRef();
+  console.log('layout>>>', layout);
   const handleDrop = useCallback(
     (dropZone, item) => {
       const splitDropZonePath = dropZone.path.split('-');
       const pathToDropZone = splitDropZonePath.slice(0, -1).join('-');
-
       let newItem = { id: item.id, type: item.type, component: item.component };
       if (item.maintype) {
         newItem = { id: item.id, type: item.type, maintype: item.maintype, children: item.children };
@@ -200,6 +226,7 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
       filedTypeConfig = componentMapper[componentDetail.maintype].config;
     }
     setSelectedFiledProps({ id: componentDetail.id, type: componentDetail.type, component: { ...filedTypeConfig }, currentPathDetail: currentPathDetail });
+    setFormFieldProps(false);
   };
 
   const columnSizeCustomization = (colsize, path) => {
@@ -227,6 +254,7 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
       let objCopy = selectedFieldProps;
       objCopy.component[propsName] = newValue;
       setSelectedFiledProps({ ...objCopy });
+      setFormFieldProps(false);
       setLayout(updateChildToChildren(layout, componentPosition, propsName, newValue));
     } else {
       let objCopy = selectedFieldProps;
@@ -312,6 +340,7 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
         });
       }
       setSelectedFiledProps({ ...objCopy });
+      setFormFieldProps(false);
       if (uniqueName && !isInvalid) {
         if (propsName === ISREQUIRED) {
           setLayout(updateChildToChildren(layout, componentPosition, 'min', { value: minValue, message: `Minimum ${minValue} characters required` }));
@@ -323,14 +352,63 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
       }
     }
   };
-  const onFieldDelete = (e, path, deletedElement) => {
+
+  const onFieldDelete = (e, path, actionCode, deletedElement) => {
+    /*
+      actionCode:0 - For Merge Action
+      actionCode:1 - For Delete Action
+    */
     e.stopPropagation();
+    rowDataForDelete.current = { path, deletedElement, actionCode };
+    setIsRowDelete(true);
+  };
+
+  const onRowDelete = ({ path, deletedElement }) => {
     setDeletedFieldPath(path);
     const splitDropZonePath = path.split('-');
     setLayout(handleRemoveItemFromLayout(layout, splitDropZonePath));
     const newElements = componentsNames.filter((item) => item.id !== deletedElement);
     setComponentsNames(newElements);
     setSelectedFiledProps();
+    setFormFieldProps(false);
+    rowDataForDelete.current = null;
+  };
+
+  const onRowCopy = (e, path, originalComponent) => {
+    e.stopPropagation();
+    const newPath = Number(path) + 1;
+    const newItem = {
+      ...originalComponent,
+      id: uuid(),
+      children: []
+    };
+    newItem.children = copyComponent(originalComponent.children, newItem.children);
+    setLayout(handleMoveSidebarComponentIntoParent(layout, [newPath], newItem));
+  };
+
+  const onAddRow = (e, path) => {
+    e.stopPropagation();
+    const newPath = Number(path) + 1;
+    const newId = uuid();
+    const newItem = {
+      id: newId,
+      type: COMPONENT,
+      component: { id: newId, name: 'form-control-' + newId.substring(0, 2), labelText: 'Group', label: 'Group', type: 'group' }
+    };
+    setLayout(handleMoveSidebarComponentIntoParent(layout, [newPath], newItem));
+  };
+  const onGroupChange = (e, componentGroup, path) => {
+    e.stopPropagation();
+    const newPath = path.split('-');
+    const newItemId = uuid();
+    const newItem = collectPaletteEntries(componentMapper).filter((items) => items.component.type === componentGroup)[0];
+    const newFormField = {
+      id: newItemId,
+      type: COMPONENT,
+      component: { ...newItem.component, id: newItemId, name: 'form-control-' + newItemId.substring(0, 2), labelText: newItem.component.label }
+    };
+    setLayout(handleMoveSidebarComponentIntoParent(layout, newPath, newFormField));
+    onFieldSelect(e, newFormField, path, newFormField);
   };
 
   const replaceComponent = (e, path, newItem, oldElementId) => {
@@ -352,7 +430,7 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
     onFieldSelect(e, newFormField, path, newFormField);
   };
 
-  const renderRow = (row, currentPath, renderRow, previewMode, onChangeHandle, isSelected, setIsSelected) => {
+  const renderRow = (row, currentPath, renderRow, previewMode, onChangeHandle, isSelected, setIsSelected, onGroupChange) => {
     return (
       <Row
         key={row.id}
@@ -367,6 +445,7 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
         onChangeHandle={onChangeHandle}
         isSelected={isSelected}
         setIsSelected={setIsSelected}
+        onGroupChange={onGroupChange}
       />
     );
   };
@@ -406,8 +485,25 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
             <div className="components-tray">
               <ComponentsTray componentMapper={componentMapper} />
             </div>
-            <div className="canvas-wrapper">
-              <Canvas layout={layout} handleDrop={handleDrop} renderRow={renderRow} componentMapper={componentMapper} onFieldSelect={onFieldSelect} onFieldDelete={onFieldDelete} />
+            <div
+              className="canvas-wrapper"
+              onClick={(e) => {
+                setSelectedFiledProps();
+                setFormFieldProps(true);
+              }}
+            >
+              <Canvas
+                layout={layout}
+                handleDrop={handleDrop}
+                renderRow={renderRow}
+                componentMapper={componentMapper}
+                onFieldSelect={onFieldSelect}
+                onFieldDelete={onFieldDelete}
+                handleSchemaChanges={handleSchemaChanges}
+                onRowCopy={onRowCopy}
+                onAddRow={onAddRow}
+                onGroupChange={onGroupChange}
+              />
               <div className="btn-top-container">
                 <Grid fullWidth className="buttons-container-bottom">
                   <Column lg={16} className="buttons-container">
@@ -437,9 +533,34 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
               />
             </div>
           )}
+          {formFieldProps && (
+            <div className="props-panel">
+              <FormPropsPanel />
+            </div>
+          )}
         </div>
       </div>
-
+      {/* Confirmation Row Deletion Model */}
+      <Modal
+        open={isRowDelete}
+        onRequestClose={() => setIsRowDelete(false)}
+        onRequestSubmit={() => {
+          onRowDelete(rowDataForDelete.current);
+          setIsRowDelete(false);
+        }}
+        isFullWidth
+        modalHeading="Confirmation"
+        primaryButtonText={rowDataForDelete?.current?.actionCode ? 'Delete' : 'Merge'}
+        secondaryButtonText="Cancel"
+      >
+        <p
+          style={{
+            padding: '0px 0px 1rem 1rem'
+          }}
+        >
+          {rowDataForDelete?.current?.actionCode ? 'Are you sure you want to delete' : 'Are you sure you want to merge'}
+        </p>
+      </Modal>
       {/* View Schema Modal */}
       <Modal open={open} onRequestClose={() => setOpen(false)} passiveModal modalLabel="Schema" primaryButtonText="Close" secondaryButtonText="Cancel">
         <ViewSchema layout={layout} />

@@ -1,2 +1,2 @@
-import PropsPanel from './props-panel';
-export default PropsPanel;
+export { default as PropsPanel } from './props-panel';
+export { default as FormPropsPanel } from './form-props-panel';

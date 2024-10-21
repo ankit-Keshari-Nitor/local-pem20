@@ -113,7 +113,7 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
       if (item.type === SIDEBAR_ITEM) {
         // 1. Move sidebar item into page
         const newComponent = {
-          id: uuid(),
+          id: `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`,
           ...item.component
         };
         setComponents({
@@ -243,7 +243,7 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
     if (key === SUBTAB) {
       const position = indexForChild(layout, componentPosition, 0);
       componentPosition.push(position);
-      const newLayout = addChildToChildren(layout, componentPosition, { id: uuid(), tabTitle: DEFAULTTITLE, type: SUBTAB, children: [] });
+      const newLayout = addChildToChildren(layout, componentPosition, { id: `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`, tabTitle: DEFAULTTITLE, type: SUBTAB, children: [] });
       setLayout([...newLayout]);
     } else if (key === CUSTOM_COLUMN) {
       const position = indexForChild(layout, componentPosition, 0);
@@ -415,7 +415,7 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
     e.stopPropagation();
     setDeletedFieldPath(path);
     defaultProps(newItem);
-    const newItemId = uuid();
+    const newItemId = `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`;
     const splitDropZonePath = path.split('-');
     const oldLayout = handleRemoveItemFromLayout(layout, splitDropZonePath);
     const newFormField = {
@@ -475,9 +475,9 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
             <IconButton label="Preview" size="md" kind="ghost" align="bottom-right" onClick={() => setOpenPreview(true)}>
               <View size={16} />
             </IconButton>
-            <IconButton label="Close" size="md" kind="ghost" align="bottom-right" onClick={onClickPageDesignerBack}>
+           {/*  <IconButton label="Close" size="md" kind="ghost" align="bottom-right" onClick={onClickPageDesignerBack}>
               <CloseLarge size={16} />
-            </IconButton>
+            </IconButton> */}
           </div>
         </Layer>
         <div className="layout-container">

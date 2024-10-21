@@ -1,0 +1,259 @@
+@use '@carbon/layout';
+@use '@carbon/react/scss/spacing' as *;
+@use '@carbon/colors';
+@use '@carbon/type';
+@use '@carbon/react/scss/theme' as *;
+
+
+.col-margin {
+    margin-top: 1rem;
+}
+
+.btn-show-code {
+    display: flex;
+    float: right;
+    bottom: 5.25rem;
+    padding: 0.5rem;
+    z-index: 1;
+    cursor: pointer;
+    right: 1.45rem;
+}
+
+.contextData-wrapper {
+    width: 100%;
+}
+
+.context-mapping-bt svg path {
+    transition: fill 0.3s ease;
+}
+
+/* Change icon color on button hover */
+.context-mapping-btn:hover svg path {
+    fill: var(--cds-text-inverse, #ffffff);
+    /* Replace with your desired hover color */
+}
+
+.context-mapping-btn {
+    margin-top: 1rem;
+    background-color: #ffffff;
+    top: 0.68rem;
+    height: 2.6rem;
+    width: 2.6rem;
+    padding-top: 0.7rem;
+}
+
+.cds--date-picker.cds--date-picker--single .cds--date-picker__input {
+    width: fit-content;
+}
+
+.pem--page--rollout>.sfg--modal-body {
+    height: 33rem;
+    overflow-y: hidden;
+}
+
+.pem--page--rollout>.rollout-body {
+    overflow-y: auto !important;
+}
+
+.pem--cdm-grid {
+    height: 100%;
+}
+
+.pem--cdm-tree-container {
+    height: 100%;
+    margin: 0rem 1rem;
+    border-right: 1px solid #c6c6c6;
+    overflow-y: auto;
+}
+
+.pem--table-header {
+    margin-top: 1rem;
+}
+
+.pem--table-title {
+    font-family: IBM Plex Sans;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 18px;
+    letter-spacing: 0.1599999964px;
+    text-align: left;
+}
+
+.context-mapping .cds--tab-content {
+    padding: 0rem !important;
+}
+
+//10-row table
+.modal-height {
+    height: ((3+6) * $spacing-09) + $spacing-01 !important;
+}
+
+.sfg--page-details-container {
+    height: ((3+7) * $spacing-09) + $spacing-01 !important;
+}
+
+.cds--css-grid {
+    align-items: unset;
+}
+
+.pem--name-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.define-grid {
+    --cds-grid-gutter-start: none;
+    padding-inline: unset;
+}
+
+.col-margin {
+    margin: 0.5rem;
+    display: flex;
+}
+
+.label {
+    margin-top: 1rem;
+}
+
+.cds--modal-lg .cds--modal-container {
+    inline-size: 62% !important;
+}
+
+.right-panel {
+    position: fixed;
+    top: 0;
+    padding-top: 2rem;
+    width: -webkit-fill-available;
+    padding-right: 2rem;
+}
+
+.cds--tree-node {
+    background-color: transparent !important;
+}
+
+.sfg--tree-view .cds--label {
+    display: none !important;
+}
+
+.errorMessage {
+    padding-left: 1.5rem;
+    color: var(--cds-support-error, #da1e28);
+}
+
+.successMessage {
+    padding-left: 1.5rem;
+    color: var(--cds-support-success, #24a148);
+}
+
+.rollout-body>form .cds--popover-container:not(.cds--popover--auto-align) {
+    bottom: 0.90rem;
+}
+
+.cds--date-picker-container .cds--label {
+    height: 1rem;
+}
+
+.alertIntervalWapper div label {
+    height: 1rem;
+}
+
+.partners-data-item {
+    display: flex;
+}
+
+.right-arrow-container {
+    display: flex;
+    align-items: center;
+    justify-self: center;
+}
+
+.partners-details-view-container {
+    --cds-grid-gutter-start: none;
+    padding-inline: unset;
+    height: 100%;
+    padding: 0 1rem;
+}
+
+.partners-details-view,
+.partners-details-list {
+    background-color: #ffffff;
+}
+
+.select-all-checkbox {
+    display: flex;
+    align-items: flex-end;
+    margin: 0.5rem;
+    display: flex;
+}
+
+.add-button {
+    margin-left: 1rem;
+    margin-top: 18px;
+    position: relative;
+    top: -16px;
+}
+
+.cds--tabs__nav-item-label-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cds--search {
+    width: 100% !important;
+}
+
+.partners_tags {
+    width: 100%;
+    margin: 0.5rem;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    background-color: #f4f4f4;
+    padding: 8px;
+    min-height: 100px;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.partner-checkbox-label:hover {
+    text-decoration: underline;
+}
+
+.cds--modal-scroll-content {
+    mask-image: none;
+}
+
+.partners_rollout-container {
+    margin: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.partners-data-item .cds--checkbox-label-text {
+    font-family: IBM Plex Sans;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 18px;
+    letter-spacing: 0.1599999964237213px;
+    text-align: left;
+    color: #0f62fe;
+}
+
+.partners-data-item {
+    display: flex;
+    color: #0f62fe;
+    font-size: 14px;
+    font-weight: 400;
+    font-family: IBM Plex Sans;
+}
+
+.partner-checkbox-label {
+    cursor: pointer;
+}
+
+.contextData-wrapper label {
+    display: none;
+}

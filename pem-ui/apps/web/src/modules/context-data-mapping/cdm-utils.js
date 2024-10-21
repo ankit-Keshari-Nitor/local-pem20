@@ -1,66 +1,36 @@
 // cdm-utils.js
 /* eslint-disable array-callback-return */
-const getContextDataMappingsForDialog = (dialog) => {
-  const context = {};
 
-  const processNode = (node, currentLevel) => {
-    if (node.props && node.props.outputBinding) {
-      const outputBindingPath = node.props.outputBinding.split('.');
-      outputBindingPath.forEach((key, index) => {
-        if (!currentLevel[key]) {
-          currentLevel[key] = index === outputBindingPath.length - 1 ? '' : {};
-        }
-        currentLevel = currentLevel[key];
-      });
+const generateContextDataMapping = (storeData) => {
+  return Object.keys(storeData).map((task) => {
+    const value = storeData[task];
+
+    if (value.pType) {
+      return {
+        name: task,
+        type: value.pType,
+        data: { type: value.pType }
+      };
+    } else {
+      return {
+        name: task,
+        type: '',
+        data: { type: value.pType },
+        items: generateContextDataMapping(value)
+      };
     }
-
-    if (node.children) {
-      node.children.forEach((child) => processNode(child, currentLevel));
-    }
-  };
-
-  dialog.forEach((node) => processNode(node, context));
-
-  return context;
-};
-
-const generateContextDataMapping = (activitySchema) => {
-  const contextDataMappingData = { items: [] };
-
-  activitySchema.tasks.forEach((task) => {
-    const taskData = {
-      name: task.name,
-      type: task.type,
-      items: []
-    };
-
-    task.subTasks &&
-      task.subTasks.forEach((subTask) => {
-        const dialogContext = getContextDataMappingsForDialog(subTask.jsonSchema || []);
-
-        const subTaskData = {
-          name: subTask.name,
-          type: subTask.type,
-          data: dialogContext
-        };
-
-        taskData.items.push(subTaskData);
-      });
-
-    contextDataMappingData.items.push(taskData);
   });
-
-  return contextDataMappingData;
 };
 
 const transformDataToTree = (data, parentKey = '$') => {
   const transformDataChildren = (data, parentKey) => {
     return Object.entries(data).map(([key, value]) => {
-      const dataNodeId = `${parentKey}.${key}`;
+      const dataNodeId = `${parentKey}`;
+      const titleValue = value !== undefined ? value : 'binding';
       const dataNode = {
         id: dataNodeId,
-        title: `${key} (binding)`,
-        type: 'binding',
+        title: `${key} (${titleValue})`,
+        type: `${titleValue}`,
         children: []
       };
 
@@ -68,7 +38,7 @@ const transformDataToTree = (data, parentKey = '$') => {
         dataNode.children = transformDataChildren(value, dataNodeId);
       } else if (Array.isArray(value)) {
         dataNode.children = value.map((item, index) => {
-          const arrayNodeId = `${dataNodeId}[${index}]`;
+          const arrayNodeId = `${dataNodeId}[${index}]${item.type}`;
           return {
             id: arrayNodeId,
             title: `[${index}]`,
@@ -82,27 +52,31 @@ const transformDataToTree = (data, parentKey = '$') => {
     });
   };
 
-  return data.map((item) => {
-    const nodeId = `${parentKey}.items[?(@.name==="${item.name}")]`;
-    const { items, data, ...itemProps } = item;
-    const treeNode = {
-      id: nodeId,
-      title: `${item.name}`,
-      type: item.type,
-      value: itemProps,
-      children: []
-    };
+  return (
+    data !== 'undefined' &&
+    data?.map((item) => {
+      const nodeId = `${parentKey}.${item.name}`;
+      const { items, data, ...itemProps } = item;
 
-    if (item.items) {
-      treeNode.children = transformDataToTree(item.items, nodeId);
-    }
+      const treeNode = {
+        id: nodeId && nodeId,
+        title: `${item.name}`,
+        type: item.type,
+        value: itemProps,
+        children: []
+      };
 
-    if (item.data && typeof item.data === 'object') {
-      treeNode.children = treeNode.children.concat(transformDataChildren(item.data, nodeId + '.data'));
-    }
+      if (item.items) {
+        treeNode.children = transformDataToTree(item.items, nodeId);
+      }
 
-    return treeNode;
-  });
+      if (item.data && typeof item.data === 'object') {
+        treeNode.children = treeNode.children.concat(transformDataChildren(item.data, nodeId));
+      }
+
+      return treeNode;
+    })
+  );
 };
 
 const generateTreeData = (definition, path = '$') => {

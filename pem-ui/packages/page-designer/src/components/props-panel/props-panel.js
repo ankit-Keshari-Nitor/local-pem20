@@ -54,7 +54,7 @@ import {
   ADD_TAB_BTN
 } from '../../constants/constants';
 import { collectPaletteEntries } from '../../utils/helpers';
-import { ElippsisIcon } from '../../icon';
+import { VectorIcon } from '../../icon';
 import { TrashCan, Information, Help, Add as CarbonPlus, Close } from '@carbon/icons-react';
 import Shell from '@b2bi/shell';
 
@@ -114,6 +114,7 @@ export default function PropsPanel({
     { text: '15' },
     { text: '16' }
   ];
+  const [error, setError] = useState('');
   const pageUtil = Shell.PageUtil();
   useEffect(() => {
     setEditableProps(selectedFieldProps?.component?.editableProps);
@@ -241,23 +242,24 @@ export default function PropsPanel({
   };
 
   const OpenMappingDialog = (id, key, propsName, currentPathDetail, columnId = null, columnKey = null) => {
-    pageUtil.showPageModal('CONTEXT_DATA_MAPPING.CONTEXT_DATA', {
-      data: JSON.parse(activityDefinitionData?.definition?.contextData)
-    });
-    setMappedId(id);
-    setMappedKey(key);
-    setMappedPropsName(propsName);
-    setTableColId(columnId);
-    setTableColKey(columnKey);
-    setMappedCurrentPathDetail(currentPathDetail);
-  };
-
-  const mappingSelector = (selectedValue) => {
-    mappedPropsName === TABLE_ROWS
-      ? handleRowOpt(tableColId, selectedValue, tableColKey)
-      : handleSchemaChanges(mappedId, mappedKey, mappedPropsName, selectedValue, mappedCurrentPathDetail);
-    setMappingSelectorValue(selectedValue);
-    setOpenMappingDialog(false);
+    try {
+      pageUtil
+        .showPageModal('CONTEXT_DATA_MAPPING.SELECT', {
+          data: JSON.parse(activityDefinitionData.definition?.contextData ? activityDefinitionData.definition.contextData : activityDefinitionData?.version?.contextData)
+        })
+        .then((modalData) => {
+          setMappedId(id);
+          setMappedKey(key);
+          setMappedPropsName(propsName);
+          setTableColId(columnId);
+          setTableColKey(columnKey);
+          setMappedCurrentPathDetail(currentPathDetail);
+          handleSchemaChanges(id, key, propsName, modalData?.data?.data, currentPathDetail);
+        });
+      setError('');
+    } catch (e) {
+      setError('Please enter valid context json data');
+    }
   };
 
   const handleFileExtensionTag = (id, advance, propsName, newExtension, path) => {
@@ -272,19 +274,6 @@ export default function PropsPanel({
     setFileExtensionValue(fileExtensionValue);
     handleSchemaChanges(id, advance, propsName, fileExtensionValue, path, currentTab);
   };
-
-  const Temp = (
-    <TreeView label="Context Mapping">
-      <TreeNode label="First-Name">
-        <TreeNode label="Value-1" onClick={(e) => mappingSelector('Value-1')} />
-        <TreeNode label="Value-2" onClick={(e) => mappingSelector('Value-2')} />
-      </TreeNode>
-      <TreeNode label="Last-Name">
-        <TreeNode label="Value-1" onClick={(e) => mappingSelector('Value-1')} />
-        <TreeNode label="Value-2" onClick={(e) => mappingSelector('Value-2')} />
-      </TreeNode>
-    </TreeView>
-  );
 
   // ----------------------------------------------------------------Table Related Functions----------------------------------------------------------------
 
@@ -316,7 +305,15 @@ export default function PropsPanel({
     tableolumns.map((item) => {
       tableRow[item.key] = '';
     });
-    setTableRows((preRows) => [...preRows, { id: uuid(), ...tableRow }]);
+    setTableRows((preRows) => [
+      ...preRows,
+      {
+        id: `pem_${uuid()
+          .replace(/[^0-9]/g, '')
+          .substring(0, 5)}`,
+        ...tableRow
+      }
+    ]);
   };
 
   const handleRowOpt = (index, value, key) => {
@@ -418,15 +415,15 @@ export default function PropsPanel({
                                           labelText={item.label}
                                           placeholder={item.placeholder}
                                           value={item.value}
-                                          invalid={item.invalid ? item.invalid : false}
-                                          invalidText={item.invalidText ? item.invalidText : null}
+                                          invalid={error}
+                                          invalidText={error}
                                           onChange={(e) => handleSchemaChanges(selectedFieldProps?.id, key, item.propsName, e.target.value, selectedFieldProps?.currentPathDetail)}
                                         />
                                         <Button
                                           size="md"
-                                          className="opt-btn"
+                                          className="opt-btn context-mapping-btn"
                                           kind="secondary"
-                                          renderIcon={ElippsisIcon}
+                                          renderIcon={VectorIcon}
                                           onClick={() => OpenMappingDialog(selectedFieldProps?.id, key, item.propsName, selectedFieldProps?.currentPathDetail)}
                                         ></Button>
                                       </Column>
@@ -672,9 +669,9 @@ export default function PropsPanel({
                                                     />
                                                     <Button
                                                       size="md"
-                                                      className="opt-btn"
+                                                      className="opt-btn context-mapping-btn"
                                                       kind="secondary"
-                                                      renderIcon={ElippsisIcon}
+                                                      renderIcon={VectorIcon}
                                                       onClick={() =>
                                                         OpenMappingDialog(selectedFieldProps?.id, key, item.propsName, selectedFieldProps?.currentPathDetail, index, rowitem.key)
                                                       }
@@ -788,9 +785,9 @@ export default function PropsPanel({
                                   <Button
                                     key={`text-map-${index}`}
                                     size="md"
-                                    className="mapping-button"
+                                    className="mapping-button context-mapping-btn"
                                     kind="secondary"
-                                    renderIcon={ElippsisIcon}
+                                    renderIcon={VectorIcon}
                                     onClick={() => OpenMappingDialog(selectedFieldProps?.id, 'Basic', 'mapping', selectedFieldProps?.currentPathDetail)}
                                   ></Button>
                                 )}
@@ -817,9 +814,9 @@ export default function PropsPanel({
                                     <Button
                                       key={`text-value-${index}`}
                                       size="md"
-                                      className="mapping-button"
+                                      className="mapping-button context-mapping-btn"
                                       kind="secondary"
-                                      renderIcon={ElippsisIcon}
+                                      renderIcon={VectorIcon}
                                       onClick={() => OpenMappingDialog(selectedFieldProps?.id, 'Basic', 'options', selectedFieldProps?.currentPathDetail)}
                                     ></Button>
                                   )}
@@ -863,9 +860,9 @@ export default function PropsPanel({
                             />
                             <Button
                               size="md"
-                              className="mapping-button label-mapping-button"
+                              className="mapping-button label-mapping-button context-mapping-btn"
                               kind="secondary"
-                              renderIcon={ElippsisIcon}
+                              renderIcon={VectorIcon}
                               onClick={() => OpenMappingDialog(selectedFieldProps?.id, 'Basic', TABLE_ROWS, selectedFieldProps?.currentPathDetail, 0, 'value')}
                             ></Button>
                           </div>
@@ -883,9 +880,9 @@ export default function PropsPanel({
                               />
                               <Button
                                 size="md"
-                                className="mapping-button label-mapping-button"
+                                className="mapping-button label-mapping-button context-mapping-btn"
                                 kind="secondary"
-                                renderIcon={ElippsisIcon}
+                                renderIcon={VectorIcon}
                                 onClick={() => OpenMappingDialog(selectedFieldProps?.id, 'Basic', TABLE_ROWS, selectedFieldProps?.currentPathDetail, 0, 'label')}
                               ></Button>
                             </div>
@@ -903,9 +900,9 @@ export default function PropsPanel({
                             />
                             <Button
                               size="md"
-                              className="mapping-button label-mapping-button"
+                              className="mapping-button label-mapping-button context-mapping-btn"
                               kind="secondary"
-                              renderIcon={ElippsisIcon}
+                              renderIcon={VectorIcon}
                               onClick={() => OpenMappingDialog(selectedFieldProps?.id, 'Basic', TABLE_ROWS, selectedFieldProps?.currentPathDetail, 1, 'value')}
                             ></Button>
                           </div>
@@ -922,9 +919,9 @@ export default function PropsPanel({
                             />
                             <Button
                               size="md"
-                              className="mapping-button label-mapping-button"
+                              className="mapping-button label-mapping-button context-mapping-btn"
                               kind="secondary"
-                              renderIcon={ElippsisIcon}
+                              renderIcon={VectorIcon}
                               onClick={() => OpenMappingDialog(selectedFieldProps?.id, 'Basic', TABLE_ROWS, selectedFieldProps?.currentPathDetail, 1, 'label')}
                             ></Button>
                           </div>
@@ -1271,9 +1268,6 @@ export default function PropsPanel({
           </Tabs>
         </>
       )}
-      <Modal open={openMappingDialog} onRequestClose={() => setOpenMappingDialog(false)} passiveModal>
-        {Temp}
-      </Modal>
     </div>
   );
 }

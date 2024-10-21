@@ -2,17 +2,17 @@
 import React, { useEffect, useState } from 'react';
 import { TextInput, Button, TextArea, Column, Grid } from '@carbon/react';
 import './activity-task-definition.scss';
-import { ElippsisIcon } from '../../icons';
+import { VectorIcon } from '../../icons';
 import { ACTIVITY_TASK_SCHEMA } from '../../constants';
 import Shell from '@b2bi/shell';
 
-const ActivityTaskDefinition = ({ id, onSubmitDefinitionForm, setShowActivityDefineDrawer, activityDefinitionData, readOnly }) => {
+const ActivityTaskDefinition = ({ id, onSubmitDefinitionForm, setShowActivityDefineDrawer, activityDefinitionData, readOnly, activityOperation }) => {
   ACTIVITY_TASK_SCHEMA.fields = ACTIVITY_TASK_SCHEMA.fields.map((item) => ({ ...item, isReadOnly: readOnly }));
   const pageUtil = Shell.PageUtil();
   const [formState, setFormState] = useState({
     name: 'New Activity',
     description: '',
-    contextData: ''
+    contextData: '{}'
   });
   const [errors, setErrors] = useState({ errors: {} });
 
@@ -21,7 +21,7 @@ const ActivityTaskDefinition = ({ id, onSubmitDefinitionForm, setShowActivityDef
       setFormState({
         name: activityDefinitionData.definition?.name,
         description: activityDefinitionData.definition?.description,
-        contextData: activityDefinitionData?.version.contextData
+        contextData: activityDefinitionData?.version.contextData || '{}'
       });
     }
   }, [activityDefinitionData]);
@@ -29,19 +29,36 @@ const ActivityTaskDefinition = ({ id, onSubmitDefinitionForm, setShowActivityDef
   const validateContextData = (data) => {
     const defineErrors = {};
     try {
-      pageUtil
-        .showPageModal('CONTEXT_DATA_MAPPING.CONTEXT_DATA', {
-          data: JSON.parse(data)
-        })
-        .then((modalData) => {
-          setFormState((prev) => ({
-            ...prev,
-            contextData: JSON.stringify(modalData.data?.data)
-          }));
+      let jsonData;
+      let isValidData = false;
+      try {
+        jsonData = JSON.parse(data);
+        isValidData = jsonData && typeof jsonData === 'object' && Object.keys(jsonData).length > 0;
+      } catch (error) {
+        console.error("Failed to parse context data:", error);
+        isValidData = false;
+      }
+      if (isValidData) {
+        pageUtil
+          .showPageModal('CONTEXT_DATA_MAPPING.CONTEXT_DATA', {
+            data: JSON.parse(data)
+          })
+          .then((modalData) => {
+            setFormState((prev) => ({
+              ...prev,
+              contextData: JSON.stringify(modalData.data?.data)
+            }));
+          });
+        setErrors({
+          errors: ''
         });
-      setErrors({
-        errors: ''
-      });
+      } else {
+        setErrors({
+          errors: 'Please enter valid json data.'
+        });
+      }
+
+
     } catch (e) {
       defineErrors.contextData = 'Please enter valid json data.';
       setErrors({
@@ -67,8 +84,17 @@ const ActivityTaskDefinition = ({ id, onSubmitDefinitionForm, setShowActivityDef
     if (!formState.name || formState.name.trim().length === 0) {
       defineErrors.name = 'Name is required';
     }
+
     if (formState.name.trim().length > 0 && formState.name.trim().length >= 100) {
       defineErrors.name = 'Name must be no longer then 100 characters';
+    }
+
+    if (activityOperation === 'Edit' && formState.description.trim().length === 0) {
+      defineErrors.description = 'Description is required';
+    }
+
+    if (!formState.contextData || formState.contextData.trim().length === 0) {
+      defineErrors.contextData = 'Invalid Context Data';
     }
     // Update errors state
     setErrors({
@@ -90,6 +116,7 @@ const ActivityTaskDefinition = ({ id, onSubmitDefinitionForm, setShowActivityDef
         <Column className="col-margin" lg={16}>
           <TextInput
             labelText={pageUtil.t('mod-context-data-properties:form.name')}
+            placeholder={pageUtil.t('mod-context-data-properties:form.namePlaceholder')}
             className="request-wrapper"
             id="name"
             required
@@ -108,6 +135,7 @@ const ActivityTaskDefinition = ({ id, onSubmitDefinitionForm, setShowActivityDef
             id="description"
             data-testid="description"
             labelText={pageUtil.t('mod-context-data-properties:form.description')}
+            placeholder={pageUtil.t('mod-context-data-properties:form.descriptionPlaceholder')}
             rows={3}
             enableCounter={true}
             counterMode="character"
@@ -118,6 +146,8 @@ const ActivityTaskDefinition = ({ id, onSubmitDefinitionForm, setShowActivityDef
             name="description"
             disabled={readOnly}
             onChange={handlePropertyFormChange}
+            invalid={!!errors.errors.description}
+            invalidText={errors.errors.description}
           />
         </Column>
         <Column className="col-margin" lg={formState.contextData !== '' ? 15 : 16}>
@@ -136,14 +166,14 @@ const ActivityTaskDefinition = ({ id, onSubmitDefinitionForm, setShowActivityDef
           />
         </Column>
         {formState.contextData !== '' && (
-          <Column lg={1}>
+          <Column lg={1} className="context-mapping-button-container">
             <Button
               onClick={() => {
                 validateContextData(formState.contextData);
               }}
               className="context-mapping-btn"
               kind="tertiary"
-              renderIcon={ElippsisIcon}
+              renderIcon={VectorIcon}
               size="sm"
               hasIconOnly
               disabled={readOnly}

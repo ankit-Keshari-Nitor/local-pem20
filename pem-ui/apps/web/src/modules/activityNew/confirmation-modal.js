@@ -80,7 +80,7 @@ function ConfirmationModal() {
                     let handler = this.ds.markAsFinal(data);
 
                     handler && handler.then((response) => {
-                        let kind = response.status === 200 ? 'success' : 'error';
+                        let kind = response.status === 200 ? pageUtil.t('shell:common.actions.success') : pageUtil.t('shell:common.actions.error');
                         let message = response.status === 200 ? 'Action completed successfully!' : 'Action not completed successfully!';
                         pageUtil.showNotificationMessage('toast', kind, message);
                         modalConfig.onAction('cancel', {});
@@ -99,7 +99,7 @@ function ConfirmationModal() {
 
                     handler && handler.then((response) => {
 
-                        let kind = response.status === 200 ? 'success' : 'error';
+                        let kind = response.status === 200 ? pageUtil.t('shell:common.actions.success') : pageUtil.t('shell:common.actions.error');
                         let message = response.status === 200 ? 'Action completed successfully!' : 'Action not completed successfully!';
                         pageUtil.showNotificationMessage('toast', kind, message);
                         modalConfig.onAction('cancel', {});
@@ -117,7 +117,7 @@ function ConfirmationModal() {
                     let handler = this.ds.delete(data);
 
                     handler && handler.then((response) => {
-                        let kind = response.status === 200 ? 'success' : 'error';
+                        let kind = response.status === 200 ? pageUtil.t('shell:common.actions.success') : pageUtil.t('shell:common.actions.error');
                         let message = response.status === 200 ? 'Action completed successfully!' : 'Action not completed successfully!';
                         pageUtil.showNotificationMessage('toast', kind, message);
                         modalConfig.onAction('cancel', {});

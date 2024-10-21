@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Shell from '@b2bi/shell';
 import { NewTab, Information, RecentlyViewed, Add, Delete } from '@carbon/icons-react';
 import '@b2bi/styles/pages/list-page.scss';
@@ -6,13 +6,10 @@ import { Tooltip, Tag } from '@carbon/react';
 import './styles.scss';
 
 import useActivityStore from '../activity/store';
-import ActivityRolloutModal from '../activity/components/rollout-wizard';
 import { capitalizeFirstLetter } from '../activity/constants';
 
 const DefinitionList = ({ mode, context }) => {
   const store = useActivityStore();
-  const [selectedActivity, setSelectedActivity] = useState(null);
-  const [showRolloutModal, setShowRolloutModal] = useState(false);
 
   const pageUtil = Shell.PageUtil();
   const pageArgs = pageUtil.pageParams;
@@ -413,11 +410,6 @@ const DefinitionList = ({ mode, context }) => {
               page.datatable.definitionList.refresh();
             });
         },
-
-        uiMarkAsFinal: function () {
-          console.log('MarkAsFinal');
-        },
-
         uiOnCellActionClick: function (action, activityDefKey, actVersionKey = '') {
           const record = page.model.list.data.filter((x) => x.id === activityDefKey)[0];
           store.setSelectedActivity({
@@ -428,7 +420,6 @@ const DefinitionList = ({ mode, context }) => {
             status: record.defaultVersion.status,
             version: record.defaultVersion.version
           });
-          setSelectedActivity(record);
           switch (action) {
             case pageUtil.t('mod-activity-list:list.actions.markAsFinal'):
               pageUtil
@@ -445,10 +436,16 @@ const DefinitionList = ({ mode, context }) => {
                 });
               break;
             case pageUtil.t('mod-activity-list:list.actions.rollout'):
-              setShowRolloutModal(true); //(id);
+
+              pageUtil.showPageModal('ROLLOUT.SELECT', {
+                data: {
+                  activityDefnVersionKey: actVersionKey,
+                  activityDefnKey: activityDefKey,
+                  activityName: record.name
+                }
+              });
               break;
             case pageUtil.t('mod-activity-list:list.actions.restore'):
-              console.log('Restore Activity');
               pageUtil.showPageModal('FUNCTIONALITY_NOT_IMPLEMENTED_MODAL.View', {});
               break;
             case pageUtil.t('mod-activity-list:list.actions.delete'):
@@ -465,7 +462,6 @@ const DefinitionList = ({ mode, context }) => {
                 });
               break;
             case pageUtil.t('mod-activity-list:list.actions.testActivity'):
-              console.log('Test Activity');
               pageUtil.showPageModal('FUNCTIONALITY_NOT_IMPLEMENTED_MODAL.View', {});
               break;
             case pageUtil.t('mod-activity-list:list.actions.edit'):
@@ -475,15 +471,12 @@ const DefinitionList = ({ mode, context }) => {
               page.uiView(activityDefKey);
               break;
             case pageUtil.t('mod-activity-list:list.actions.exportActivity'):
-              console.log('Export Activity');
               pageUtil.showPageModal('FUNCTIONALITY_NOT_IMPLEMENTED_MODAL.View', {});
               break;
             case pageUtil.t('mod-activity-list:list.actions.cloneActivity'):
-              console.log('Clone Activity');
               pageUtil.showPageModal('FUNCTIONALITY_NOT_IMPLEMENTED_MODAL.View', {});
               break;
             case pageUtil.t('mod-activity-list:list.actions.shareUnshared'):
-              console.log('Share/Unshared Activity');
               pageUtil.showPageModal('FUNCTIONALITY_NOT_IMPLEMENTED_MODAL.View', {});
               break;
             default:
@@ -511,18 +504,7 @@ const DefinitionList = ({ mode, context }) => {
           ></Shell.DataTable>
         </Shell.PageBody>
         <Shell.PageActions></Shell.PageActions>
-        {showRolloutModal && (
-          <ActivityRolloutModal
-            showModal={showRolloutModal}
-            setShowModal={() => setShowRolloutModal(false)}
-            activityDefnKey={selectedActivity ? selectedActivity.activityDefnKey : ''}
-            activityDefnVersionKey={selectedActivity ? selectedActivity.actDefVerKey : ''}
-            activityName={selectedActivity ? selectedActivity.name : ''}
-            reloadActivityList={() => {
-              page.datatable.definitionList.refresh();
-            }}
-          />
-        )}
+
       </Shell.Page>
     </>
   );

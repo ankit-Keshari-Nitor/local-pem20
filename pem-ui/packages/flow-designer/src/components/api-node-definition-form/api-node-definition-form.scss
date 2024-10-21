@@ -201,10 +201,12 @@
 .btn-show-code {
   display: flex;
   float: right;
-  bottom: 5.25rem;
+  bottom: 5.15rem;
   padding: 0.5rem;
   z-index: 1;
   cursor: pointer;
+  color: #161616;
+  border: 1px solid #C6C6C6; 
 }
 
 .context-btn-request {
@@ -222,7 +224,8 @@
   margin-left: 1rem;
 }
 
-.cds--text-area__label-wrapper>.cds--label {
+.cds--text-area__label-wrapper>.cds--label,
+.cds--label--disabled {
   color: var(--cds-text-secondary, #525252);
 }
 
@@ -283,12 +286,24 @@
 
 .header-container {
   display: flex;
-  justify-content: space-between; 
-  align-items: center; 
-  margin-bottom: 10px; 
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
 }
 
 .edit-header {
-  margin: 0;  
-  padding: 5px; 
+  margin: 0;
+  padding: 5px;
+}
+
+.input-border {
+  border-bottom: 1px solid black;
+}
+
+.cds--text-input__invalid-icon {
+  position: absolute;
+  fill: var(--cds-support-error, #da1e28);
+  inset-block-start: 72%;
+  inset-inline-end: 1rem;
+  transform: translateY(-50%);
 }

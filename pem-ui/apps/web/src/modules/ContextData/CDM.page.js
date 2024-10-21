@@ -52,22 +52,14 @@ const CDMModalPage = ({ mode, context }) => {
           }
         },
         _processProperty: function () {
-          //console.log('contextDataMapping :::', modalConfig.data.data);
-          //console.log('contextDataMapping :::', JSON.stringify(modalConfig.data.data, null, 2));
           const transformedData = generateTreeData(modalConfig.data.data);
-          //console.log('transformedData :::', transformedData);
-          //console.log('transformedData :::', updateTreeNodeIcon(transformedData, iconMapping));
-          //this.setModel('data', updateTreeNodeIcon(transformedData, iconMapping));
           updateTreeNodeIcon(transformedData, iconMapping);
           this.setModel('data', transformedData);
           this.setModel('originalData', modalConfig.data.data);
         },
         _processActivity: function () {
           const contextDataMapping = generateContextDataMapping(ActivitySchema);
-          console.log('contextDataMapping :::', contextDataMapping);
-          console.log('contextDataMapping :::', JSON.stringify(contextDataMapping, null, 2));
           const transformedData = transformDataToTree(contextDataMapping.items);
-          console.log('transformedData :::', transformedData);
           this.setModel('data', transformedData);
           this.setModel('originalData', { items: modalConfig.data.data });
         },
@@ -111,10 +103,7 @@ const CDMModalPage = ({ mode, context }) => {
           }
         },
         uiOnPropertyChange: function (event, value) {
-          //console.log('uiOnPropertyChange', event, value);
-          //console.log(this.ui.selectedNode.activeNodeId);
           const propertyRef = JSONPath({ path: `${this.ui.selectedNode.activeNodeId}`, json: this.model.originalData, wrap: false });
-          //console.log(propertyRef);
           this.ui.selectedNode.value.value = event.target.value;
           propertyRef.pValue = event.target.value;
         },
@@ -140,19 +129,6 @@ const CDMModalPage = ({ mode, context }) => {
           return page.uiOnSelectNode.apply(page, args);
         }
       },
-      /*actions: [
-        {
-          type: 'Button',
-          label: 'Add',
-          name: 'Add',
-          state: (...args) => {
-            return console.log(args);
-          },
-          onAction: (...args) => {
-            return console.log(args);
-          }
-        }
-      ],*/
       emptyStates: {
         ResourceNotSelected: {
           image: <div data-testid="ResourceNotSelected-Image"></div>,

@@ -18,7 +18,9 @@ const CreateUploadForm = ({ documentCategory }) => {
           }
         },
         ui: {
-          selectedFile: undefined
+          selectedFile: undefined,
+          errorState: undefined,
+          successState: undefined,
         },
         form: {
           file: {
@@ -31,7 +33,7 @@ const CreateUploadForm = ({ documentCategory }) => {
             selectedFile: undefined
           }
         },
-        init: function () { },
+        init: function () {},
         uiOnRequestSubmit: function () {
           this.form.file.handleSubmit(this.uiUpload)();
         },
@@ -54,15 +56,17 @@ const CreateUploadForm = ({ documentCategory }) => {
               params: params
             })
             .then(() => {
-              pageUtil.showNotificationMessage('toast', 'success', pageUtil.t('mod-sponsor-server:field.uploadField.success'));
-              //  modalConfig.onAction('submit', {});
+              this.setUI('selectedFile', undefined);
+              this.form.file.reset(pageUtil.getSubsetJson(this.form.file.attributes));
+              this.setUI('successState', pageUtil.t('mod-sponsor-server:field.uploadField.success'))
+            }).catch((error) => {
+              this.setUI('errorState', error.response?.data?.errorDescription)
             });
         },
         uiOnAddFile: function (event, files) {
           this.setUI('selectedFile', files.addedFiles[0]);
         },
         uiOnDeleteFile: function (...args) {
-          console.log(args);
           this.setUI('selectedFile', undefined);
         }
       };
@@ -94,6 +98,9 @@ const CreateUploadForm = ({ documentCategory }) => {
           <CDS.Form name="file" context={page.form.file}>
             <Layer level={0} className="sfg--page-details-container" style={{ margin: '1rem 0rem' }}>
               <Grid className="sfg--grid-container sfg--grid--form">
+                <Column lg={16}>  {page.ui.errorState !== undefined && (<span className='errorMessage'>{page.ui.errorState}</span>)}</Column>
+                <Column lg={16}>  {page.ui.successState !== undefined && (<span className='successMessage'>{page.ui.successState}</span>)}</Column>
+
                 <Column lg={6}>
                   <Grid>
                     <Column lg={6}>
@@ -101,8 +108,12 @@ const CreateUploadForm = ({ documentCategory }) => {
                         labelText={pageUtil.t('mod-sponsor-server:field.uploadField.name')}
                         name="documentName"
                         rules={{
-                          required: true, minLength: 1, maxLength: 30, pattern: {
-                            value: /^[a-zA-Z0-9@#%^&*(){}[\]+=;:"'!?/.,\\|~`\s]*$/i, message: pageUtil.t('mod-sponsor-server:message.nameErrorMessage')
+                          required: true,
+                          minLength: 1,
+                          maxLength: 30,
+                          pattern: {
+                            value: /^[a-zA-Z0-9@#%^&*(){}[\]+=;:"'!?/.,\\|~`\s]*$/i,
+                            message: pageUtil.t('mod-sponsor-server:message.nameErrorMessage')
                           }
                         }}
                       />
@@ -116,8 +127,12 @@ const CreateUploadForm = ({ documentCategory }) => {
                         counterMode="character"
                         maxCount={255}
                         rules={{
-                          required: false, minLength: 1, maxLength: 255, pattern: {
-                            value: /^[a-zA-Z0-9@#%^&*(){}[\]+=;:"'!?/.,\\|~`\s]*$/i, message: pageUtil.t('mod-sponsor-server:message.nameErrorMessage')
+                          required: false,
+                          minLength: 1,
+                          maxLength: 255,
+                          pattern: {
+                            value: /^[a-zA-Z0-9@#%^&*(){}[\]+=;:"'!?/.,\\|~`\s]*$/i,
+                            message: pageUtil.t('mod-sponsor-server:message.nameErrorMessage')
                           }
                         }}
                       />
@@ -134,6 +149,7 @@ const CreateUploadForm = ({ documentCategory }) => {
                     maxFileSize={'2mb'}
                     onChange={page.uiOnAddFile}
                     onDelete={page.uiOnDeleteFile}
+                    value={page.ui.selectedFile}
                   ></CDS.FileUpload>
                 </Column>
 
@@ -144,8 +160,13 @@ const CreateUploadForm = ({ documentCategory }) => {
             </Layer>
           </CDS.Form>
         </Shell.PageBody>
-        <Shell.PageActions actions={pageConfig.actionsConfig.pageActions}></Shell.PageActions>
-      </Shell.Page >
+        <Grid>
+          <Column lg={8} md={8}></Column>
+          <Column lg={4} md={4}>
+            <Shell.PageActions actions={pageConfig.actionsConfig.pageActions}></Shell.PageActions>
+          </Column>
+        </Grid>
+      </Shell.Page>
     </>
   );
 };

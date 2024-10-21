@@ -24,10 +24,10 @@ export default function BlockPropertiesTray(props) {
     setOpenPropertiesBlock,
     readOnly,
     onExpand,
-    onDesignFormBtnClick, // Form Desginer Page
     deleteBranchNodeConnector,
     isDialogFlowActive,
-    selectedTaskNode
+    selectedTaskNode,
+    getApiConfiguration
   } = props;
 
   const [isExpanded, setIsExpanded] = useState(false);

@@ -28,8 +28,10 @@ export default function TaskNode(nodeConfig) {
     >
       <Handle id="left" type="target" position={Position.Left} isConnectable={nodeConfig?.isConnectable} />
       <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <label style={{ color: borderColor }}>{editableProps.name ? editableProps?.name : id}</label>
-        <label>{taskName}</label>
+        <label className="task-type-name" style={{ color: selected ? borderColor : '#525252' }}>
+          {editableProps.name ? editableProps?.name : id}
+        </label>
+        <label className="task-type-text">{taskName}</label>
       </div>
       <div>
         {!nodeConfig?.data.readOnly && (

@@ -85,7 +85,7 @@ const getInitialNodeEdges = (taskId, sourceId, targetId, category, onNodeContext
       id: targetId,
       type: NODE_TYPE.END,
       data: { taskName: 'End', label: taskId === null ? '' : 'End' },
-      position: { x: 450, y: 300 },
+      position: { x: 550, y: 300 },
       targetPosition: 'left'
     }
   ];

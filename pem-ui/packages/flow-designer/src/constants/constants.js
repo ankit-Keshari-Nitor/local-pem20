@@ -494,7 +494,7 @@ export const TASK_INITIAL_NODES = [
     id: 'end_1',
     type: NODE_TYPE.END,
     data: { taskName: 'End' },
-    position: { x: 450, y: 300 },
+    position: { x: 550, y: 300 },
     targetPosition: 'left'
   }
 ];
@@ -505,14 +505,14 @@ export const DIALOG_INITIAL_NODES = [
     id: 'start_1',
     type: NODE_TYPE.START,
     data: { label: 'Start', taskName: 'Start' },
-    position: { x: 350, y: 500 },
+    position: { x: 250, y: 300 },
     sourcePosition: 'right'
   },
   {
     id: 'end_1',
     type: NODE_TYPE.END,
     data: { label: 'End', taskName: 'End' },
-    position: { x: 950, y: 500 },
+    position: { x: 550, y: 300 },
     targetPosition: 'left'
   }
 ];
@@ -682,7 +682,7 @@ export const selector =
   };
 
 export const requestMethods = [
-  { id: 'select', label: '--Select--', value: '' },
+  { id: 'select', label: 'Choose an option', value: '' },
   { id: 'GET', label: 'GET', value: 'GET' },
   { id: 'POST', label: 'POST', value: 'POST' },
   { id: 'PUT', label: 'PUT', value: 'PUT' },
@@ -690,13 +690,13 @@ export const requestMethods = [
 ];
 
 export const inputOutputFormats = [
-  { id: 'select', label: '--Select--', value: '' },
-  { id: 'xml', label: 'XML', value: 'XML' },
-  { id: 'json', label: 'JSON', value: 'JSON' }
+  { id: 'select', label: 'Choose an option', value: '' },
+  { id: 'xml', label: 'XML', value: 'application/xml' },
+  { id: 'json', label: 'JSON', value: 'application/json' }
 ];
 
 export const apiConfig = [
-  { id: 'select', label: '--Select--', value: '' },
+  { id: 'select', label: 'Choose an option', value: '' },
   { id: 'SFG_LOCAL', label: 'SFG_LOCAL', value: 'SFG_LOCAL' },
   { id: 'PEM_DEV', label: 'PEM_DEV', value: 'PEM_DEV' }
 ];
@@ -717,6 +717,8 @@ export const queryValidation = (query, queryValidator) => {
           if (leftOp === '' || rightOp === '' || operator === '') {
             queryValidator = {
               ...queryValidator,
+              valid: false,
+              reasons: 'You have not selected the Relational Operator. Select the appropriate operator',
               [item.id]: { valid: false, reasons: 'You have not selected the Relational Operator. Select the appropriate operator' }
             };
           }
@@ -725,11 +727,15 @@ export const queryValidation = (query, queryValidator) => {
           if (leftOp === '' || rightOp === '' || operator === '') {
             queryValidator = {
               ...queryValidator,
+              valid: false,
+              reasons: 'You have not selected the Relational Operator. Select the appropriate operator',
               [item.id]: { valid: false, reasons: 'You have not selected the Relational Operator. Select the appropriate operator' }
             };
           } else if (isNaN(leftOp) || isNaN(rightOp)) {
             queryValidator = {
               ...queryValidator,
+              valid: false,
+              reasons: 'Invalid Numeric value',
               [item.id]: { valid: false, reasons: 'Invalid Numeric value' }
             };
           }
@@ -738,15 +744,18 @@ export const queryValidation = (query, queryValidator) => {
           if (leftOp !== 'true' || leftOp !== 'false' || rightOp !== 'true' || rightOp !== 'false') {
             queryValidator = {
               ...queryValidator,
+              valid: false,
+              reasons: 'Invalid Boolean value',
               [item.id]: { valid: false, reasons: 'Invalid Boolean value' }
             };
           }
           break;
         case 'date':
-          console.log('leftOp Date>>>>', query);
           if (leftOp === '' || rightOp === '' || operator === '') {
             queryValidator = {
               ...queryValidator,
+              valid: false,
+              reasons: 'Invalid value',
               [item.id]: { valid: false, reasons: 'Invalid value' }
             };
           }

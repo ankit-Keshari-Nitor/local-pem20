@@ -1,7 +1,6 @@
 {
   "dashboard": "Dashboard",
   "userProfile": "User Profile",
-
   "login": {
     "languageChooser": "Choose the language",
     "welcome_message": "Welcome to",
@@ -140,9 +139,11 @@
       "deleteFile_ACTIVE": "Deleting file...",
       "deleteFile_SUCCESS": "Delete File Successful",
       "deleteFile_ERROR": "Delete File Error",
-      "backToDetails":"Back to Details"
-    }
-    ,
+      "backToDetails": "Back to Details",
+      "rollout": "Rollout",
+      "success": "success",
+      "error": "error"
+    },
     "errors": {
       "fileSizeLimit_title": "File size exceeds limit",
       "fileSizeLimit_description": "{{maxFileSize}} max file size. Select a new file and try again.",
@@ -194,7 +195,8 @@
       "patterns": "This field doesnot match the required pattern",
       "patterns_EMAIL": "This field should have valid Email",
       "patterns_PHONE": "This field should have valid Phone Number",
-      "patterns_ZIPCODE": "This field should have valid Postal code"
+      "patterns_ZIPCODE": "This field should have valid Postal code",
+      "number":"This field should have number."
     }
   },
   "modal": {
@@ -214,7 +216,11 @@
   "notification": {
     "close_arialabel": "Closes notification",
     "statusIconDescription": "Notification",
-    "timestamp": "Timestamp [{{timestamp}}]"
+    "timestamp": "Timestamp [{{timestamp}}]",
+    "type": {
+      "success": "success",
+      "error": "error"
+    }
   },
   "wizard": {
     "actions": {

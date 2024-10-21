@@ -1,5 +1,18 @@
-import { API_END_POINTS, TEST_DIALOG_DATA } from './../constants';
+import { API_END_POINTS, TEST_DIALOG_DATA, API_METHODS } from './../constants';
 import { RestApiService } from '../../../common/api-handler/rest-api-service';
+import Shell from '@b2bi/shell';
+
+const generateOptions = (param = {}) => {
+  const options = {
+    headers: {
+      Accept: 'application/json'
+    },
+    params: param
+  };
+
+  return options;
+};
+
 
 // Function to get the list of all activities
 export const getActivityList = async (pageNo, pageSize, sortDir = 'ASC', searchKey = '', status = '', sortBy = 'modifyts') => {
@@ -132,3 +145,12 @@ export const getActivityTestData = async () => {
     return [];
   }
 };
+
+// Function to get the API Configuration List
+export const getAPIConfiguration = async () => {
+  let url = `${API_END_POINTS.API_CONFIGURATION}`;
+  let dataLoaderConfig = { url, method: API_METHODS.GET };
+
+  const response = await new Shell.RestApiService().call(dataLoaderConfig, null, generateOptions());
+  return response.status === 200 ? response?.data : [];
+}

@@ -3,9 +3,12 @@ import { Button, Column, Grid, Layer, Tooltip } from '@carbon/react';
 import { Information } from '@carbon/icons-react';
 import Shell, { CDS } from '@b2bi/shell';
 
-const CreateApiConfiguration = ({ mode, contextPage }) => {
+import '../styles.scss'
+
+const CreateApiConfiguration = ({ mode, contextPage, cdmPage }) => {
   const pageUtil = Shell.PageUtil();
   const pageArgs = pageUtil.pageParams;
+
 
   const { page } = Shell.usePage(
     [],
@@ -21,8 +24,6 @@ const CreateApiConfiguration = ({ mode, contextPage }) => {
         },
         ui: {
           mode: mode,
-          errorState: undefined,
-          successState: undefined,
         },
         form: {
           apiConfiguration: {
@@ -41,8 +42,14 @@ const CreateApiConfiguration = ({ mode, contextPage }) => {
             authenticationType: 'NONE'
           }
         },
-        init: function () { },
+        init: function () {
+          cdmPage.setUI('successStateApiForm', undefined);
+          cdmPage.setUI('errorStateApiForm', undefined);
+          this.form.apiConfiguration.reset(pageUtil.getSubsetJson(this.form.apiConfiguration.attributes));
+        },
         uiSave: function () {
+          cdmPage.setUI('errorStateApiForm', undefined);
+          cdmPage.setUI('successStateApiForm', undefined)
           const apiConfigurationInput = pageUtil.removeEmptyAttributes(this.form.apiConfiguration.getValues());
 
           let handler;
@@ -55,9 +62,9 @@ const CreateApiConfiguration = ({ mode, contextPage }) => {
             .then((response) => {
               this.form.apiConfiguration.reset(pageUtil.getSubsetJson(this.form.apiConfiguration.attributes));
               contextPage.page.setUI('selectedRowSponsorServer', response.data.apiConfigurationKey)
-              this.setUI('successState', pageUtil.t('mod-sponsor-server:field.uploadField.success'))
+              cdmPage.setUI('successStateApiForm', pageUtil.t('mod-sponsor-server:message.success'))
             })
-            .catch((error) => { this.setUI('errorState', error.response?.data?.errorDescription) });
+            .catch((error) => { cdmPage.setUI('errorStateApiForm', error.response?.data?.errorDescription) });
         },
         uiOnAuthenticalTypeChange: function (event) {
           page.form.apiConfiguration.resetField('userName', { defaultValue: '' });
@@ -93,11 +100,11 @@ const CreateApiConfiguration = ({ mode, contextPage }) => {
   return (
     <>
 
-      <CDS.Form name="apiConfiguration" context={page.form.apiConfiguration}>
+      <CDS.Form name="apiConfiguration" context={page.form.apiConfiguration} className="apiConfiguration-form">
         <Layer level={0} className="sfg--page-details-container" style={{ margin: '1rem 0rem' }}>
           <Grid className="sfg--grid-container sfg--grid--form">
-            <Column lg={16}>  {page.ui.errorState !== undefined && (<span className='errorMessage'>{page.ui.errorState}</span>)}</Column>
-            <Column lg={16}>  {page.ui.successState !== undefined && (<span className='successMessage'>{page.ui.successState}</span>)}</Column>
+            <Column lg={12}>  {cdmPage.ui.errorStateApiForm !== undefined && (<span className='errorMessage'>{cdmPage.ui.errorStateApiForm}</span>)}</Column>
+            <Column lg={12}>  {cdmPage.ui.successStateApiForm !== undefined && (<span className='successMessage'>{cdmPage.ui.successStateApiForm}</span>)}</Column>
 
             <Column lg={6} md={6}>
               <CDS.TextInput
@@ -145,7 +152,7 @@ const CreateApiConfiguration = ({ mode, contextPage }) => {
                 disabled={page.form.apiConfiguration.watch('protocol') !== 'https'}
               ></CDS.ComboBox>
             </Column>
-            <Column lg={6} md={6}>
+            <Column lg={6} md={6} className='authentication-wrapper'>
               <CDS.Checkbox
                 labelText={
                   <span className="pem--name-label">
@@ -158,7 +165,7 @@ const CreateApiConfiguration = ({ mode, contextPage }) => {
                 name="preemptiveAuth"
               ></CDS.Checkbox>
             </Column>
-            <Column lg={16} md={16}>
+            <Column lg={12} md={12}>
               <CDS.RadioButtonGroup
                 legendText={pageUtil.t('mod-sponsor-server:field.authenticateWith')}
                 name="authenticationType"
@@ -200,7 +207,7 @@ const CreateApiConfiguration = ({ mode, contextPage }) => {
             )}
             {page.form.apiConfiguration.watch('protocol') === 'https' && (
               <>
-                <Column lg={16} md={16}>
+                <Column lg={12} md={12}>
                   <CDS.Checkbox
                     labelText={
                       <span className="pem--name-label">
@@ -215,8 +222,8 @@ const CreateApiConfiguration = ({ mode, contextPage }) => {
                 </Column>
               </>
             )}
-            <Column lg={9}></Column>
-            <Column lg={7}>
+            <Column lg={7}></Column>
+            <Column lg={5} className='btn-wrapper'>
               <Button kind="tertiary" onClick={() => { page.form.apiConfiguration.handleSubmit(page.uiSave)() }}>Create</Button>
             </Column>
           </Grid>

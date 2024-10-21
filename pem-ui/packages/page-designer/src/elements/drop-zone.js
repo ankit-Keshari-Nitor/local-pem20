@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import classNames from 'classnames';
 import { useDrop } from 'react-dnd';
-import { COMPONENT, SIDEBAR_ITEM, ROW, COLUMN, GROUP_MENU } from '../constants/constants';
-import { ColumnMenuHoverIcon, ColumnMenuIcon } from '../icon';
+import { COMPONENT, SIDEBAR_ITEM, ROW, COLUMN } from '../constants/constants';
+import { ColumnPlusIcon } from '../icon';
 
 const ACCEPTS = [SIDEBAR_ITEM, COMPONENT, ROW, COLUMN];
 
-const DropZone = ({ data, onDrop, isLast, className, onGroupChange }) => {
+const DropZone = ({ data, onDrop, isLast, className }) => {
   const [{ isOver, canDrop }, drop] = useDrop({
     accept: ACCEPTS,
     drop: (item, monitor) => {
@@ -62,39 +62,10 @@ const DropZone = ({ data, onDrop, isLast, className, onGroupChange }) => {
   });
 
   const isActive = isOver && canDrop;
-  const [mouseOut, setMouseOut] = useState(true);
-  const [componentGroup, setComponentGroup] = useState(false);
   return (
     <div className={classNames('dropZone', { active: isActive, isLast }, className)} ref={drop}>
       {isActive ? <span className="release-text">Release</span> : null}
-      {className === 'plus-icon' &&
-        (mouseOut ? (
-          <span className="hover-plus-icon" onMouseOver={(e) => setMouseOut(false)}>
-            <ColumnMenuIcon />
-          </span>
-        ) : (
-          <span className="hover-plus-icon" onClick={(e) => setComponentGroup(!componentGroup)} onMouseOut={(e) => setMouseOut(true)}>
-            <ColumnMenuHoverIcon />
-          </span>
-        ))}
-      {componentGroup && (
-        <div className="component-group">
-          {GROUP_MENU.map((item) => {
-            return (
-              <div
-                key={item.key}
-                onClick={(e) => {
-                  setComponentGroup(false);
-                  onGroupChange(e, item.key, data.path);
-                }}
-                className="component-group-item"
-              >
-                {item.value}
-              </div>
-            );
-          })}
-        </div>
-      )}
+      {className === 'plus-icon' && <ColumnPlusIcon />}
     </div>
   );
 };

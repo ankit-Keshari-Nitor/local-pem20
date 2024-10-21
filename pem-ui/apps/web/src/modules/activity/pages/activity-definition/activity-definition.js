@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Designer from '@b2bi/flow-designer';
 import './activity-definition.scss';
 import useActivityStore from '../../store';
-import { getActivityDetails, saveActivityData, getAPIConfiguration } from '../../services/activity-service';
+import { getActivityDetails, saveActivityData, getAPIConfiguration, getRoles } from '../../services/activity-service';
 import { updateActivityVersion } from '../../services/actvity-version-service';
 import { OPERATIONS } from '../../constants';
 import {
@@ -100,6 +100,21 @@ export default function ActivityDefinition() {
       });
     }
   }, []);
+
+  useEffect(() => {
+    if (store.activityData?.definition) {
+      setActivityDesignerStack(() => {
+        return [
+          {
+            type: 'ACTIVITY',
+            label: activityObj.definition.name,
+            pathname: activityObj.definition.id,
+            id: activityObj.definition.id
+          }
+        ];
+      });
+    }
+  }, [activityObj.definition.name])
 
   useEffect(() => {
     setActivityBreadcrumbs(
@@ -267,6 +282,17 @@ export default function ActivityDefinition() {
     }
   };
 
+  //Roles List Call
+  const getRoleList = async () => {
+    try {
+      const roleList = await getRoles();
+      return roleList
+    } catch (error) {
+      console.error('Error fetching Role list:', error);
+
+    }
+  }
+
   const handleClick = (event) => {
     if (event.currentTarget.getAttribute('id') === '1' && activityDesignerStack.length > 2) {
       setIsDialogFlowActive(true);
@@ -373,6 +399,7 @@ export default function ActivityDefinition() {
             selectedVersion={store.selectedActivity ? store.selectedActivity.version : 1} //todo - pass current version id being loaded
             setNotificationProps={setNotificationProps} // to show the success notification
             getApiConfiguration={getApiConfiguration}//to call the API Configuration
+            getRoleList={getRoleList} // to call Role List
             isDialogFlowActive={isDialogFlowActive}
             setIsDialogFlowActive={setIsDialogFlowActive}
             isPageDesignerActive={isPageDesignerActive}

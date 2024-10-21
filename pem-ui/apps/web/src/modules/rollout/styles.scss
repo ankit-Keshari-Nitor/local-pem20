@@ -80,7 +80,7 @@
 }
 
 .context-mapping .cds--tab-content {
-    padding: 0rem !important;
+    padding: 0 !important;
 }
 
 //10-row table
@@ -89,7 +89,11 @@
 }
 
 .sfg--page-details-container {
-    height: ((3+7) * $spacing-09) + $spacing-01 !important;
+    height: ((3+6) * $spacing-09) + $spacing-01 !important;
+}
+
+.cds--tab-content {
+    padding: 0 !important;
 }
 
 .cds--css-grid {
@@ -107,6 +111,22 @@
     padding-inline: unset;
 }
 
+.cds--form .sfg--grid--form .cds--form-item,
+.cds--list-box__wrapper {
+    min-height: 0;
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+}
+
+.cds--list-box__wrapper>label {
+    color: var(--cds-text-secondary, #525252);
+}
+
+.btn-wrapper {
+    display: flex;
+    justify-content: flex-end;
+}
+
 .col-margin {
     margin: 0.5rem;
     display: flex;
@@ -118,6 +138,10 @@
 
 .cds--modal-lg .cds--modal-container {
     inline-size: 62% !important;
+}
+
+.authentication-wrapper {
+    padding-top: 2rem;
 }
 
 .right-panel {
@@ -256,4 +280,8 @@
 
 .contextData-wrapper label {
     display: none;
+}
+
+.apiConfiguration-form {
+    overflow-y: auto;
 }

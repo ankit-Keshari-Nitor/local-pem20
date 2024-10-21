@@ -11,6 +11,7 @@
   "title_ContextData": "Context Data",
   "tabs": {
     "sponsorServerInfo": "Sponsor Server info",
+    "apiConfigList":"API Configuration List",
     "createNew": "Create New",
     "availableFiles": "Available Files",
     "uploadFiles": "Upload Files",

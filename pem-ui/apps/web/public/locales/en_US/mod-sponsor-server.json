@@ -23,7 +23,7 @@
       "uploadedFile": "Uploaded file",
       "uploadFileLabel": "Drag and drop key file to upload here or click to select file",
       "create": "Create",
-      "success": "File Upload Successfully."
+      "success": "Data Upload Successfully."
     }
   },
   "errorText": {

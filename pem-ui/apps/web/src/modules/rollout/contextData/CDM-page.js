@@ -90,6 +90,10 @@ const ContextDataModal = ({ contextData, contextPage }) => {
                     selectedRowActivityFile: '',
                     selectedRowHeaderLogo: '',
                     selectedRowSponsorServer: '',
+                    successStateUploadForm: undefined,
+                    errorStateUploadForm: undefined,
+                    successStateApiForm: undefined,
+                    errorStateApiForm: undefined
                 },
                 form: {
                     property: {
@@ -196,6 +200,7 @@ const ContextDataModal = ({ contextData, contextPage }) => {
                     propertyRef.pValue = event.target.value;
                 },
                 uiTabChange: function (...args) {
+
                     if (args[0].selectedIndex === 0) {
                         if (args[1] === CONTEXT_MAPPING_TYPES.SFTP_PUSH) {
                             page.datatable.sponsorServerList.refresh();
@@ -206,6 +211,12 @@ const ContextDataModal = ({ contextData, contextPage }) => {
                         if (args[1] === CONTEXT_MAPPING_TYPES.ACTIVITY_FILE) {
                             page.datatable.activityFileList.refresh();
                         }
+                    } else {
+                        this.setUI('errorStateApiForm', undefined);
+                        this.setUI('errorStateUploadForm', undefined);
+                        this.setUI('successStateApiForm', undefined);
+                        this.setUI('successStateUploadForm', undefined);
+
                     }
                 },
 
@@ -469,7 +480,7 @@ const ContextDataModal = ({ contextData, contextPage }) => {
                     <Shell.TreeView name="cdpTreeView" config={pageConfig.cdpTreeView} data={page.model.data}></Shell.TreeView>
                 </Column>
 
-                <Column lg={12} md={12} style={{ marginTop: '0.25rem', paddingTop: '0.25rem' }}>
+                <Column lg={12} md={12} style={{ margin: '0' }}>
                     <CDS.Form name="property" context={page.form.property}>
                         {page.ui.selectedNode && (
                             <>
@@ -502,7 +513,7 @@ const ContextDataModal = ({ contextData, contextPage }) => {
                                             }}
                                         >
                                             <TabList>
-                                                <Tab>{pageUtil.t('mod-context-properties:tabs.sponsorServerInfo')}</Tab>
+                                                <Tab>{pageUtil.t('mod-context-properties:tabs.apiConfigList')}</Tab>
                                                 <Tab>{pageUtil.t('mod-context-properties:tabs.createNew')}</Tab>
                                             </TabList>
                                             <TabPanels>
@@ -523,7 +534,7 @@ const ContextDataModal = ({ contextData, contextPage }) => {
                                                     ></Shell.DataTable>
                                                 </TabPanel>
                                                 <TabPanel>
-                                                    <CreateApiConfiguration mode="CREATE" contextPage={contextPage} />
+                                                    <CreateApiConfiguration mode="CREATE" cdmPage={page} contextPage={contextPage} />
                                                 </TabPanel>
                                             </TabPanels>
                                         </Tabs>
@@ -559,7 +570,7 @@ const ContextDataModal = ({ contextData, contextPage }) => {
                                                     ></Shell.DataTable>
                                                 </TabPanel>
                                                 <TabPanel>
-                                                    <CreateUploadForm documentCategory="LOGO" contextPage={contextPage} />
+                                                    <CreateUploadForm documentCategory="LOGO" cdmPage={page} contextPage={contextPage} />
                                                 </TabPanel>
                                             </TabPanels>
                                         </Tabs>
@@ -595,7 +606,7 @@ const ContextDataModal = ({ contextData, contextPage }) => {
                                                     ></Shell.DataTable>
                                                 </TabPanel>
                                                 <TabPanel>
-                                                    <CreateUploadForm documentCategory="ACTIVITY" contextPage={contextPage} />
+                                                    <CreateUploadForm documentCategory="ACTIVITY" cdmPage={page} contextPage={contextPage} />
                                                 </TabPanel>
                                             </TabPanels>
                                         </Tabs>

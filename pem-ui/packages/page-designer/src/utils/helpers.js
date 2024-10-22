@@ -58,7 +58,6 @@ export const reorderChildren = (children, splitDropZonePath, splitItemPath) => {
 export const removeChildFromChildren = (children, splitDropZonePath) => {
   if (splitDropZonePath.length === 1) {
     const itemIndex = Number(splitDropZonePath[0]);
-    children[0].defaultsize = 16;
     return remove(children, itemIndex);
   }
 
@@ -85,9 +84,7 @@ export const updateConfigChildToChildren = (children, splitDropZonePath, item, r
     if (children[0]?.type === COLUMN) {
       newLayoutStructure = {
         type: COLUMN,
-        id: `pem_${uuid()
-          .replace(/[^0-9]/g, '')
-          .substring(0, 5)}`,
+        id: `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`,
         defaultsize: '16',
         children: item.length ? [item] : []
       };
@@ -127,13 +124,10 @@ export const addChildToChildren = (children, splitDropZonePath, item) => {
     const dropZoneIndex = Number(splitDropZonePath[0]);
     let newLayoutStructure = item;
     if (children[0]?.type === 'column') {
-      children[0].defaultsize = '8';
       newLayoutStructure = {
         type: COLUMN,
-        id: `pem_${uuid()
-          .replace(/[^0-9]/g, '')
-          .substring(0, 5)}`,
-        defaultsize: '8',
+        id: `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`,
+        defaultsize: '16',
         children: item.length ? [item] : []
       };
     }
@@ -210,9 +204,7 @@ export const handleAddColumDataToRow = (layout) => {
   const layoutCopy = [...layout];
   const COLUMN_STRUCTURE = {
     type: COLUMN,
-    id: `pem_${uuid()
-      .replace(/[^0-9]/g, '')
-      .substring(0, 5)}`,
+    id: `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`,
     children: []
   };
 
@@ -228,17 +220,13 @@ export const handleMoveToDifferentParent = (layout, splitDropZonePath, splitItem
   let newLayoutStructure;
   const COLUMN_STRUCTURE = {
     type: COLUMN,
-    id: `pem_${uuid()
-      .replace(/[^0-9]/g, '')
-      .substring(0, 5)}`,
+    id: `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`,
     children: [item]
   };
 
   const ROW_STRUCTURE = {
     type: ROW,
-    id: `pem_${uuid()
-      .replace(/[^0-9]/g, '')
-      .substring(0, 5)}`
+    id: `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`
   };
 
   switch (splitDropZonePath.length) {
@@ -289,25 +277,14 @@ export const handleMoveToDifferentParent = (layout, splitDropZonePath, splitItem
 
 export const handleMoveSidebarComponentIntoParent = (layout, splitDropZonePath, item) => {
   let newLayoutStructure;
-  if (item?.component?.type === GROUP) {
+  if (item.component.type === GROUP) {
     switch (splitDropZonePath.length) {
       case 1: {
         newLayoutStructure = {
           type: ROW,
-          id: `pem_${uuid()
-            .replace(/[^0-9]/g, '')
-            .substring(0, 5)}`,
+          id: `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`,
           maintype: item.component.type,
-          children: [
-            {
-              type: COLUMN,
-              id: `pem_${uuid()
-                .replace(/[^0-9]/g, '')
-                .substring(0, 5)}`,
-              defaultsize: '16',
-              children: []
-            }
-          ]
+          children: [{ type: COLUMN, id: `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`, defaultsize: '16', children: [] }]
         };
         break;
       }
@@ -315,27 +292,14 @@ export const handleMoveSidebarComponentIntoParent = (layout, splitDropZonePath, 
         if (item.component.type === GROUP) {
           newLayoutStructure = {
             type: ROW,
-            id: `pem_${uuid()
-              .replace(/[^0-9]/g, '')
-              .substring(0, 5)}`,
+            id: `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`,
             maintype: item.component.type,
-            children: [
-              {
-                type: COLUMN,
-                id: `pem_${uuid()
-                  .replace(/[^0-9]/g, '')
-                  .substring(0, 5)}`,
-                defaultsize: '16',
-                children: []
-              }
-            ]
+            children: [{ type: COLUMN, id: `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`, defaultsize: '16', children: [] }]
           };
         } else {
           newLayoutStructure = {
             type: COLUMN,
-            id: `pem_${uuid()
-              .replace(/[^0-9]/g, '')
-              .substring(0, 5)}`,
+            id: `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`,
             children: [item]
           };
         }
@@ -344,52 +308,35 @@ export const handleMoveSidebarComponentIntoParent = (layout, splitDropZonePath, 
       default: {
         newLayoutStructure = {
           type: ROW,
-          id: `pem_${uuid()
-            .replace(/[^0-9]/g, '')
-            .substring(0, 5)}`,
+          id: `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`,
           maintype: item.component.type,
-          children: [
-            {
-              type: COLUMN,
-              id: `pem_${uuid()
-                .replace(/[^0-9]/g, '')
-                .substring(0, 5)}`,
-              defaultsize: '16',
-              children: []
-            }
-          ]
+          children: [{ type: COLUMN, id: `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`, defaultsize: '16', children: [] }]
         };
       }
     }
   } else {
-    if (item?.component?.type === GROUP) {
+    if (item.component.type === GROUP) {
       newLayoutStructure = {
         maintype: item.component.type,
         ...item
       };
-    } else if (item?.component?.type === ACCORDION) {
+    } else if (item.component.type === ACCORDION) {
       newLayoutStructure = {
-        id: `pem_${uuid()
-          .replace(/[^0-9]/g, '')
-          .substring(0, 5)}`,
+        id: `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`,
         type: item.component.type,
         maintype: item.component.type,
         children: [],
         component: item.component
       };
-    } else if (item?.component?.type === TAB) {
+    } else if (item.component.type === TAB) {
       newLayoutStructure = {
-        id: `pem_${uuid()
-          .replace(/[^0-9]/g, '')
-          .substring(0, 5)}`,
+        id: `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`,
         type: item.component.type,
         maintype: item.component.type,
         component: item.component,
         children: [
           {
-            id: `pem_${uuid()
-              .replace(/[^0-9]/g, '')
-              .substring(0, 5)}`,
+            id: `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`,
             tabTitle: DEFAULTTITLE,
             type: SUBTAB,
             children: []
@@ -397,18 +344,9 @@ export const handleMoveSidebarComponentIntoParent = (layout, splitDropZonePath, 
         ]
       };
     } else {
-      if (splitDropZonePath.length > 1) {
-        newLayoutStructure = {
-          ...item
-        };
-      } else {
-        newLayoutStructure = {
-          type: ROW,
-          id: uuid(),
-          maintype: 'group',
-          children: [{ type: COLUMN, id: uuid(), defaultsize: '16', children: [{ ...item }] }]
-        };
-      }
+      newLayoutStructure = {
+        ...item
+      };
     }
   }
   return addChildToChildren(layout, splitDropZonePath, newLayoutStructure);
@@ -566,12 +504,8 @@ export const nestedLayoutViewForAPi = (childLayout, childSchema) => {
         childSchema.push({
           cType: 'COLUMN',
           props: {
-            id: `pem_${uuid()
-              .replace(/[^0-9]/g, '')
-              .substring(0, 5)}`,
-            uId: `pem_${uuid()
-              .replace(/[^0-9]/g, '')
-              .substring(0, 5)}`,
+            id: `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`,
+            uId: `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`,
             lg: '6',
             md: '8',
             sm: '16'
@@ -600,24 +534,16 @@ export const convertToSchema = (layout) => {
     {
       cType: 'FORM',
       props: {
-        id: `pem_${uuid()
-          .replace(/[^0-9]/g, '')
-          .substring(0, 5)}`,
-        uId: `pem_${uuid()
-          .replace(/[^0-9]/g, '')
-          .substring(0, 5)}`,
+        id: `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`,
+        uId: `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`,
         name: 'test'
       },
       children: [
         {
           cType: 'GRID',
           props: {
-            id: `pem_${uuid()
-              .replace(/[^0-9]/g, '')
-              .substring(0, 5)}`,
-            uId: `pem_${uuid()
-              .replace(/[^0-9]/g, '')
-              .substring(0, 5)}`,
+            id: `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`,
+            uId: `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`,
             defaultColumnSizeLg: '6',
             defaultColumnSizeMd: '8',
             defaultColumnSizeSm: '16',
@@ -857,25 +783,14 @@ export const collectPaletteEntries = (formFields) => {
   return Object.entries(formFields)
     .map(([type, formField]) => {
       const { config: fieldConfig } = formField;
-      if (fieldConfig.type !== 'group') {
-        return {
-          type: SIDEBAR_ITEM,
-          component: {
-            type: type,
-            label: fieldConfig.label,
-            icon: fieldConfig.icon
-          }
-        };
-      } else {
-        return {
-          type: 'default',
-          component: {
-            type: type,
-            label: fieldConfig.label,
-            icon: fieldConfig.icon
-          }
-        };
-      }
+      return {
+        type: SIDEBAR_ITEM,
+        component: {
+          type: type,
+          label: fieldConfig.label,
+          icon: fieldConfig.icon
+        }
+      };
     })
     .filter(({ type }) => type !== 'default');
 };
@@ -914,26 +829,4 @@ export const defaultProps = (item) => {
     default:
       break;
   }
-};
-
-export const copyComponent = (originalComponent, newComponent) => {
-  originalComponent.map((component, index) => {
-    if (component?.children?.length > 0) {
-      newComponent.push({
-        ...component,
-        id: uuid(),
-        children: []
-      });
-      return copyComponent(component.children, newComponent[index].children);
-    }
-    if (component.type === COMPONENT) {
-      const newId = uuid();
-      return newComponent.push({
-        ...component,
-        component: { ...component.component, id: newId },
-        id: newId
-      });
-    }
-  });
-  return newComponent;
 };

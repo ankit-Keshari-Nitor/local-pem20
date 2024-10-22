@@ -1,9 +1,9 @@
 import React from 'react';
-import { Grid, Column, Layer } from '@carbon/react';
+import { Grid, Column, Layer,Button } from '@carbon/react';
 import Shell, { CDS } from '@b2bi/shell';
 import './style.scss';
 
-const CreateUploadForm = ({ documentCategory }) => {
+const CreateUploadForm = ({ documentCategory, cdmPage }) => {
   const pageUtil = Shell.PageUtil();
   const pageArgs = pageUtil.pageParams;
 
@@ -19,8 +19,7 @@ const CreateUploadForm = ({ documentCategory }) => {
         },
         ui: {
           selectedFile: undefined,
-          errorState: undefined,
-          successState: undefined,
+
         },
         form: {
           file: {
@@ -33,8 +32,12 @@ const CreateUploadForm = ({ documentCategory }) => {
             selectedFile: undefined
           }
         },
-        init: function () {},
+        init: function () {
+
+        },
         uiOnRequestSubmit: function () {
+          cdmPage.setUI('successStateUploadForm', undefined);
+          cdmPage.setUI('errorStateUploadForm', undefined);
           this.form.file.handleSubmit(this.uiUpload)();
         },
         uiUpload: function () {
@@ -58,9 +61,9 @@ const CreateUploadForm = ({ documentCategory }) => {
             .then(() => {
               this.setUI('selectedFile', undefined);
               this.form.file.reset(pageUtil.getSubsetJson(this.form.file.attributes));
-              this.setUI('successState', pageUtil.t('mod-sponsor-server:field.uploadField.success'))
+              cdmPage.setUI('successStateUploadForm', pageUtil.t('mod-sponsor-server:field.uploadField.success'))
             }).catch((error) => {
-              this.setUI('errorState', error.response?.data?.errorDescription)
+              cdmPage.setUI('errorStateUploadForm', error.response?.data?.errorDescription)
             });
         },
         uiOnAddFile: function (event, files) {
@@ -73,24 +76,6 @@ const CreateUploadForm = ({ documentCategory }) => {
     })(pageArgs, pageUtil)
   );
 
-  const pageConfig = {
-    actionsConfig: {
-      pageActions: [
-        {
-          id: 'create',
-          label: 'mod-sponsor-server:field.uploadField.create',
-          type: 'tertiary',
-          kind: 'tertiary',
-          resourceKey: `FILE.UPLOAD`,
-          disabled: false,
-          onAction: () => {
-            return page.uiOnRequestSubmit.apply();
-          }
-        }
-      ]
-    }
-  };
-
   return (
     <>
       <Shell.Page type="UPLOAD" className={`sfg--page--file-upload`}>
@@ -98,8 +83,8 @@ const CreateUploadForm = ({ documentCategory }) => {
           <CDS.Form name="file" context={page.form.file}>
             <Layer level={0} className="sfg--page-details-container" style={{ margin: '1rem 0rem' }}>
               <Grid className="sfg--grid-container sfg--grid--form">
-                <Column lg={16}>  {page.ui.errorState !== undefined && (<span className='errorMessage'>{page.ui.errorState}</span>)}</Column>
-                <Column lg={16}>  {page.ui.successState !== undefined && (<span className='successMessage'>{page.ui.successState}</span>)}</Column>
+                <Column lg={12}>  {cdmPage.ui.errorStateUploadForm !== undefined && (<span className='errorMessage'>{cdmPage.ui.errorStateUploadForm}</span>)}</Column>
+                <Column lg={12}>  {cdmPage.ui.successStateUploadForm !== undefined && (<span className='successMessage'>{cdmPage.ui.successStateUploadForm}</span>)}</Column>
 
                 <Column lg={6}>
                   <Grid>
@@ -153,19 +138,17 @@ const CreateUploadForm = ({ documentCategory }) => {
                   ></CDS.FileUpload>
                 </Column>
 
-                <Column lg={6} md={6}>
+                <Column lg={12} md={12}>
                   <CDS.Checkbox labelText={pageUtil.t('mod-sponsor-server:field.uploadField.encrypt')} name="isEncrypted"></CDS.Checkbox>
+                </Column>
+                <Column lg={7}></Column>
+                <Column lg={5} className='btn-wrapper'>
+                  <Button kind="tertiary" onClick={() => { page.uiOnRequestSubmit() }}>Create</Button>
                 </Column>
               </Grid>
             </Layer>
           </CDS.Form>
         </Shell.PageBody>
-        <Grid>
-          <Column lg={8} md={8}></Column>
-          <Column lg={4} md={4}>
-            <Shell.PageActions actions={pageConfig.actionsConfig.pageActions}></Shell.PageActions>
-          </Column>
-        </Grid>
       </Shell.Page>
     </>
   );

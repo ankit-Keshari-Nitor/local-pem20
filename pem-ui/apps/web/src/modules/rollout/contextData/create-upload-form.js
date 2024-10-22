@@ -3,7 +3,7 @@ import { Grid, Column, Layer, Button } from '@carbon/react';
 import Shell, { CDS } from '@b2bi/shell';
 import '../styles.scss';
 
-const CreateUploadForm = ({ documentCategory, contextPage }) => {
+const CreateUploadForm = ({ documentCategory, contextPage, cdmPage }) => {
   const pageUtil = Shell.PageUtil();
   const pageArgs = pageUtil.pageParams;
 
@@ -19,8 +19,6 @@ const CreateUploadForm = ({ documentCategory, contextPage }) => {
         },
         ui: {
           selectedFile: undefined,
-          errorState: undefined,
-          successState: undefined,
         },
         form: {
           file: {
@@ -33,9 +31,14 @@ const CreateUploadForm = ({ documentCategory, contextPage }) => {
             selectedFile: undefined
           }
         },
-        init: function () { },
+        init: function () {
+          cdmPage.setUI('successState', undefined);
+          cdmPage.setUI('errorState', undefined);
+          this.form.file.reset(pageUtil.getSubsetJson(this.form.file.attributes));
+        },
         uiOnRequestSubmit: function () {
           this.setUI('errorState', undefined);
+          this.setUI('successState', undefined);
           this.form.file.handleSubmit(this.uiUpload)();
         },
         uiUpload: function () {
@@ -86,8 +89,8 @@ const CreateUploadForm = ({ documentCategory, contextPage }) => {
       <CDS.Form name="file" context={page.form.file}>
         <Layer level={0} className="sfg--page-details-container" style={{ margin: '1rem 0rem' }}>
           <Grid className="sfg--grid-container sfg--grid--form">
-            <Column lg={16}>  {page.ui.errorState !== undefined && (<span className='errorMessage'>{page.ui.errorState}</span>)}</Column>
-            <Column lg={16}>  {page.ui.successState !== undefined && (<span className='successMessage'>{page.ui.successState}</span>)}</Column>
+            <Column lg={12}>  {page.ui.errorState !== undefined && (<span className='errorMessage'>{page.ui.errorState}</span>)}</Column>
+            <Column lg={12}>  {page.ui.successState !== undefined && (<span className='successMessage'>{page.ui.successState}</span>)}</Column>
             <Column lg={6}>
               <Grid>
                 <Column lg={6}>
@@ -131,12 +134,12 @@ const CreateUploadForm = ({ documentCategory, contextPage }) => {
               ></CDS.FileUpload>
             </Column>
 
-            <Column lg={16} md={16}>
+            <Column lg={12} md={12}>
               <CDS.Checkbox labelText={pageUtil.t('mod-sponsor-server:field.uploadField.encrypt')} name="isEncrypted"></CDS.Checkbox>
             </Column>
-            <Column lg={9}></Column>
-            <Column lg={7}>
-              <Button kind="tertiary" onClick={() => { page.uiOnRequestSubmit.apply() }}>Create</Button>
+            <Column lg={7}></Column>
+            <Column lg={5} className='btn-wrapper'>
+              <Button kind="tertiary" onClick={() => { page.form.apiConfiguration.handleSubmit(page.uiSave)() }}>Create</Button>
             </Column>
 
           </Grid>

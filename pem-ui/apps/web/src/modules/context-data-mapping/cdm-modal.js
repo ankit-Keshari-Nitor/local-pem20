@@ -104,7 +104,11 @@ const ContextDataModal = ({ mode, context }) => {
           selectedRow: '',
           selectedRowLogo: '',
           selectedRowSponsorServer: '',
-          selectedRowActivity: ''
+          selectedRowActivity: '',
+          successStateUploadForm: undefined,
+          errorStateUploadForm: undefined,
+          successStateApiForm: undefined,
+          errorStateApiForm: undefined
         },
         form: {
           property: {
@@ -253,6 +257,12 @@ const ContextDataModal = ({ mode, context }) => {
             if (args[1] === CONTEXT_MAPPING_TYPES.ACTIVITY_FILE) {
               page.datatable.activityFileList.refresh();
             }
+          }else{
+            this.setUI('errorStateApiForm',undefined);
+            this.setUI('errorStateUploadForm',undefined);
+            this.setUI('successStateApiForm',undefined);
+            this.setUI('successStateUploadForm',undefined);
+
           }
         },
         uiOnRequestClose: function () {
@@ -625,7 +635,7 @@ const ContextDataModal = ({ mode, context }) => {
                           }}
                         >
                           <TabList>
-                            <Tab>{pageUtil.t('mod-context-properties:tabs.sponsorServerInfo')}</Tab>
+                            <Tab>{pageUtil.t('mod-context-properties:tabs.apiConfigList')}</Tab>
                             <Tab>{pageUtil.t('mod-context-properties:tabs.createNew')}</Tab>
                           </TabList>
                           <TabPanels>
@@ -646,7 +656,7 @@ const ContextDataModal = ({ mode, context }) => {
                               ></Shell.DataTable>
                             </TabPanel>
                             <TabPanel>
-                              <CreateApiConfiguration mode="CREATE" />
+                              <CreateApiConfiguration mode="CREATE" cdmPage={page} />
                             </TabPanel>
                           </TabPanels>
                         </Tabs>
@@ -682,7 +692,7 @@ const ContextDataModal = ({ mode, context }) => {
                               ></Shell.DataTable>
                             </TabPanel>
                             <TabPanel>
-                              <CreateUploadForm documentCategory="LOGO" />
+                              <CreateUploadForm documentCategory="LOGO" cdmPage={page} />
                             </TabPanel>
                           </TabPanels>
                         </Tabs>
@@ -718,7 +728,7 @@ const ContextDataModal = ({ mode, context }) => {
                               ></Shell.DataTable>
                             </TabPanel>
                             <TabPanel>
-                              <CreateUploadForm documentCategory="ACTIVITY" />
+                              <CreateUploadForm documentCategory="ACTIVITY" cdmPage={page} />
                             </TabPanel>
                           </TabPanels>
                         </Tabs>

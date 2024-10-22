@@ -65,10 +65,11 @@ const RolloutForm = ({ page, pageUtil }) => {
                                             }
                                         }
                                     }}
-                                    style={{ maxHeight: '200px', overflowY: page.ui.showCode ? 'hidden' : 'auto', paddingRight: '6.25rem' }}
+                                    disabled={!page.ui.showCode}
+                                    style={{ maxHeight: '200px', overflowY: !page.ui.showCode ? 'hidden' : 'auto', paddingRight: '6.25rem' }}
                                 />
                                 <Button size="sm" kind="ghost" onClick={() => page.setUI('showCode', !page.ui.showCode)} className="btn-show-code">
-                                    {page.ui.showCode ? 'Show Code' : 'Hide Code'}
+                                    {page.ui.showCode ? 'Hide Code' : 'Show Code'}
                                 </Button>
                             </div>
                         </Column>

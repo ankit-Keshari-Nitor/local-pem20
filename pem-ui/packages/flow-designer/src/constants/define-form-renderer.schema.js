@@ -131,36 +131,6 @@ export const APPROVAL_FORM_SCHEMA = {
       component: componentTypes.SELECT,
       name: 'role',
       labelText: 'Role',
-      options: [
-        {
-          label: 'AssignRole_Auto_Sponsor',
-          value: 'AssignRole_Auto_Sponsor'
-        },
-        {
-          label: 'AssignRole_Auto_Sponsor2',
-          value: 'AssignRole_Auto_Sponsor2'
-        },
-        {
-          label: 'Both',
-          value: 'Both'
-        },
-        {
-          label: 'Both1',
-          value: 'Both1'
-        },
-        {
-          label: 'Both441344',
-          value: 'Both441344'
-        },
-        {
-          label: 'BothRole1',
-          value: 'BothRole1'
-        },
-        {
-          label: 'BothRole2',
-          value: 'BothRole2'
-        }
-      ]
     },
     {
       component: componentTypes.CHECKBOX,
@@ -431,40 +401,6 @@ export const PARTNER_FORM_SCHEMA = {
       component: componentTypes.SELECT,
       name: 'role',
       labelText: 'Role',
-      options: [
-        {
-          label: 'Select Role',
-          value: ''
-        },
-        {
-          label: 'AssignRole_Auto_Sponsor',
-          value: 'AssignRole_Auto_Sponsor'
-        },
-        {
-          label: 'AssignRole_Auto_Sponsor2',
-          value: 'AssignRole_Auto_Sponsor2'
-        },
-        {
-          label: 'Both',
-          value: 'Both'
-        },
-        {
-          label: 'Both1',
-          value: 'Both1'
-        },
-        {
-          label: 'Both441344',
-          value: 'Both441344'
-        },
-        {
-          label: 'BothRole1',
-          value: 'BothRole1'
-        },
-        {
-          label: 'BothRole2',
-          value: 'BothRole2'
-        }
-      ]
     }
   ]
 };
@@ -534,36 +470,6 @@ export const SPONSOR_FORM_SCHEMA = {
       component: componentTypes.SELECT,
       name: 'role',
       labelText: 'Role',
-      options: [
-        {
-          label: 'AssignRole_Auto_Sponsor',
-          value: 'AssignRole_Auto_Sponsor'
-        },
-        {
-          label: 'AssignRole_Auto_Sponsor2',
-          value: 'AssignRole_Auto_Sponsor2'
-        },
-        {
-          label: 'Both',
-          value: 'Both'
-        },
-        {
-          label: 'Both1',
-          value: 'Both1'
-        },
-        {
-          label: 'Both441344',
-          value: 'Both441344'
-        },
-        {
-          label: 'BothRole1',
-          value: 'BothRole1'
-        },
-        {
-          label: 'BothRole2',
-          value: 'BothRole2'
-        }
-      ]
     },
     {
       component: componentTypes.CHECKBOX,

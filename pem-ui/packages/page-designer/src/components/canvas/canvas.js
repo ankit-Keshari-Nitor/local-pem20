@@ -3,27 +3,14 @@ import { DropZone } from '../../elements';
 import classNames from 'classnames';
 import FieldRenderer from './field-renderer/field-renderer';
 
-export default function Canvas({
-  layout,
-  handleDrop,
-  renderRow,
-  componentMapper,
-  onFieldSelect,
-  onFieldDelete,
-  previewMode = false,
-  onChangeHandle,
-  handleSchemaChanges,
-  onRowCopy,
-  onAddRow,
-  onGroupChange
-}) {
+export default function Canvas({ layout, handleDrop, renderRow, componentMapper, onFieldSelect, onFieldDelete, previewMode = false, onChangeHandle }) {
   const [isSelected, setIsSelected] = useState([]);
   const renderComponent = (component, currentPath, renderRow) => {
     return (
       <div
-        // onClick={(e) => {
-        //   !previewMode && onFieldSelect(e, component, currentPath);
-        // }}
+        onClick={(e) => {
+          !previewMode && onFieldSelect(e, component, currentPath);
+        }}
         className={classNames(previewMode ? 'form-fields' : 'canvas-form-fields')}
       >
         <FieldRenderer
@@ -37,12 +24,8 @@ export default function Canvas({
           onFieldSelect={onFieldSelect}
           previewMode={previewMode}
           onChangeHandle={onChangeHandle}
-          isSelected={isSelected}
-          setIsSelected={setIsSelected}
-          handleSchemaChanges={handleSchemaChanges}
-          onRowCopy={onRowCopy}
-          onAddRow={onAddRow}
-          onGroupChange={onGroupChange}
+          isSelected = {isSelected}
+          setIsSelected = {setIsSelected}
         />
       </div>
     );

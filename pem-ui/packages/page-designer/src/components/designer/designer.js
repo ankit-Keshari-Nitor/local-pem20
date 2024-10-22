@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback } from 'react';
 import { v4 as uuid } from 'uuid';
 import './designer.scss';
 
@@ -19,9 +19,7 @@ import {
   capitalizeFirstLetter,
   defaultProps,
   convertToSchema,
-  getFormObject,
-  copyComponent,
-  collectPaletteEntries
+  getFormObject
 } from '../../utils/helpers';
 import {
   SIDEBAR_ITEM,
@@ -55,7 +53,6 @@ import ViewSchema from './../view-schema';
 import { Button, Grid, Modal, Column, Layer, IconButton } from '@carbon/react';
 import FormPreview from '../preview-mode';
 import { View, CloseLarge } from '@carbon/icons-react';
-import { FormPropsPanel } from '../props-panel';
 
 export default function Designer({ componentMapper, onClickPageDesignerBack, activityDefinitionData, saveFormDesignerData, formFields }) {
   const initialLayout = [
@@ -98,8 +95,7 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
     }
   ];
   const initialComponents = INITIAL_DATA.components;
-  //const [layout, setLayout] = useState(getFormObject(formFields, []));
-  const [layout, setLayout] = useState(initialLayout);
+  const [layout, setLayout] = useState(getFormObject(formFields, []));
   const [components, setComponents] = useState(initialComponents);
   const [selectedFieldProps, setSelectedFiledProps] = useState();
   const [formFieldProps, setFormFieldProps] = useState();
@@ -108,13 +104,12 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
   const [deletedFieldPath, setDeletedFieldPath] = useState();
   const [componentsNames, setComponentsNames] = useState([]);
   const [propsPanelActiveTab, setPropsPanelActiveTab] = useState(0);
-  const [isRowDelete, setIsRowDelete] = useState(false);
-  const rowDataForDelete = useRef();
-  console.log('layout>>>', layout);
+
   const handleDrop = useCallback(
     (dropZone, item) => {
       const splitDropZonePath = dropZone.path.split('-');
       const pathToDropZone = splitDropZonePath.slice(0, -1).join('-');
+
       let newItem = { id: item.id, type: item.type, component: item.component };
       if (item.maintype) {
         newItem = { id: item.id, type: item.type, maintype: item.maintype, children: item.children };
@@ -370,18 +365,8 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
       }
     }
   };
-
-  const onFieldDelete = (e, path, actionCode, deletedElement) => {
-    /*
-      actionCode:0 - For Merge Action
-      actionCode:1 - For Delete Action
-    */
+  const onFieldDelete = (e, path, deletedElement) => {
     e.stopPropagation();
-    rowDataForDelete.current = { path, deletedElement, actionCode };
-    setIsRowDelete(true);
-  };
-
-  const onRowDelete = ({ path, deletedElement }) => {
     setDeletedFieldPath(path);
     const splitDropZonePath = path.split('-');
     setLayout(handleRemoveItemFromLayout(layout, splitDropZonePath));
@@ -473,7 +458,6 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
         onChangeHandle={onChangeHandle}
         isSelected={isSelected}
         setIsSelected={setIsSelected}
-        onGroupChange={onGroupChange}
       />
     );
   };
@@ -568,27 +552,7 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
           )}
         </div>
       </div>
-      {/* Confirmation Row Deletion Model */}
-      <Modal
-        open={isRowDelete}
-        onRequestClose={() => setIsRowDelete(false)}
-        onRequestSubmit={() => {
-          onRowDelete(rowDataForDelete.current);
-          setIsRowDelete(false);
-        }}
-        isFullWidth
-        modalHeading="Confirmation"
-        primaryButtonText={rowDataForDelete?.current?.actionCode ? 'Delete' : 'Merge'}
-        secondaryButtonText="Cancel"
-      >
-        <p
-          style={{
-            padding: '0px 0px 1rem 1rem'
-          }}
-        >
-          {rowDataForDelete?.current?.actionCode ? 'Are you sure you want to delete' : 'Are you sure you want to merge'}
-        </p>
-      </Modal>
+
       {/* View Schema Modal */}
       <Modal open={open} onRequestClose={() => setOpen(false)} passiveModal modalLabel="Schema" primaryButtonText="Close" secondaryButtonText="Cancel">
         {/* <ViewSchema layout={layout} /> */}

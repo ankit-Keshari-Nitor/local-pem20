@@ -154,3 +154,13 @@ export const getAPIConfiguration = async () => {
   const response = await new Shell.RestApiService().call(dataLoaderConfig, null, generateOptions());
   return response.status === 200 ? response?.data : [];
 }
+
+//Function to fetch the list of roles
+export const getRoles = async () => {
+  
+  let url = `${API_END_POINTS.ROLES}`;
+  let dataLoaderConfig = { url, method: API_METHODS.GET };
+
+  const response = await new Shell.RestApiService().call(dataLoaderConfig, null, generateOptions());
+  return response?.status === 200 ? response?.data?.content : [];
+}

@@ -51,6 +51,7 @@ const WorkFlowDesigner = forwardRef(
     selectedVersion, //current selected version,
     setNotificationProps, //toast message config
     getApiConfiguration, //to call API Config
+    getRoleList,// to call the role List
     isDialogFlowActive, setIsDialogFlowActive, isPageDesignerActive, setIsPageDesignerActive, setOpenTaskPropertiesBlock, openTaskPropertiesBlock, openDialogPropertiesBlock,
     setOpenDialogPropertiesBlock, nodeDataRefActivity
   }) => {
@@ -825,6 +826,7 @@ const WorkFlowDesigner = forwardRef(
                     setNotificationProps={setNotificationProps}
                     deleteBranchNodeConnector={deleteBranchNodeConnector}
                     isDialogFlowActive={isDialogFlowActive}
+                    getRoleList={getRoleList}
                   />
                 )
               )}

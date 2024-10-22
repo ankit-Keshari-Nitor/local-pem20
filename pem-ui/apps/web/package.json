@@ -8,7 +8,7 @@
   "dependencies": {
     "@b2bi/carbon-mappers": "1.0.0",
     "@b2bi/page-designer": "1.0.0",
-    "@b2bi/shell": "^1.0.19",
+    "@b2bi/shell": "^1.0.20",
     "@b2bi/styles": "^1.0.5",
     "@b2bi/ui-lib": "^1.0.0",
     "axios": "^1.6.2",

@@ -37,7 +37,9 @@ const CreateApiConfiguration = ({ mode }) => {
           }
         },
         ui: {
-          mode: mode
+          mode: mode,
+          errorState: undefined,
+          successState: undefined,
         },
         form: {
           apiConfiguration: {
@@ -56,7 +58,7 @@ const CreateApiConfiguration = ({ mode }) => {
             authenticationType: 'NONE'
           }
         },
-        init: function () { },
+        init: function () {},
         uiSave: function () {
           const apiConfigurationInput = pageUtil.removeEmptyAttributes(this.form.apiConfiguration.getValues());
 
@@ -68,10 +70,11 @@ const CreateApiConfiguration = ({ mode }) => {
 
           handler
             .then((response) => {
-              pageUtil.showNotificationMessage('toast', 'success', page.ui.mode === 'CREATE' && pageUtil.t('mod-sponsor-server:message.success'));
-              // modalConfig.onAction('submit', {});
+              this.form.apiConfiguration.reset(pageUtil.getSubsetJson(this.form.apiConfiguration.attributes));
+              this.setUI('successState', pageUtil.t('mod-sponsor-server:field.uploadField.success'))
+
             })
-            .catch((err) => {  });
+            .catch((error) => { this.setUI('errorState', error.response?.data?.errorDescription) });
         },
         uiOnAuthenticalTypeChange: function (event) {
           page.form.apiConfiguration.resetField('userName', { defaultValue: '' });
@@ -111,6 +114,9 @@ const CreateApiConfiguration = ({ mode }) => {
           <CDS.Form name="apiConfiguration" context={page.form.apiConfiguration}>
             <Layer level={0} className="sfg--page-details-container" style={{ margin: '1rem 0rem' }}>
               <Grid className="sfg--grid-container sfg--grid--form">
+                <Column lg={16}>  {page.ui.errorState !== undefined && (<span className='errorMessage'>{page.ui.errorState}</span>)}</Column>
+                <Column lg={16}>  {page.ui.successState !== undefined && (<span className='successMessage'>{page.ui.successState}</span>)}</Column>
+
                 <Column lg={6} md={6}>
                   <CDS.TextInput
                     labelText={
@@ -231,7 +237,12 @@ const CreateApiConfiguration = ({ mode }) => {
             </Layer>
           </CDS.Form>
         </Shell.PageBody>
-        <Shell.PageActions actions={pageConfig.actionsConfig.pageActions}></Shell.PageActions>
+        <Grid>
+          <Column lg={8} md={8}></Column>
+          <Column lg={4} md={4}>
+            <Shell.PageActions actions={pageConfig.actionsConfig.pageActions}></Shell.PageActions>
+          </Column>
+        </Grid>
       </Shell.Page>
     </>
   );

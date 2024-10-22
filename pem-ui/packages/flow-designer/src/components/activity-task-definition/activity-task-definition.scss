@@ -11,11 +11,9 @@
 }
 
 .context-mapping-btn {
-  margin-top: 1rem;
   background-color: #ffffff;
-  top: 0.68rem;
   height: 2.6rem;
-  width: 1.6rem;
+  width: 2.6rem;
   padding-top: 0.7rem;
 }
 
@@ -26,4 +24,10 @@
 .col-margin {
   margin: 0.5rem;
   display: flex;
+}
+
+.context-mapping-button-container {
+  position: relative;
+  top: -20px;
+  margin-top: 5rem;
 }

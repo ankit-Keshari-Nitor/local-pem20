@@ -50,10 +50,10 @@
   background-color: #e8e8e8;
   padding-inline-end: unset;
   border-color: #0f62fe;
-  margin-top: 1.5rem;
+  margin-top: 2.5rem;
 }
 
-.opt-btn > svg {
+.opt-btn>svg {
   margin-right: 1rem;
 }
 
@@ -75,7 +75,7 @@
   border-color: #0f62fe;
 }
 
-.mapping-button > svg {
+.mapping-button>svg {
   margin-right: 1rem;
 }
 
@@ -125,11 +125,11 @@
   margin-bottom: 1rem;
 }
 
-.right-palette-container > .cds--tabs--contained {
+.right-palette-container>.cds--tabs--contained {
   border-bottom: 1px solid #989696;
 }
 
-.right-palette-container > .cds--tabs.cds--tabs--contained .cds--tabs__nav-item.cds--tabs__nav-item--selected {
+.right-palette-container>.cds--tabs.cds--tabs--contained .cds--tabs__nav-item.cds--tabs__nav-item--selected {
   box-shadow: none;
   border-bottom: 2px solid #0F62FE;
   background-color: unset;
@@ -169,11 +169,11 @@
   margin-left: 0.35rem;
 }
 
-.right-props-icon-color{
+.right-props-icon-color {
   color: #0F62FE;
 }
 
-.right-props-icon-background{
+.right-props-icon-background {
   background-color: #0F62FE;
 }
 
@@ -181,7 +181,7 @@
   margin-left: 1.8rem;
 }
 
-.right-props-plus-icon-color{
+.right-props-plus-icon-color {
   color: white;
 }
 
@@ -195,9 +195,9 @@
 }
 
 .value-label-text-field {
-    margin-bottom: 16px;
-    max-width: 90% !important;
-    min-width: 75% !important;
+  margin-bottom: 16px;
+  max-width: 90% !important;
+  min-width: 75% !important;
 }
 
 .value-label-icon {
@@ -238,10 +238,10 @@
 .file-upload-textarea {
   margin-left: -0.9rem;
   margin-right: -0.9rem;
-  margin-bottom: -0.7rem; 
+  margin-bottom: -0.7rem;
 }
 
-.file-upload-textarea > .cds--text-area__wrapper > .cds--text-area {
+.file-upload-textarea>.cds--text-area__wrapper>.cds--text-area {
   border-block-end: none;
   outline: none;
 }
@@ -281,4 +281,30 @@
 
 .props-field {
   margin-right: 1rem;
+}
+
+.context-mapping-btn {
+  background-color: #ffffff;
+  height: 2.6rem;
+  width: 2.6rem;
+  padding-top: 0.7rem;
+  top: 0;
+}
+
+.context-mapping-btn svg path {
+  transition: fill 0.3s ease;
+}
+
+/* Change icon color on button hover */
+.context-mapping-btn:hover svg path {
+  fill: var(--cds-text-inverse, #ffffff);
+  /* Replace with your desired hover color */
+}
+
+.context-mapping-btn:hover {
+  background-color: var(--cds-focus, #0f62fe);
+}
+
+.context-mapping-btn svg {
+  margin-right: 0 !important;
 }

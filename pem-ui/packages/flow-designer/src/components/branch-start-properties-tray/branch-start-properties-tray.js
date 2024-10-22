@@ -208,9 +208,10 @@ export default function BranchStartPropertiesTrayTwo({ readOnly, selectedNode, s
                             <Column lg={10} className="text-input-container">
                               <TextInput
                                 id={`text-value-${connector.target}`}
-                                disabled={readOnly}
+                                disabled
                                 value={connector.targetNodeName}
                                 onChange={(e) => handleNodeNameChange(e, connector.target)}
+                                className='draggable-input'
                               />
                             </Column>
                             {!readOnly && (

@@ -36,7 +36,7 @@ const getNodeSpecificDataObj = (node) => {
       };
     case 'PARTNER':
       let newPartnerObj = {
-        description: node.data.editableProps?.description,
+        description: node.data.editableProps?.description || '',
         userKeys: ''
       };
       if (node.data.editableProps?.estimate_days) {
@@ -65,14 +65,14 @@ const getNodeSpecificDataObj = (node) => {
       };
     case 'GATEWAY':
       return {
-        description: node.data.editableProps?.description,
+        description: node.data.editableProps?.description || '',
         xslt: {
           key: 'value'
         }
       };
     case 'FORM':
       return {
-        description: node.data.editableProps?.description,
+        description: node.data.editableProps?.description || '',
         form: node.data.form,
         loop: {
           loopDataInput: '',
@@ -87,7 +87,7 @@ const getNodeSpecificDataObj = (node) => {
     case 'ATTRIBUTE':
     case 'APPROVAL':
       return {
-        description: node.data.editableProps?.description
+        description: node.data.editableProps?.description || ''
       };
     case 'BRANCH_START':
       return {
@@ -102,7 +102,7 @@ const getNodeSpecificDataObj = (node) => {
     default:
       if (!['END', 'START'].includes(node.type)) {
         return {
-          description: node.data.editableProps?.description
+          description: node.data.editableProps?.description || ''
         };
       }
       break;

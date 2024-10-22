@@ -80,3 +80,13 @@
   width: -webkit-fill-available;
   padding-right: 2rem;
 }
+
+.errorMessage {
+  padding-left: 1.5rem;
+  color: var(--cds-support-error, #da1e28);
+}
+
+.successMessage {
+  padding-left: 1.5rem;
+  color: var(--cds-support-success, #24a148);
+}

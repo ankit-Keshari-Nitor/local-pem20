@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useParams } from 'react-router-dom';
 import { Information, Close, Delete } from '@carbon/icons-react';
 import Shell from '@b2bi/shell';
@@ -7,7 +7,6 @@ import '@b2bi/styles/pages/list-page.scss';
 import '../styles.scss';
 
 import useActivityStore from '../../activity/store';
-import ActivityRolloutModal from '../../activity/components/rollout-wizard';
 
 import { capitalizeFirstLetter } from '../../activity/constants';
 
@@ -15,9 +14,6 @@ import { capitalizeFirstLetter } from '../../activity/constants';
 const VersionListPage = () => {
 
   const store = useActivityStore();
-  const [selectedActivity, setSelectedActivity] = useState(null);
-
-  const [showRolloutModal, setShowRolloutModal] = useState(false);
 
   const pageArgs = useParams();
   const pageUtil = Shell.PageUtil();
@@ -293,7 +289,7 @@ const VersionListPage = () => {
             version: record.version
           });
 
-          setSelectedActivity(record);
+
           switch (action) {
             case pageUtil.t('mod-activity-list:list.actions.markAsFinal'):
               pageUtil.showPageModal('CONFIRMATION_MODAL.VIEW', {
@@ -320,18 +316,22 @@ const VersionListPage = () => {
               });
               break;
             case pageUtil.t('mod-activity-list:list.actions.rollout'):
-              setShowRolloutModal(true); //(id);
+
+              pageUtil.showPageModal('ROLLOUT.SELECT', {
+                data: {
+                  activityDefnVersionKey: actVersionKey,
+                  activityDefnKey: activityDefnKey,
+                  activityName: activityName
+                }
+              });
               break;
             case pageUtil.t('mod-activity-list:list.actions.restore'):
-              console.log('Restore Version');
               pageUtil.showPageModal('FUNCTIONALITY_NOT_IMPLEMENTED_MODAL.View', {});
               break;
             case pageUtil.t('mod-activity-list:list.actions.delete'):
-              console.log('Delete Version');
               pageUtil.showPageModal('FUNCTIONALITY_NOT_IMPLEMENTED_MODAL.View', {});
               break;
             case pageUtil.t('mod-activity-version-list:versionList.actions.testVersion'):
-              console.log('Test Version');
               pageUtil.showPageModal('FUNCTIONALITY_NOT_IMPLEMENTED_MODAL.View', {});
               break;
             case pageUtil.t('mod-activity-version-list:versionList.actions.edit'):
@@ -341,15 +341,12 @@ const VersionListPage = () => {
               page.uiView(actVersionKey);
               break;
             case pageUtil.t('mod-activity-version-list:versionList.actions.exportVersion'):
-              console.log('Export Version');
               pageUtil.showPageModal('FUNCTIONALITY_NOT_IMPLEMENTED_MODAL.View', {});
               break;
             case pageUtil.t('mod-activity-version-list:versionList.actions.cloneVersion'):
-              console.log('Clone Version');
               pageUtil.showPageModal('FUNCTIONALITY_NOT_IMPLEMENTED_MODAL.View', {});
               break;
             case pageUtil.t('mod-activity-version-list:versionList.actions.shareUnshared'):
-              console.log('Share/Unshared Version');
               pageUtil.showPageModal('FUNCTIONALITY_NOT_IMPLEMENTED_MODAL.View', {});
               break;
             default:
@@ -395,16 +392,6 @@ const VersionListPage = () => {
           totalItems={page.model.list.meta.totalItems}
         ></Shell.DataTable>
       </Shell.PageBody>
-      {showRolloutModal && (
-        <ActivityRolloutModal
-          showModal={showRolloutModal}
-          setShowModal={() => setShowRolloutModal(false)}
-          activityDefnKey={activityDefnKey}
-          activityDefnVersionKey={selectedActivity ? selectedActivity.activityDefnVersionKey : ''}
-          activityName={activityName}
-          reloadActivityList={() => { page.datatable.versionList.refresh() }}
-        />
-      )}
     </Shell.Page >
   );
 };

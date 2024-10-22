@@ -6,8 +6,10 @@ export const API_FORM_SCHEMA = {
       component: componentTypes.TEXT_FIELD,
       name: 'name',
       labelText: 'Name (required)',
+      placeholder: 'Enter Name',
       helperText: 'Name should not contain &,<,>,",\',.,{,}, characters.',
       isRequired: true,
+      maxCount: 30,
       validate: [
         {
           type: validatorTypes.REQUIRED,
@@ -15,13 +17,13 @@ export const API_FORM_SCHEMA = {
         },
         {
           type: validatorTypes.PATTERN,
-          pattern: /^[^&<>"'.{}]+$/i,
+          pattern: /^[a-zA-Z0-9_-\s]+$/,
           message: 'Name should not contain &,<,>,",\',.,{,}, characters.'
         },
         {
           type: validatorTypes.MAX_LENGTH,
-          threshold: 100,
-          message: 'Name must be no longer then 100 characters'
+          threshold: 30,
+          message: 'Name must be no longer then 50 characters'
         }
       ]
     },
@@ -29,14 +31,20 @@ export const API_FORM_SCHEMA = {
       component: componentTypes.TEXTAREA,
       name: 'description',
       labelText: 'Description',
-      isRequired: false,
+      placeholder: 'Enter Description',
       enableCounter: true,
-      maxCount: 100,
+      isRequired: true,
+      maxCount: 255,
       validate: [
         {
           type: validatorTypes.MAX_LENGTH,
-          threshold: 100,
-          message: 'Description must be no longer then 100 characters'
+          threshold: 255,
+          message: 'Description must be no longer then 255 characters'
+        },
+        {
+          type: validatorTypes.PATTERN,
+          pattern: /^[a-zA-Z0-9!@#$%^&*(){}|:;.'?,-=_/\s]+$/,
+          message: 'Description should not contain <,> characters.'
         }
       ]
     }
@@ -49,8 +57,10 @@ export const APPROVAL_FORM_SCHEMA = {
       component: componentTypes.TEXT_FIELD,
       name: 'name',
       labelText: 'Name (required)',
+      placeholder: 'Enter Name',
       helperText: 'Name should not contain &,<,>,",\',.,{,}, characters.',
       isRequired: true,
+      maxCount: 30,
       validate: [
         {
           type: validatorTypes.REQUIRED,
@@ -58,13 +68,13 @@ export const APPROVAL_FORM_SCHEMA = {
         },
         {
           type: validatorTypes.PATTERN,
-          pattern: /^[^&<>"'.{}]+$/i,
+          pattern: /^[a-zA-Z0-9_-\s]+$/,
           message: 'Name should not contain &,<,>,",\',.,{,}, characters.'
         },
         {
           type: validatorTypes.MAX_LENGTH,
-          threshold: 100,
-          message: 'Name must be no longer then 100 characters'
+          threshold: 30,
+          message: 'Name must be no longer then 50 characters'
         }
       ]
     },
@@ -72,26 +82,33 @@ export const APPROVAL_FORM_SCHEMA = {
       component: componentTypes.TEXTAREA,
       name: 'description',
       labelText: 'Description',
+      placeholder: 'Enter Description',
       enableCounter: true,
       isRequired: true,
-      maxCount: 100,
+      maxCount: 255,
       validate: [
         {
           type: validatorTypes.MAX_LENGTH,
-          threshold: 100,
-          message: 'Description must be no longer then 100 characters'
+          threshold: 255,
+          message: 'Description must be no longer then 255 characters'
+        },
+        {
+          type: validatorTypes.PATTERN,
+          pattern: /^[a-zA-Z0-9!@#$%^&*(){}|:;.'?,-=_/\s]+$/,
+          message: 'Description should not contain <,> characters.'
         }
       ]
     },
     {
       component: componentTypes.TEXT_FIELD,
       name: 'estimate_days',
-      labelText: 'Estimate (Days) (required)',
-      isRequired: true,
+      labelText: 'Estimate (Days)',
+      placeholder: 'Enter Days',
       validate: [
         {
-          type: validatorTypes.REQUIRED,
-          message: 'Estimate is required'
+          type: validatorTypes.PATTERN,
+          pattern: /^[0-9]{1,3}$/g,
+          message: 'Estimate days should not contain more then 3 digits'
         }
       ]
     },
@@ -164,8 +181,10 @@ export const ATTRIBUTE_FORM_SCHEMA = {
       component: componentTypes.TEXT_FIELD,
       name: 'name',
       labelText: 'Name (required)',
+      placeholder: 'Enter Name',
       helperText: 'Name should not contain &,<,>,",\',.,{,}, characters.',
       isRequired: true,
+      maxCount: 30,
       validate: [
         {
           type: validatorTypes.REQUIRED,
@@ -173,28 +192,34 @@ export const ATTRIBUTE_FORM_SCHEMA = {
         },
         {
           type: validatorTypes.PATTERN,
-          pattern: /^[^&<>"'.{}]+$/i,
+          pattern: /^[a-zA-Z0-9_-\s]+$/,
           message: 'Name should not contain &,<,>,",\',.,{,}, characters.'
         },
         {
           type: validatorTypes.MAX_LENGTH,
-          threshold: 100,
-          message: 'Name must be no longer then 100 characters'
+          threshold: 30,
+          message: 'Name must be no longer then 50 characters'
         }
       ]
     },
     {
       component: componentTypes.TEXTAREA,
       name: 'description',
-      labelText: 'Description (optional)',
-      isRequired: true,
+      labelText: 'Description',
+      placeholder: 'Enter Description',
       enableCounter: true,
-      maxCount: 100,
+      isRequired: true,
+      maxCount: 255,
       validate: [
         {
           type: validatorTypes.MAX_LENGTH,
-          threshold: 100,
-          message: 'Description must be no longer then 100 characters'
+          threshold: 255,
+          message: 'Description must be no longer then 255 characters'
+        },
+        {
+          type: validatorTypes.PATTERN,
+          pattern: /^[a-zA-Z0-9!@#$%^&*(){}|:;.'?,-=_/\s]+$/,
+          message: 'Description should not contain <,> characters.'
         }
       ]
     },
@@ -245,89 +270,7 @@ export const CUSTOM_FORM_SCHEMA = {
       component: componentTypes.TEXT_FIELD,
       name: 'name',
       labelText: 'Name (required)',
-      helperText: 'Name should not contain &,<,>,",\',.,{,}, characters.',
-      isRequired: true,
-      validate: [
-        {
-          type: validatorTypes.REQUIRED,
-          message: 'Name is required'
-        },
-        {
-          type: validatorTypes.PATTERN,
-          pattern: /^[^&<>"'.{}]+$/i,
-          message: 'Name should not contain &,<,>,",\',.,{,}, characters.'
-        },
-        {
-          type: validatorTypes.MAX_LENGTH,
-          threshold: 100,
-          message: 'Name must be no longer then 100 characters'
-        }
-      ]
-    },
-    {
-      component: componentTypes.TEXTAREA,
-      name: 'description',
-      labelText: 'Description',
-      isRequired: true,
-      validate: [
-        {
-          type: validatorTypes.MAX_LENGTH,
-          threshold: 100,
-          message: 'Description must be no longer then 100 characters'
-        }
-      ]
-    }
-  ]
-};
-
-export const DIALOG_FORM_SCHEMA = {
-  fields: [
-    {
-      component: componentTypes.TEXT_FIELD,
-      name: 'name',
-      labelText: 'Name (required)',
-      helperText: 'Name should not contain &,<,>,",\',.,{,}, characters.',
-      isRequired: true,
-      validate: [
-        {
-          type: validatorTypes.REQUIRED,
-          message: 'Name is required'
-        },
-        {
-          type: validatorTypes.PATTERN,
-          pattern: /^[^&<>"'.{}]+$/i,
-          message: 'Name should not contain &,<,>,",\',.,{,}, characters.'
-        },
-        {
-          type: validatorTypes.MAX_LENGTH,
-          threshold: 100,
-          message: 'Name must be no longer then 100 characters'
-        }
-      ]
-    },
-    {
-      component: componentTypes.TEXTAREA,
-      name: 'description',
-      labelText: 'Description',
-      isRequired: true,
-      maxCount: 100,
-      validate: [
-        {
-          type: validatorTypes.MAX_LENGTH,
-          threshold: 100,
-          message: 'Description must be no longer then 100 characters'
-        }
-      ]
-    }
-  ]
-};
-
-export const PARTNER_FORM_SCHEMA = {
-  fields: [
-    {
-      component: componentTypes.TEXT_FIELD,
-      name: 'name',
-      labelText: 'Name (required)',
+      placeholder: 'Enter Name',
       helperText: 'Name should not contain &,<,>,",\',.,{,}, characters.',
       isRequired: true,
       maxCount: 30,
@@ -352,6 +295,7 @@ export const PARTNER_FORM_SCHEMA = {
       component: componentTypes.TEXTAREA,
       name: 'description',
       labelText: 'Description',
+      placeholder: 'Enter Description',
       enableCounter: true,
       isRequired: true,
       maxCount: 255,
@@ -359,19 +303,122 @@ export const PARTNER_FORM_SCHEMA = {
         {
           type: validatorTypes.MAX_LENGTH,
           threshold: 255,
-          message: 'Description must be no longer then 100 characters'
+          message: 'Description must be no longer then 255 characters'
         },
         {
           type: validatorTypes.PATTERN,
-          pattern: /^[a-zA-Z0-9!@#$%^&*(){}|:;.'?,-=/\s]+$/,
+          pattern: /^[a-zA-Z0-9!@#$%^&*(){}|:;.'?,-=_/\s]+$/,
           message: 'Description should not contain <,> characters.'
+        }
+      ]
+    }
+  ]
+};
+
+export const DIALOG_FORM_SCHEMA = {
+  fields: [
+    {
+      component: componentTypes.TEXT_FIELD,
+      name: 'name',
+      labelText: 'Name (required)',
+      placeholder: 'Enter Name',
+      helperText: 'Name should not contain &,<,>,",\',.,{,}, characters.',
+      isRequired: true,
+      maxCount: 30,
+      validate: [
+        {
+          type: validatorTypes.REQUIRED,
+          message: 'Name is required'
         },
+        {
+          type: validatorTypes.PATTERN,
+          pattern: /^[a-zA-Z0-9_-\s]+$/,
+          message: 'Name should not contain &,<,>,",\',.,{,}, characters.'
+        },
+        {
+          type: validatorTypes.MAX_LENGTH,
+          threshold: 30,
+          message: 'Name must be no longer then 50 characters'
+        }
+      ]
+    },
+    {
+      component: componentTypes.TEXTAREA,
+      name: 'description',
+      labelText: 'Description',
+      placeholder: 'Enter Description',
+      enableCounter: true,
+      isRequired: true,
+      maxCount: 255,
+      validate: [
+        {
+          type: validatorTypes.MAX_LENGTH,
+          threshold: 255,
+          message: 'Description must be no longer then 255 characters'
+        },
+        {
+          type: validatorTypes.PATTERN,
+          pattern: /^[a-zA-Z0-9!@#$%^&*(){}|:;.'?,-=_/\s]+$/,
+          message: 'Description should not contain <,> characters.'
+        }
+      ]
+    }
+  ]
+};
+
+export const PARTNER_FORM_SCHEMA = {
+  fields: [
+    {
+      component: componentTypes.TEXT_FIELD,
+      name: 'name',
+      labelText: 'Name (required)',
+      placeholder: 'Enter Name',
+      helperText: 'Name should not contain &,<,>,",\',.,{,}, characters.',
+      isRequired: true,
+      maxCount: 30,
+      validate: [
+        {
+          type: validatorTypes.REQUIRED,
+          message: 'Name is required'
+        },
+        {
+          type: validatorTypes.PATTERN,
+          pattern: /^[a-zA-Z0-9_-\s]+$/,
+          message: 'Name should not contain &,<,>,",\',.,{,}, characters.'
+        },
+        {
+          type: validatorTypes.MAX_LENGTH,
+          threshold: 30,
+          message: 'Name must be no longer then 50 characters'
+        }
+      ]
+    },
+    {
+      component: componentTypes.TEXTAREA,
+      name: 'description',
+      labelText: 'Description',
+      placeholder: 'Enter Description',
+      enableCounter: true,
+      isRequired: true,
+      maxCount: 255,
+      validate: [
+        {
+          type: validatorTypes.MAX_LENGTH,
+          threshold: 255,
+          message: 'Description must be no longer then 255 characters'
+        },
+        {
+          type: validatorTypes.PATTERN,
+          pattern: /^[a-zA-Z0-9!@#$%^&*(){}|:;.'?,-=_/\s]+$/,
+          message: 'Description should not contain <,> characters.'
+        }
       ]
     },
     {
       component: componentTypes.TEXT_FIELD,
       name: 'estimate_days',
       labelText: 'Estimate (Days)',
+      placeholder: 'Enter Days',
       validate: [
         {
           type: validatorTypes.PATTERN,
@@ -428,8 +475,10 @@ export const SPONSOR_FORM_SCHEMA = {
       component: componentTypes.TEXT_FIELD,
       name: 'name',
       labelText: 'Name (required)',
+      placeholder: 'Enter Name',
       helperText: 'Name should not contain &,<,>,",\',.,{,}, characters.',
       isRequired: true,
+      maxCount: 30,
       validate: [
         {
           type: validatorTypes.REQUIRED,
@@ -437,13 +486,13 @@ export const SPONSOR_FORM_SCHEMA = {
         },
         {
           type: validatorTypes.PATTERN,
-          pattern: /^[^&<>"'.{}]+$/i,
+          pattern: /^[a-zA-Z0-9_-\s]+$/,
           message: 'Name should not contain &,<,>,",\',.,{,}, characters.'
         },
         {
           type: validatorTypes.MAX_LENGTH,
-          threshold: 100,
-          message: 'Name must be no longer then 100 characters'
+          threshold: 30,
+          message: 'Name must be no longer then 50 characters'
         }
       ]
     },
@@ -451,21 +500,35 @@ export const SPONSOR_FORM_SCHEMA = {
       component: componentTypes.TEXTAREA,
       name: 'description',
       labelText: 'Description',
-      isRequired: true,
+      placeholder: 'Enter Description',
       enableCounter: true,
-      maxCount: 100,
+      isRequired: true,
+      maxCount: 255,
       validate: [
         {
           type: validatorTypes.MAX_LENGTH,
-          threshold: 100,
-          message: 'Description must be no longer then 100 characters'
+          threshold: 255,
+          message: 'Description must be no longer then 255 characters'
+        },
+        {
+          type: validatorTypes.PATTERN,
+          pattern: /^[a-zA-Z0-9!@#$%^&*(){}|:;.'?,-=_/\s]+$/,
+          message: 'Description should not contain <,> characters.'
         }
       ]
     },
     {
       component: componentTypes.TEXT_FIELD,
       name: 'estimate_days',
-      labelText: 'Estimate (Days)'
+      labelText: 'Estimate (Days)',
+      placeholder: 'Enter Days',
+      validate: [
+        {
+          type: validatorTypes.PATTERN,
+          pattern: /^[0-9]{1,3}$/g,
+          message: 'Estimate days should not contain more then 3 digits'
+        }
+      ]
     },
     {
       component: componentTypes.SELECT,
@@ -516,8 +579,10 @@ export const SYSTEM_FORM_SCHEMA = {
       component: componentTypes.TEXT_FIELD,
       name: 'name',
       labelText: 'Name (required)',
+      placeholder: 'Enter Name',
       helperText: 'Name should not contain &,<,>,",\',.,{,}, characters.',
       isRequired: true,
+      maxCount: 30,
       validate: [
         {
           type: validatorTypes.REQUIRED,
@@ -525,13 +590,13 @@ export const SYSTEM_FORM_SCHEMA = {
         },
         {
           type: validatorTypes.PATTERN,
-          pattern: /^[^&<>"'.{}]+$/i,
+          pattern: /^[a-zA-Z0-9_-\s]+$/,
           message: 'Name should not contain &,<,>,",\',.,{,}, characters.'
         },
         {
           type: validatorTypes.MAX_LENGTH,
-          threshold: 100,
-          message: 'Name must be no longer then 100 characters'
+          threshold: 30,
+          message: 'Name must be no longer then 50 characters'
         }
       ]
     },
@@ -539,14 +604,20 @@ export const SYSTEM_FORM_SCHEMA = {
       component: componentTypes.TEXTAREA,
       name: 'description',
       labelText: 'Description',
+      placeholder: 'Enter Description',
       enableCounter: true,
       isRequired: true,
-      maxCount: 100,
+      maxCount: 255,
       validate: [
         {
           type: validatorTypes.MAX_LENGTH,
-          threshold: 100,
-          message: 'Description must be no longer then 100 characters'
+          threshold: 255,
+          message: 'Description must be no longer then 255 characters'
+        },
+        {
+          type: validatorTypes.PATTERN,
+          pattern: /^[a-zA-Z0-9!@#$%^&*(){}|:;.'?,-=_/\s]+$/,
+          message: 'Description should not contain <,> characters.'
         }
       ]
     }
@@ -559,8 +630,10 @@ export const XSLT_FROM_SCHEMA = {
       component: componentTypes.TEXT_FIELD,
       name: 'name',
       labelText: 'Name (required)',
+      placeholder: 'Enter Name',
       helperText: 'Name should not contain &,<,>,",\',.,{,}, characters.',
       isRequired: true,
+      maxCount: 30,
       validate: [
         {
           type: validatorTypes.REQUIRED,
@@ -568,13 +641,13 @@ export const XSLT_FROM_SCHEMA = {
         },
         {
           type: validatorTypes.PATTERN,
-          pattern: /^[^&<>"'.{}]+$/i,
+          pattern: /^[a-zA-Z0-9_-\s]+$/,
           message: 'Name should not contain &,<,>,",\',.,{,}, characters.'
         },
         {
           type: validatorTypes.MAX_LENGTH,
-          threshold: 100,
-          message: 'Name must be no longer then 100 characters'
+          threshold: 30,
+          message: 'Name must be no longer then 50 characters'
         }
       ]
     },
@@ -582,14 +655,20 @@ export const XSLT_FROM_SCHEMA = {
       component: componentTypes.TEXTAREA,
       name: 'description',
       labelText: 'Description',
+      placeholder: 'Enter Description',
       enableCounter: true,
       isRequired: true,
-      maxCount: 100,
+      maxCount: 255,
       validate: [
         {
           type: validatorTypes.MAX_LENGTH,
-          threshold: 100,
-          message: 'Description must be no longer then 100 characters'
+          threshold: 255,
+          message: 'Description must be no longer then 255 characters'
+        },
+        {
+          type: validatorTypes.PATTERN,
+          pattern: /^[a-zA-Z0-9!@#$%^&*(){}|:;.'?,-=_/\s]+$/,
+          message: 'Description should not contain <,> characters.'
         }
       ]
     }
@@ -601,18 +680,25 @@ export const ACTIVITY_TASK_SCHEMA = {
     {
       component: componentTypes.TEXT_FIELD,
       name: 'name',
-      'data-testid': 'activity-name',
       labelText: 'Name (required)',
+      placeholder: 'Enter Name',
+      helperText: 'Name should not contain &,<,>,",\',.,{,}, characters.',
       isRequired: true,
+      maxCount: 30,
       validate: [
         {
           type: validatorTypes.REQUIRED,
           message: 'Name is required'
         },
         {
+          type: validatorTypes.PATTERN,
+          pattern: /^[a-zA-Z0-9_-\s]+$/,
+          message: 'Name should not contain &,<,>,",\',.,{,}, characters.'
+        },
+        {
           type: validatorTypes.MAX_LENGTH,
-          threshold: 100,
-          message: 'Name must be no longer then 100 characters'
+          threshold: 30,
+          message: 'Name must be no longer then 50 characters'
         }
       ]
     },
@@ -620,14 +706,20 @@ export const ACTIVITY_TASK_SCHEMA = {
       component: componentTypes.TEXTAREA,
       name: 'description',
       labelText: 'Description',
+      placeholder: 'Enter Description',
       enableCounter: true,
-      isRequired: false,
-      maxCount: 80,
+      isRequired: true,
+      maxCount: 255,
       validate: [
         {
           type: validatorTypes.MAX_LENGTH,
-          threshold: 80,
-          message: 'Description must be no longer then 80 characters'
+          threshold: 255,
+          message: 'Description must be no longer then 255 characters'
+        },
+        {
+          type: validatorTypes.PATTERN,
+          pattern: /^[a-zA-Z0-9!@#$%^&*(){}|:;.'?,-=_/\s]+$/,
+          message: 'Description should not contain <,> characters.'
         }
       ]
     },
@@ -636,10 +728,5 @@ export const ACTIVITY_TASK_SCHEMA = {
       name: 'contextData',
       labelText: 'Context Data'
     }
-    /*{
-      component: componentTypes.CHECKBOX,
-      name: 'encrypted',
-      labelText: 'Encrypt'
-    }*/
   ]
 };

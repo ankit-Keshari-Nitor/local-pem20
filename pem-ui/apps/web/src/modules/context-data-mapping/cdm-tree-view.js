@@ -6,11 +6,11 @@ import { TreeView, TreeNode } from '@carbon/react';
 const renderTreeNodes = (nodes) => {
   return nodes.map((node) => {
     return node.children.length > 0 ? (
-      <TreeNode key={node.id} id={node.id} label={node.title} type={node.type} value={node.value}>
+      <TreeNode key={node.id} id={node.id} label={node.title} type={node.type} value={node.value} isExpanded={true}>
         {renderTreeNodes(node.children)}
       </TreeNode>
     ) : (
-      <TreeNode key={node.id} id={node.id} label={node.title} type={node.type} value={node.value}></TreeNode>
+      <TreeNode key={node.id} id={node.id} label={node.title} type={node.type} value={node.value} isExpanded={true}></TreeNode>
     );
   });
 };

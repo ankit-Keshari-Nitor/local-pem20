@@ -28,7 +28,7 @@ export const TASK_INITIAL_NODES = [
     id: 'end',
     type: NODE_TYPE.END,
     data: { taskName: 'End' },
-    position: { x: 450, y: 300 },
+    position: { x: 550, y: 300 },
     targetPosition: 'left'
   }
 ];

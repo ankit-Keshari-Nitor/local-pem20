@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { toOptions } from 'react-querybuilder';
-import { Select, SelectItem } from '@carbon/react';
+import { Select } from '@carbon/react';
 
 const carbonValueSelector = ({
   className,
@@ -27,7 +27,6 @@ const carbonValueSelector = ({
   // Select Datatype
   return (
     <Select id="selector-label" labelText={''} className={className} title={title} value={value} disabled={disabled} onChange={(e) => handleOnChange(e.target.value)} {...extraProps}>
-      {/* <SelectItem value="" text="Select Value" /> */}
       {toOptions(options)}
     </Select>
   );

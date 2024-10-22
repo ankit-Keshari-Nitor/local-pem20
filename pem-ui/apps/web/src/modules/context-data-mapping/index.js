@@ -25,6 +25,15 @@ const modals = [
         <CDM.ModalPage mode="CONTEXT_DATA" context="PROPERTY"></CDM.ModalPage>
       </Shell.PageContainer>
     )
+  },
+  {
+    page: 'CONTEXT_DATA_MAPPING.SELECT',
+    size: 'md',
+    element: (
+      <Shell.PageContainer mode="MODAL_PAGE" dataLoaderConfig={CDM.DataLoaderConfig}>
+        <CDM.ModalPage mode="SELECT" context=""></CDM.ModalPage>
+      </Shell.PageContainer>
+    )
   }
 ];
 

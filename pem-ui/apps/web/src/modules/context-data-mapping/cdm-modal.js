@@ -5,7 +5,7 @@ import { JSONPath } from 'jsonpath-plus';
 import '@b2bi/styles/pages/list-page.scss';
 
 import CDMTreeView from './cdm-tree-view';
-import { CONTEXT_MAPPING_TYPES, ContextMappingOptions, CONTEXT_TYPES } from './constant';
+import { CONTEXT_MAPPING_TYPES, CONTEXT_TYPES } from './constant';
 import { transformDataToTree, generateContextDataMapping, generateTreeData, updateTreeNodeIcon } from './cdm-utils';
 import { StringText, Api_1, Image, Schematics, Table, TreeViewAlt, ProgressBar, DataVolume } from '@carbon/icons-react';
 import CreateApiConfiguration from './create-api-configuration';
@@ -27,6 +27,8 @@ const ContextDataModal = ({ mode, context }) => {
   const pageUtil = Shell.PageUtil();
   const pageArgs = pageUtil.pageParams;
   const { modalConfig } = Shell.useModal();
+
+  const { Configuration, Activity, Logo } = modalConfig?.data?.data?.application;
 
   const { page } = Shell.usePage(
     [],
@@ -99,7 +101,10 @@ const ContextDataModal = ({ mode, context }) => {
           tableLoadingState: false,
           tableEmptyState: undefined,
           view: 'table',
-          selectedRow: ''
+          selectedRow: '',
+          selectedRowLogo: '',
+          selectedRowSponsorServer: '',
+          selectedRowActivity: ''
         },
         form: {
           property: {
@@ -175,48 +180,38 @@ const ContextDataModal = ({ mode, context }) => {
           this.setModel('originalData', modalConfig.data.data);
         },
         _processActivity: function () {
-          const contextDataMapping = generateContextDataMapping(ContextMappingOptions);
-          const transformedData = transformDataToTree(contextDataMapping.items);
+          const contextDataMapping = generateContextDataMapping(modalConfig.data.data);
+          const transformedData = transformDataToTree(contextDataMapping);
           this.setModel('data', transformedData);
           this.setModel('originalData', { items: modalConfig?.data?.data });
         },
         uiOnRequestSubmit: function () {
-          let key = {};
-          let handler;
-          if (page.ui.selectedNode?.value?.type === CONTEXT_TYPES.API_CONFIG) {
-            key.selectedNode = page.ui.selectedNode.value.type;
-            key.id = page.ui.selectedRow[0];
-            handler = this.ds.viewSponsorServerList(key);
-          } else if (page.ui.selectedNode?.value?.type === CONTEXT_TYPES.LOGO_FILE || page.ui.selectedNode?.value?.type === CONTEXT_TYPES.ACTIVITY_FILE) {
-            key.selectedNode = page.ui.selectedNode.value.type;
-            key.id = page.ui.selectedRow[0];
-            handler = this.ds.viewDocumentList(key);
-          }
-          if (page.ui.selectedNode?.value?.type === 'API_CONFIG' || page.ui.selectedNode?.value?.type === 'LOGO_FILE' || page.ui.selectedNode?.value?.type === 'ACTIVITY_FILE') {
-            handler &&
-              handler
-                .then((response) => {
-                  if (context === 'PROPERTY') {
-                    const propertyRef = JSONPath({ path: `${this.ui.selectedNode.activeNodeId}`, json: this.model.originalData, wrap: false });
-                    this.ui.selectedNode.value.value = response.data;
-                    propertyRef.pValue = page.ui.selectedNode?.value?.type === 'API_CONFIG' ? response.data.apiConfigurationKey : response.data.documentKey;
-                    modalConfig.onAction('submit', { data: this.model.originalData });
-                  } else {
-                    modalConfig.onAction('submit', { data: response.data });
-                  }
-                })
-                .catch((err) => { });
-          } else {
+          if (context === 'PROPERTY') {
+            const apiConfigRef = JSONPath({ path: '$.application.Configuration', json: this.model.originalData, wrap: false });
+            if (apiConfigRef.pType === "API_CONFIG") {
+              apiConfigRef.pValue = this.ui.selectedRowSponsorServer || Configuration.pValue;
+            }
+
+            // Update pValue for LOGO_FILE
+            const logoRef = JSONPath({ path: '$.application.Logo', json: this.model.originalData, wrap: false });
+            if (logoRef.pType === "LOGO_FILE") {
+              logoRef.pValue = this.ui.selectedRowLogo || Logo.pValue;
+            }
+
+            // Update pValue for Activity_FILE
+            const activityRef = JSONPath({ path: '$.application.Activity', json: this.model.originalData, wrap: false });
+            if (activityRef.pType === "ACTIVITY_FILE") {
+              activityRef.pValue = this.ui.selectedRowActivity || Activity.pValue;
+            }
             modalConfig.onAction('submit', { data: this.model.originalData });
+          } else {
+            modalConfig.onAction('submit', { data: this.ui.selectedJPath });
           }
+
         },
         uiSelectCDM: function () { },
         uiOnSelectJPath: function (event, selectedNode) {
-          if (event.currentTarget.type === 'binding') {
-            this.setUI('selectedJPath', selectedNode.activeNodeId);
-          } else {
-            this.setUI('selectedJPath', '');
-          }
+          this.setUI('selectedJPath', selectedNode.activeNodeId);
         },
         uiOnSelectNode: function (event, selectedNode) {
           this.setUI('selectedNode', selectedNode);
@@ -261,8 +256,13 @@ const ContextDataModal = ({ mode, context }) => {
           }
         },
         uiOnRequestClose: function () {
+          if (context === 'PROPERTY') {
+            modalConfig.onAction('cancel', {
+              data: this.model.originalData
+            });
+          }
           modalConfig.onAction('cancel', {
-            data: this.model.originalData
+            data: ''
           });
         }
       };
@@ -302,13 +302,24 @@ const ContextDataModal = ({ mode, context }) => {
           }
         },
         {
-          id: 'backToDetails',
-          label: 'shell:common.actions.backToDetails',
+          id: 'cancel',
+          label: 'shell:common.actions.cancel',
           type: 'button',
           kind: 'secondary',
           isVisible: context !== 'PROPERTY',
           onAction: (...args) => {
             return page.uiOnRequestClose.apply();
+          }
+        },
+        {
+          id: 'select',
+          label: 'shell:common.actions.select',
+          type: 'button',
+          kind: 'primary',
+          disabled: !page.ui.selectedJPath,
+          isVisible: context !== 'PROPERTY',
+          onAction: (...args) => {
+            return page.uiOnRequestSubmit.apply();
           }
         },
 
@@ -317,6 +328,7 @@ const ContextDataModal = ({ mode, context }) => {
           label: 'shell:common.actions.save',
           type: 'button',
           kind: 'primary',
+          isVisible: context === 'PROPERTY',
           onAction: (...args) => {
             return page.uiOnRequestSubmit.apply();
           }
@@ -330,6 +342,7 @@ const ContextDataModal = ({ mode, context }) => {
         onSelect: null,
         onSelectionChange: (...args) => {
           page.ui.selectedRow = args[0];
+          page.setUI('selectedRowSponsorServer', args[0].join('') || page.ui.selectedRowSponsorServer);
         }
       },
       columnConfig: [
@@ -411,6 +424,8 @@ const ContextDataModal = ({ mode, context }) => {
         onSelect: null,
         onSelectionChange: (...args) => {
           page.ui.selectedRow = args[0];
+          page.setUI('selectedRowLogo', args[0].join('') || page.ui.selectedRowLogo);
+
         }
       },
       columnConfig: [
@@ -485,6 +500,8 @@ const ContextDataModal = ({ mode, context }) => {
         onSelect: null,
         onSelectionChange: (...args) => {
           page.ui.selectedRow = args[0];
+          page.setUI('selectedRowActivity', args[0].join('') || page.ui.selectedRowActivity);
+
         }
       },
       columnConfig: [
@@ -564,8 +581,8 @@ const ContextDataModal = ({ mode, context }) => {
         <Shell.PageBody>
           <Grid className="pem--cdm-grid">
             {context !== 'PROPERTY' && (
-              <Column lg={4} md={4} className="pem--cdm-tree-container ">
-                <CDMTreeView data={page.model.data} onSelect={page.uiOnSelectNode} />
+              <Column lg={context === 'PROPERTY' ? 6 : 16} md={context === 'PROPERTY' ? 6 : 16}>
+                <CDMTreeView data={page.model.data} onSelect={page.uiOnSelectJPath} selected={page.ui.selectedNodes} />
               </Column>
             )}
             {context === 'PROPERTY' && (
@@ -625,6 +642,7 @@ const ContextDataModal = ({ mode, context }) => {
                                 loadingState={page.ui.tableLoadingState}
                                 emptyState={page.datatable.sponsorServerList.emptyState}
                                 totalItems={page.model.sponsorServerList.meta.totalItems}
+                                selectedRowId={page.ui.selectedRowSponsorServer || Configuration.pValue}
                               ></Shell.DataTable>
                             </TabPanel>
                             <TabPanel>
@@ -660,6 +678,7 @@ const ContextDataModal = ({ mode, context }) => {
                                 loadingState={page.ui.tableLoadingState}
                                 emptyState={page.datatable.headerLogoList.emptyState}
                                 totalItems={page.model.headerLogoList.meta.totalItems}
+                                selectedRowId={page.ui.selectedRowLogo || Logo.pValue}
                               ></Shell.DataTable>
                             </TabPanel>
                             <TabPanel>
@@ -695,6 +714,7 @@ const ContextDataModal = ({ mode, context }) => {
                                 loadingState={page.ui.tableLoadingState}
                                 emptyState={page.datatable.activityFileList.emptyState}
                                 totalItems={page.model.activityFileList.meta.totalItems}
+                                selectedRowId={page.ui.selectedRowActivity || Activity.pValue}
                               ></Shell.DataTable>
                             </TabPanel>
                             <TabPanel>

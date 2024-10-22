@@ -59,12 +59,30 @@ import { FormPropsPanel } from '../props-panel';
 
 export default function Designer({ componentMapper, onClickPageDesignerBack, activityDefinitionData, saveFormDesignerData, formFields }) {
   const initialLayout = [
-    // {
-    //   type: 'FORM',
-    //   id: uuid(),
-    //   name: 'form-test',
-    //   children: []
-    // },
+    {
+      type: 'FORM',
+      id: uuid(),
+      name: 'form-test',
+      defaultStyle: true,
+      defaultProps: {
+        fontFamily: 'IBM Plex Sans',
+        fontSize: '14px',
+        fontColor: '#161616',
+        formBackground: 'white',
+        labelStyle: '400',
+        labelFontSize: '14px',
+        labelColor: '#161616'
+      },
+      customProps: {
+        fontFamily: 'IBM Plex Sans',
+        fontSize: '14px',
+        fontColor: '#161616',
+        formBackground: 'white',
+        labelStyle: '400',
+        labelFontSize: '14px',
+        labelColor: '#161616'
+      }
+    },
     {
       type: 'row',
       id: '85a143ba-6fa6-43e0-995d-b49a4d05972c',
@@ -84,7 +102,7 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
   const [layout, setLayout] = useState(initialLayout);
   const [components, setComponents] = useState(initialComponents);
   const [selectedFieldProps, setSelectedFiledProps] = useState();
-  const [formFieldProps, setFormFieldProps] = useState(true);
+  const [formFieldProps, setFormFieldProps] = useState();
   const [open, setOpen] = useState(false);
   const [openPreview, setOpenPreview] = useState(false);
   const [deletedFieldPath, setDeletedFieldPath] = useState();
@@ -226,7 +244,7 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
       filedTypeConfig = componentMapper[componentDetail.maintype].config;
     }
     setSelectedFiledProps({ id: componentDetail.id, type: componentDetail.type, component: { ...filedTypeConfig }, currentPathDetail: currentPathDetail });
-    setFormFieldProps(false);
+    setFormFieldProps(null);
   };
 
   const columnSizeCustomization = (colsize, path) => {
@@ -254,7 +272,7 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
       let objCopy = selectedFieldProps;
       objCopy.component[propsName] = newValue;
       setSelectedFiledProps({ ...objCopy });
-      setFormFieldProps(false);
+      setFormFieldProps(null);
       setLayout(updateChildToChildren(layout, componentPosition, propsName, newValue));
     } else {
       let objCopy = selectedFieldProps;
@@ -340,7 +358,7 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
         });
       }
       setSelectedFiledProps({ ...objCopy });
-      setFormFieldProps(false);
+      setFormFieldProps(null);
       if (uniqueName && !isInvalid) {
         if (propsName === ISREQUIRED) {
           setLayout(updateChildToChildren(layout, componentPosition, 'min', { value: minValue, message: `Minimum ${minValue} characters required` }));
@@ -370,7 +388,7 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
     const newElements = componentsNames.filter((item) => item.id !== deletedElement);
     setComponentsNames(newElements);
     setSelectedFiledProps();
-    setFormFieldProps(false);
+    setFormFieldProps(null);
     rowDataForDelete.current = null;
   };
 
@@ -428,6 +446,16 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
     const newElements = componentsNames.filter((item) => item.id !== oldElementId);
     setComponentsNames([...newElements, { id: newItemId, name: 'form-control-' + newItemId.substring(0, 2) }]);
     onFieldSelect(e, newFormField, path, newFormField);
+  };
+
+  // const onFormSelect = () => {
+  //   setFormFieldProps(layout.slice(0,1));
+  // }
+
+  const onFormPropsChange = (newPropsObjs) => {
+    layout.shift();
+    setFormFieldProps(() => [{ ...newPropsObjs }]);
+    setLayout([newPropsObjs, ...layout]);
   };
 
   const renderRow = (row, currentPath, renderRow, previewMode, onChangeHandle, isSelected, setIsSelected, onGroupChange) => {
@@ -489,7 +517,7 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
               className="canvas-wrapper"
               onClick={(e) => {
                 setSelectedFiledProps();
-                setFormFieldProps(true);
+                setFormFieldProps(layout.slice(0, 1));
               }}
             >
               <Canvas
@@ -510,9 +538,9 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
                     <Button kind="secondary" className="cancelButton">
                       Cancel
                     </Button>
-                    <Button kind="primary" className="saveButton" onClick={() => saveFormDesignerData(convertToSchema(layout))}>
+                    {/* <Button kind="primary" className="saveButton" onClick={() => saveFormDesignerData(convertToSchema(layout))}>
                       Save
-                    </Button>
+                    </Button> */}
                   </Column>
                 </Grid>
               </div>
@@ -535,7 +563,7 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
           )}
           {formFieldProps && (
             <div className="props-panel">
-              <FormPropsPanel />
+              <FormPropsPanel formFieldProps={formFieldProps} onFormPropsChange={onFormPropsChange} />
             </div>
           )}
         </div>
@@ -563,7 +591,7 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
       </Modal>
       {/* View Schema Modal */}
       <Modal open={open} onRequestClose={() => setOpen(false)} passiveModal modalLabel="Schema" primaryButtonText="Close" secondaryButtonText="Cancel">
-        <ViewSchema layout={layout} />
+        {/* <ViewSchema layout={layout} /> */}
       </Modal>
       {/* Form Preview Modal */}
       <Modal

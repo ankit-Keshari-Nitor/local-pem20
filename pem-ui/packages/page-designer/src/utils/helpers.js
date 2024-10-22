@@ -511,7 +511,7 @@ export const nestedLayoutViewForAPi = (childLayout, childSchema) => {
         nestedLayoutViewForAPi(childLayout[index]?.children, childSchema);
         break;
       default: {
-        const { label, type, group, ...others } = item.component;
+        const { label, type, group, ...others } = item?.component;
         childSchema.push({
           cType: 'COLUMN',
           props: {

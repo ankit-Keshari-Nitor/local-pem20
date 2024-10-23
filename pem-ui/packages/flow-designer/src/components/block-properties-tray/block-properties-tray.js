@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { NODE_TYPE } from '../../constants';
 import BlockDefinitionForm from '../block-definition-form';
 import { CrossIcon, ExpandIcon, CollapseIcon } from './../../icons';
@@ -24,24 +24,98 @@ export default function BlockPropertiesTray(props) {
     setOpenPropertiesBlock,
     readOnly,
     onExpand,
-    onDesignFormBtnClick, // Form Desginer Page
     deleteBranchNodeConnector,
     isDialogFlowActive,
-    selectedTaskNode
+    selectedTaskNode,
+    getApiConfiguration,
+    getRoleList
   } = props;
 
   const [isExpanded, setIsExpanded] = useState(false);
+  const [partnerFormSchema, setPartnerFormSchema] = useState(PARTNER_FORM_SCHEMA);
+  const [sponsorFormSchema, seSponsorFormSchema] = useState(SPONSOR_FORM_SCHEMA);
+  const [approvalFormSchema, seApprovalFormSchema] = useState(APPROVAL_FORM_SCHEMA);
+
+
+
+  useEffect(() => {
+    // If the selected node is of type PARTNER and SPONSOR, fetch role options and update schema
+    if (selectedNode && (selectedNode.type === NODE_TYPE.PARTNER || selectedNode.type === NODE_TYPE.SPONSOR || selectedNode.type === NODE_TYPE.APPROVAL)) {
+      const fetchRoleOptions = async () => {
+        try {
+          const roleOptions = await getRoleList();
+          const updatedRoleOptions = [
+            { label: '--Select--', value: '' }, // Add the default option here
+            ...roleOptions.map(role => ({
+              label: role.name,
+              value: role.name
+            })),
+          ];
+
+          if (selectedNode.type === NODE_TYPE.PARTNER) {
+            const updatedPartnerFormSchema = {
+              ...PARTNER_FORM_SCHEMA,
+              fields: PARTNER_FORM_SCHEMA.fields.map((field) => {
+                if (field.name === 'role' && field.component === 'select') {
+                  return {
+                    ...field,
+                    options: updatedRoleOptions
+                  };
+                }
+                return field;
+              })
+            };
+            setPartnerFormSchema(updatedPartnerFormSchema);
+          }
+          if (selectedNode.type === NODE_TYPE.SPONSOR) {
+            const updatedSponsorFormSchema = {
+              ...SPONSOR_FORM_SCHEMA,
+              fields: SPONSOR_FORM_SCHEMA.fields.map((field) => {
+                if (field.name === 'role' && field.component === 'select') {
+                  return {
+                    ...field,
+                    options: updatedRoleOptions
+                  };
+                }
+                return field;
+              })
+            };
+            seSponsorFormSchema(updatedSponsorFormSchema);
+          }
+          if (selectedNode.type === NODE_TYPE.APPROVAL) {
+            const updatedApprovalFormSchema = {
+              ...APPROVAL_FORM_SCHEMA,
+              fields: APPROVAL_FORM_SCHEMA.fields.map((field) => {
+                if (field.name === 'role' && field.component === 'select') {
+                  return {
+                    ...field,
+                    options: updatedRoleOptions
+                  };
+                }
+                return field;
+              })
+            };
+            seApprovalFormSchema(updatedApprovalFormSchema);
+          }
+        } catch (error) {
+          console.error('Error fetching role options:', error);
+        }
+      };
+
+      fetchRoleOptions();
+    }
+  }, [selectedNode, getRoleList]);
 
   const getForm = (selectedNode) => {
     switch (selectedNode && selectedNode.type) {
       case NODE_TYPE.PARTNER:
-        return <BlockDefinitionForm id={'partner-define-form'} schema={PARTNER_FORM_SCHEMA} {...props} />;
+        return <BlockDefinitionForm id="partner-define-form" schema={partnerFormSchema} {...props} />;
       case NODE_TYPE.APPROVAL:
-        return <BlockDefinitionForm id={'approval-define-form'} schema={APPROVAL_FORM_SCHEMA} {...props} />;
+        return <BlockDefinitionForm id={'approval-define-form'} schema={approvalFormSchema} {...props} />;
       case NODE_TYPE.ATTRIBUTE:
         return <BlockDefinitionForm id={'attribute-define-form'} schema={ATTRIBUTE_FORM_SCHEMA} {...props} />;
       case NODE_TYPE.SPONSOR:
-        return <BlockDefinitionForm id={'sponsor-define-form'} schema={SPONSOR_FORM_SCHEMA} {...props} />;
+        return <BlockDefinitionForm id={'sponsor-define-form'} schema={sponsorFormSchema} {...props} />;
       case NODE_TYPE.CUSTOM:
         return <BlockDefinitionForm id={'custom-define-form'} schema={CUSTOM_FORM_SCHEMA} {...props} />;
       case NODE_TYPE.SYSTEM:

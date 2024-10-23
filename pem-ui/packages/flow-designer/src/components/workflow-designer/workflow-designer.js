@@ -21,21 +21,19 @@ import {
 } from '../../constants';
 import { useEffect } from 'react';
 import useTaskStore from '../../store';
-import { Layer, IconButton } from '@carbon/react';
-import { Edit, CloseLarge } from '@carbon/icons-react';
 import { v4 as uuid } from 'uuid';
 import { getInitialNodeEdges } from '../../utils/workflow-element-utils';
 
-let dialogBranchId = 0;
+let dialogBranchId = 1;
 const getNewDialogBranchId = () => `Branch_${dialogBranchId++}`;
 
-let taskBranchId = 0;
+let taskBranchId = 1;
 const getNewTaskBranchId = () => `Branch_${taskBranchId++}`;
 
-let dialogId = 0;
+let dialogId = 1;
 const getNewDialogId = () => `Dialog_Name_${dialogId++}`;
 
-let taskId = 0;
+let taskId = 1;
 const getNewTaskId = () => `Task_Name_${taskId++}`;
 
 const WorkFlowDesigner = forwardRef(
@@ -51,19 +49,21 @@ const WorkFlowDesigner = forwardRef(
     onVersionSelection, //on version change callback for web/activity-definition page to load version specific data
     versionData, //array of all versions of current activity
     selectedVersion, //current selected version,
-    setNotificationProps //toast message config
+    setNotificationProps, //toast message config
+    getApiConfiguration, //to call API Config
+    getRoleList,// to call the role List
+    isDialogFlowActive, setIsDialogFlowActive, isPageDesignerActive, setIsPageDesignerActive, setOpenTaskPropertiesBlock, openTaskPropertiesBlock, openDialogPropertiesBlock,
+    setOpenDialogPropertiesBlock, nodeDataRefActivity
   }) => {
+
     //-------------------------------- State Management -------------------------------------
     const store = useTaskStore();
-    const storeData = useTaskStore((state) => state.tasks);
-    const [isDialogFlowActive, setIsDialogFlowActive] = useState(false);
-    const [isPageDesignerActive, setIsPageDesignerActive] = useState(false);
+    let storeData = useTaskStore((state) => state.tasks);
     const editTask = useTaskStore((state) => state.editTaskNodePros);
     const editDialog = useTaskStore((state) => state.editDialogNodePros);
 
     // --------------------------------- Task Flow States -----------------------------------
     const taskFlowWrapper = useRef(null);
-    const [openTaskPropertiesBlock, setOpenTaskPropertiesBlock] = useState();
     const [nodes, setTaskNodes] = useNodesState([]);
     const [edges, setTaskEdges, onTaskEdgesChange] = useEdgesState([]);
     const [taskFlowInstance, setTaskFlowInstance] = useState(null);
@@ -71,7 +71,6 @@ const WorkFlowDesigner = forwardRef(
 
     // --------------------------------- Dialog Flow States -----------------------------------
     const dialogFlowWrapper = useRef(null);
-    const [openDialogPropertiesBlock, setOpenDialogPropertiesBlock] = useState(false);
     const [dialogNodes, setDialogNodes] = useNodesState([]);
     const [dialogEdges, setDialogEdges, onDialogEdgesChange] = useEdgesState([]);
     const [dialogFlowInstance, setDialogFlowInstance] = useState(null);
@@ -126,12 +125,20 @@ const WorkFlowDesigner = forwardRef(
         }
       }
       nodeDataRef.current = storeData;
-      // setTimeout(() => {
-      //   //this is sending the new schema to web page  - activity-definition.js
-      //   //updateActivitySchema({ nodes, edges });
-      //   //updateActivitySchema(storeData);
-      // }, 200);
       updateActivitySchema(storeData);
+
+      if (nodeDataRefActivity?.current?.state) {
+        setTaskEdges(nodeDataRefActivity?.current?.store.edges);
+        const newNodes = nodeDataRefActivity.current.store.nodes.map((node) => {
+          const n = instanceNodes.find((x) => x.id === node.id);
+          return { ...node, position: n ? n.position : node.position };
+        });
+        setTaskNodes(newNodes);
+        nodeDataRefActivity.current = { ...nodeDataRefActivity.current, state: false }
+      } else {
+        nodeDataRefActivity.current = { state: false, store: storeData }
+
+      }
     }, [setTaskNodes, setTaskEdges, storeData, updateActivitySchema]);
 
     useEffect(() => {
@@ -247,10 +254,22 @@ const WorkFlowDesigner = forwardRef(
       }
       isdialog ? setDialogEdges(updatedEdge) : setTaskEdges(updatedEdge);
       isdialog ? store.setDialogEdges(selectedTaskNodeId, updatedEdge) : store.setTaskEdges(updatedEdge);
+      setNotificationProps({
+        open: true,
+        title: 'Success',
+        subtitle: `Task Successfully deleted.`,
+        kind: 'success',
+        onCloseButtonClick: () => setNotificationProps(null)
+      });
     };
 
     // Copying Node from contextMenu
     const copyNode = (id, isdialog, selectedTaskNodeId) => {
+      //Generate random Number
+      const randomNumber = Math.floor(Math.random() * 900) + 100;
+      const singleDigit = Math.floor(Math.random() * 10);
+      const doubleDigit = Math.floor(Math.random() * 90) + 10;
+
       setIsdialogNodeDelete(isdialog);
       const dialogData = isdialog && nodeDataRef.current.nodes.filter((node) => node.id === selectedTaskNodeId)[0];
       const nodesData = isdialog ? dialogData?.data?.dialogNodes : nodeDataRef.current.nodes;
@@ -258,13 +277,25 @@ const WorkFlowDesigner = forwardRef(
 
       // Copying Node
       const [originalNode] = nodesData.filter((n) => n.id === id);
+
+      // Generate new ID with incrementing suffix
+      const baseId = originalNode.data?.id; // Assuming this is in the format "name_x"
+      let newIdSuffix = 1;
+      let newId = `${baseId}_${newIdSuffix}`;
+
+      // Check for existing IDs to find the next available suffix
+      while (nodesData.some((node) => node.data?.id === newId)) {
+        newIdSuffix++;
+        newId = `${baseId}_${newIdSuffix}`;
+      }
+
       const newNode = {
-        id: 'dup-' + originalNode.id,
+        id: 'dup-' + randomNumber + '-' + originalNode.id,
         type: originalNode.type,
-        position: { x: originalNode.position.x + 170, y: originalNode.position.y },
+        position: { x: originalNode.position.x + 170 + doubleDigit, y: originalNode.position.y + singleDigit },
         data: {
           ...NODE_TYPES[originalNode.type],
-          id: originalNode.data?.id,
+          id: newId, // Set new id with incrementing suffix
           category: isdialog ? 'dialog' : 'task',
           editableProps: originalNode.data?.editableProps,
           onContextMenuClick: originalNode.data?.onContextMenuClick,
@@ -277,7 +308,7 @@ const WorkFlowDesigner = forwardRef(
           const { data, ...rest } = dialogNode;
           const newDialogNode = {
             ...rest,
-            id: 'dup-' + dialogNode.id
+            id: 'dup-' + randomNumber + '-' + dialogNode.id
           };
           switch (dialogNode.type) {
             case 'START':
@@ -290,7 +321,7 @@ const WorkFlowDesigner = forwardRef(
               newDialogNode.data = {
                 ...NODE_TYPES[dialogNode.type],
                 editableProps: dialogNode.data.editableProps,
-                onContextMenuClick: (id, menu) => onNodeContextOptionClick(id, menu, true, 'dup-' + originalNode.id),
+                onContextMenuClick: (id, menu) => onNodeContextOptionClick(id, menu, true, 'dup-' + randomNumber + '-' + originalNode.id),
                 id: dialogNode.data.id,
                 form: dialogNode.data.form,
                 exitValidationQuery: dialogNode.data.exitValidationQuery
@@ -300,7 +331,7 @@ const WorkFlowDesigner = forwardRef(
               newDialogNode.data = {
                 ...NODE_TYPES[dialogNode.type],
                 editableProps: dialogNode.data.editableProps,
-                onContextMenuClick: (id, menu) => onNodeContextOptionClick(id, menu, true, 'dup-' + originalNode.id),
+                onContextMenuClick: (id, menu) => onNodeContextOptionClick(id, menu, true, 'dup-' + randomNumber + '-' + originalNode.id),
                 id: dialogNode.data.id,
                 exitValidationQuery: dialogNode.data.exitValidationQuery
               };
@@ -309,7 +340,7 @@ const WorkFlowDesigner = forwardRef(
               newDialogNode.data = {
                 ...NODE_TYPES[dialogNode.type],
                 editableProps: dialogNode.data.editableProps,
-                onContextMenuClick: (id, menu) => onNodeContextOptionClick(id, menu, true, 'dup-' + originalNode.id),
+                onContextMenuClick: (id, menu) => onNodeContextOptionClick(id, menu, true, 'dup-' + randomNumber + '-' + originalNode.id),
                 id: dialogNode.data.id,
                 exitValidationQuery: dialogNode.data.exitValidationQuery
               };
@@ -318,7 +349,7 @@ const WorkFlowDesigner = forwardRef(
               newDialogNode.data = {
                 ...NODE_TYPES[dialogNode.type],
                 editableProps: dialogNode.data.editableProps,
-                onContextMenuClick: (id, menu) => onNodeContextOptionClick(id, menu, true, 'dup-' + originalNode.id),
+                onContextMenuClick: (id, menu) => onNodeContextOptionClick(id, menu, true, 'dup-' + randomNumber + '-' + originalNode.id),
                 id: dialogNode.data.id,
                 form: dialogNode.data.form,
                 exitValidationQuery: dialogNode.data.exitValidationQuery
@@ -328,7 +359,7 @@ const WorkFlowDesigner = forwardRef(
               newDialogNode.data = {
                 ...NODE_TYPES[dialogNode.type],
                 editableProps: dialogNode.data.editableProps,
-                onContextMenuClick: (id, menu) => onNodeContextOptionClick(id, menu, true, 'dup-' + originalNode.id),
+                onContextMenuClick: (id, menu) => onNodeContextOptionClick(id, menu, true, 'dup-' + randomNumber + '-' + originalNode.id),
                 id: dialogNode.data.id,
                 form: dialogNode.data.form,
                 exitValidationQuery: dialogNode.data.exitValidationQuery
@@ -343,12 +374,12 @@ const WorkFlowDesigner = forwardRef(
         const dialogEdges = originalNode.data?.dialogEdges.map((dialogedge) => {
           const neeDialogEdge = {
             ...dialogedge,
-            id: 'dup-' + dialogedge.id,
-            source: 'dup-' + dialogedge.source,
-            target: 'dup-' + dialogedge.target,
+            id: 'dup-' + randomNumber + '-' + dialogedge.id,
+            source: 'dup-' + randomNumber + '-' + dialogedge.source,
+            target: 'dup-' + randomNumber + '-' + dialogedge.target,
             data: {
               ...dialogedge.data,
-              id: 'dup-' + dialogedge.data.id
+              id: 'dup-' + randomNumber + '-' + dialogedge.data.id
             }
           };
 
@@ -378,6 +409,13 @@ const WorkFlowDesigner = forwardRef(
       }
       isdialog ? setDialogNodes(newNodes) : setTaskNodes(newNodes);
       isdialog ? store.setDialogNodes(selectedTaskNodeId, newNodes) : store.setTaskNodes(newNodes);
+      setNotificationProps({
+        open: true,
+        title: 'Success',
+        subtitle: `Task Successfully copied.`,
+        kind: 'success',
+        onCloseButtonClick: () => setNotificationProps(null)
+      });
     };
 
     const onNodeContextOptionClick = (id, mode, isdialog, selectedTaskNodeId = selectedTaskNode?.id) => {
@@ -396,7 +434,7 @@ const WorkFlowDesigner = forwardRef(
     useEffect(() => {
       store.reset();
       if (activityDefinitionData.schema.nodes.length === 0 || activityDefinitionData.schema.edges.length === 0) {
-        let initialNodeData = getInitialNodeEdges(null, uuid(), uuid(), 'task', onNodeContextOptionClick);
+        let initialNodeData = getInitialNodeEdges(null, `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`, `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`, 'task', onNodeContextOptionClick);
         setTaskNodes(initialNodeData.nodes);
         setTaskEdges(initialNodeData.edges);
         store.addTaskNodes(initialNodeData.nodes);
@@ -443,7 +481,7 @@ const WorkFlowDesigner = forwardRef(
           id = getNewDialogId();
         }
 
-        const newDialogId = uuid();
+        const newDialogId = `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`;
         const newDialog = {
           id: newDialogId,
           position,
@@ -507,8 +545,7 @@ const WorkFlowDesigner = forwardRef(
           }
           return copyNode;
         });
-        // const formData = node.data?.form?.length ? JSON.parse(node.data.form).fields : [];  old schema code
-        const formData = node.data?.form?.length ? node.data.form[0].children : [];
+        const formData = node.data?.form?.length ? JSON.parse(node.data.form)[0].children : []; // old schema code
         setDialogNodes([...copyNodes]);
         setSelectedDialogNode(node);
         setFormFields(formData);
@@ -533,24 +570,6 @@ const WorkFlowDesigner = forwardRef(
       }
     };
 
-    //Form Designer page Open from Property panel for Dialog Node
-    const onDesignFormBtnClick = (e, node) => {
-      // const formData = node.data?.form?.length ? JSON.parse(node.data.form).fields : []; // old schema code
-      const formData = node.data?.form?.length ? node.data.form[0].children : [];
-      setFormFields(formData);
-      setIsPageDesignerActive(true);
-      setActivityDesignerStack((prevValue) => {
-        return [
-          ...prevValue,
-          {
-            type: 'PAGE_DESIGNER',
-            label: node.data.editableProps.name || node.data.id,
-            pathname: node.id,
-            id: node.id
-          }
-        ];
-      });
-    };
     //#endregion
 
     //#region Task Flow Methods
@@ -588,8 +607,8 @@ const WorkFlowDesigner = forwardRef(
           id = getNewTaskId();
         }
 
-        const taskId = uuid();
-        let initialNodeData = getInitialNodeEdges(taskId, uuid(), uuid(), 'dialog', onNodeContextOptionClick);
+        const taskId = `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`;
+        let initialNodeData = getInitialNodeEdges(taskId, `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`, `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`, 'dialog', onNodeContextOptionClick);
         const newTask = {
           id: taskId,
           position,
@@ -691,24 +710,7 @@ const WorkFlowDesigner = forwardRef(
       }
     };
     //#endregion
-    const onClickPageDesignerBack = () => {
-      setIsDialogFlowActive(true);
-      setIsPageDesignerActive(false);
-      setActivityDesignerStack((prevValue) => {
-        return prevValue.slice(0, -1);
-      });
-    };
 
-    const onClickDialogFlowBack = () => {
-      nodeDataRef.current = storeData;
-      setTaskEdges(storeData.edges);
-      setIsDialogFlowActive(false);
-      setIsPageDesignerActive(false);
-      setActivityDesignerStack((prevValue) => {
-        return prevValue.slice(0, -1);
-      });
-      store.setDialogNodes(selectedTaskNode.id, dialogFlowInstance.getNodes());
-    };
     // Save temporary Form data to Session Storage
     const saveFormDesignerData = (layout) => {
       store.addFormLayout(selectedTaskNode, selectedDialogNode, layout);
@@ -735,13 +737,21 @@ const WorkFlowDesigner = forwardRef(
       }
     };
 
+    useEffect(() => {
+      if (!isDialogFlowActive) {
+        if (selectedTaskNode) {
+          store?.setDialogNodes(selectedTaskNode?.id, dialogFlowInstance?.getNodes())
+        }
+      }
+    }, [isDialogFlowActive, isPageDesignerActive, setIsDialogFlowActive, setIsPageDesignerActive])
+
     return (
       <>
         {isPageDesignerActive ? (
           <DndProvider debugMode={true} backend={HTML5Backend}>
             <PageDesigner.Designer
               componentMapper={componentMapper}
-              onClickPageDesignerBack={onClickPageDesignerBack}
+
               activityDefinitionData={activityDefinitionData}
               saveFormDesignerData={saveFormDesignerData}
               formFields={formFields}
@@ -750,29 +760,7 @@ const WorkFlowDesigner = forwardRef(
         ) : (
           <>
             <div className="workflow-designer">
-              <Layer className="workflow-designer-header">
-                <div className="title-container">
-                  <span className="header-title">
-                    <span
-                      className="header-title"
-                      onClick={() => {
-                        setOpenTaskPropertiesBlock(false);
-                        setShowActivityDefineDrawer(true);
-                      }}
-                    >
-                      {activityDefinitionData && activityDefinitionData.definition?.name}
-                      {!readOnly && <Edit style={{ color: '#0f62fe' }} />}
-                    </span>
-                  </span>
-                </div>
-                <div className="actions-container">
-                  {isDialogFlowActive && (
-                    <IconButton label="Close" size="md" kind="ghost" align="bottom-right" onClick={onClickDialogFlowBack}>
-                      <CloseLarge size={16} />
-                    </IconButton>
-                  )}
-                </div>
-              </Layer>
+
               {isDialogFlowActive ? (
                 <DialogFlowDesigner
                   connectionLineStyle={connectionLineStyle}
@@ -789,7 +777,6 @@ const WorkFlowDesigner = forwardRef(
                   onDialogNodeDrop={onDialogNodeDrop}
                   onDialogNodeDragOver={onDialogNodeDragOver}
                   onDialogNodeDoubleClick={onDialogNodeDoubleClick}
-                  onDesignFormBtnClick={onDesignFormBtnClick}
                   onDialogNodeClick={onDialogNodeClick}
                   DIALOG_NODE_TYPES={DIALOG_NODE_TYPES}
                   DIALOG_EDGE_TYPES={DIALOG_EDGE_TYPES}
@@ -801,6 +788,7 @@ const WorkFlowDesigner = forwardRef(
                   setNotificationProps={setNotificationProps}
                   deleteBranchNodeConnector={deleteBranchNodeConnector}
                   isDialogFlowActive={isDialogFlowActive}
+                  getApiConfiguration={getApiConfiguration}
                 />
               ) : (
                 activityDefinitionData && (
@@ -837,6 +825,7 @@ const WorkFlowDesigner = forwardRef(
                     setNotificationProps={setNotificationProps}
                     deleteBranchNodeConnector={deleteBranchNodeConnector}
                     isDialogFlowActive={isDialogFlowActive}
+                    getRoleList={getRoleList}
                   />
                 )
               )}

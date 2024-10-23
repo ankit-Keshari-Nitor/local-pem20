@@ -8,13 +8,17 @@ export const API_END_POINTS = {
   ACTIVITY_DEFINITION: '/sponsors/cashbank/v2/activityDefinitions',
   ACTIVITY_INSTANCE: '/sponsors/{sponsorContext}/v2/activityInstances',
   ACTIVITY_DEFINITION_VERSION: '/sponsors/sponsorContext/v2/activityDefinitions/activityDefnKey/version',
-                                
+
 
 
   ATTRIBUTE_TYPES: '/rest/sponsors/b2b/attributetypes/',
   ATTRIBUTE_LIST: '/rest/sponsors/b2b/attributetypes',
   PARTNERS_LIST: '/rest/sponsors/b2b/partners/',
-  ACTIVITY_DEFINITION_ROLLOUT: '/sponsors/cashbank//v2/activityInstances'
+  ACTIVITY_DEFINITION_ROLLOUT: '/sponsors/cashbank//v2/activityInstances',
+
+  API_CONFIGURATION: '/rest/sponsors/b2b/apiconfigurations/',
+
+  ROLES: '/sponsors/cashbank/v2/roles?pageNo=0&pageSize=10&sortBy=modifyTs&sortDir=DESC'
 };
 
 export const API_METHODS = {

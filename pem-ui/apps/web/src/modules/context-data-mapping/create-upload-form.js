@@ -1,9 +1,9 @@
 import React from 'react';
-import { Grid, Column, Layer } from '@carbon/react';
+import { Grid, Column, Layer,Button } from '@carbon/react';
 import Shell, { CDS } from '@b2bi/shell';
 import './style.scss';
 
-const CreateUploadForm = ({ documentCategory }) => {
+const CreateUploadForm = ({ documentCategory, cdmPage }) => {
   const pageUtil = Shell.PageUtil();
   const pageArgs = pageUtil.pageParams;
 
@@ -18,7 +18,8 @@ const CreateUploadForm = ({ documentCategory }) => {
           }
         },
         ui: {
-          selectedFile: undefined
+          selectedFile: undefined,
+
         },
         form: {
           file: {
@@ -31,8 +32,12 @@ const CreateUploadForm = ({ documentCategory }) => {
             selectedFile: undefined
           }
         },
-        init: function () { },
+        init: function () {
+
+        },
         uiOnRequestSubmit: function () {
+          cdmPage.setUI('successStateUploadForm', undefined);
+          cdmPage.setUI('errorStateUploadForm', undefined);
           this.form.file.handleSubmit(this.uiUpload)();
         },
         uiUpload: function () {
@@ -54,38 +59,22 @@ const CreateUploadForm = ({ documentCategory }) => {
               params: params
             })
             .then(() => {
-              pageUtil.showNotificationMessage('toast', 'success', pageUtil.t('mod-sponsor-server:field.uploadField.success'));
-              //  modalConfig.onAction('submit', {});
+              this.setUI('selectedFile', undefined);
+              this.form.file.reset(pageUtil.getSubsetJson(this.form.file.attributes));
+              cdmPage.setUI('successStateUploadForm', pageUtil.t('mod-sponsor-server:field.uploadField.success'))
+            }).catch((error) => {
+              cdmPage.setUI('errorStateUploadForm', error.response?.data?.errorDescription)
             });
         },
         uiOnAddFile: function (event, files) {
           this.setUI('selectedFile', files.addedFiles[0]);
         },
         uiOnDeleteFile: function (...args) {
-          console.log(args);
           this.setUI('selectedFile', undefined);
         }
       };
     })(pageArgs, pageUtil)
   );
-
-  const pageConfig = {
-    actionsConfig: {
-      pageActions: [
-        {
-          id: 'create',
-          label: 'mod-sponsor-server:field.uploadField.create',
-          type: 'tertiary',
-          kind: 'tertiary',
-          resourceKey: `FILE.UPLOAD`,
-          disabled: false,
-          onAction: () => {
-            return page.uiOnRequestSubmit.apply();
-          }
-        }
-      ]
-    }
-  };
 
   return (
     <>
@@ -94,6 +83,9 @@ const CreateUploadForm = ({ documentCategory }) => {
           <CDS.Form name="file" context={page.form.file}>
             <Layer level={0} className="sfg--page-details-container" style={{ margin: '1rem 0rem' }}>
               <Grid className="sfg--grid-container sfg--grid--form">
+                <Column lg={12}>  {cdmPage.ui.errorStateUploadForm !== undefined && (<span className='errorMessage'>{cdmPage.ui.errorStateUploadForm}</span>)}</Column>
+                <Column lg={12}>  {cdmPage.ui.successStateUploadForm !== undefined && (<span className='successMessage'>{cdmPage.ui.successStateUploadForm}</span>)}</Column>
+
                 <Column lg={6}>
                   <Grid>
                     <Column lg={6}>
@@ -101,8 +93,12 @@ const CreateUploadForm = ({ documentCategory }) => {
                         labelText={pageUtil.t('mod-sponsor-server:field.uploadField.name')}
                         name="documentName"
                         rules={{
-                          required: true, minLength: 1, maxLength: 30, pattern: {
-                            value: /^[a-zA-Z0-9@#%^&*(){}[\]+=;:"'!?/.,\\|~`\s]*$/i, message: pageUtil.t('mod-sponsor-server:message.nameErrorMessage')
+                          required: true,
+                          minLength: 1,
+                          maxLength: 30,
+                          pattern: {
+                            value: /^[a-zA-Z0-9@#%^&*(){}[\]+=;:"'!?/.,\\|~`\s]*$/i,
+                            message: pageUtil.t('mod-sponsor-server:message.nameErrorMessage')
                           }
                         }}
                       />
@@ -116,8 +112,12 @@ const CreateUploadForm = ({ documentCategory }) => {
                         counterMode="character"
                         maxCount={255}
                         rules={{
-                          required: false, minLength: 1, maxLength: 255, pattern: {
-                            value: /^[a-zA-Z0-9@#%^&*(){}[\]+=;:"'!?/.,\\|~`\s]*$/i, message: pageUtil.t('mod-sponsor-server:message.nameErrorMessage')
+                          required: false,
+                          minLength: 1,
+                          maxLength: 255,
+                          pattern: {
+                            value: /^[a-zA-Z0-9@#%^&*(){}[\]+=;:"'!?/.,\\|~`\s]*$/i,
+                            message: pageUtil.t('mod-sponsor-server:message.nameErrorMessage')
                           }
                         }}
                       />
@@ -134,18 +134,22 @@ const CreateUploadForm = ({ documentCategory }) => {
                     maxFileSize={'2mb'}
                     onChange={page.uiOnAddFile}
                     onDelete={page.uiOnDeleteFile}
+                    value={page.ui.selectedFile}
                   ></CDS.FileUpload>
                 </Column>
 
-                <Column lg={6} md={6}>
+                <Column lg={12} md={12}>
                   <CDS.Checkbox labelText={pageUtil.t('mod-sponsor-server:field.uploadField.encrypt')} name="isEncrypted"></CDS.Checkbox>
+                </Column>
+                <Column lg={7}></Column>
+                <Column lg={5} className='btn-wrapper'>
+                  <Button kind="tertiary" onClick={() => { page.uiOnRequestSubmit() }}>Create</Button>
                 </Column>
               </Grid>
             </Layer>
           </CDS.Form>
         </Shell.PageBody>
-        <Shell.PageActions actions={pageConfig.actionsConfig.pageActions}></Shell.PageActions>
-      </Shell.Page >
+      </Shell.Page>
     </>
   );
 };

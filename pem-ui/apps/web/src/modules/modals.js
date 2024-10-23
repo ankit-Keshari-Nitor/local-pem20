@@ -5,7 +5,8 @@ import { modals as monitoringModals } from './monitoring';
 import { modals as activityNewModals } from './activityNew';
 import { modals as fileAttachmentsModals } from './file-attachment';
 import { modals as contextDataTreeModals } from './ContextData';
+import { modals as RolloutModals } from './rollout';
 
-const modals = [...fileModals, ...apiConfigurationModals, ...contextDataModals, ...monitoringModals, ...activityNewModals, ...contextDataTreeModals, ...fileAttachmentsModals];
+const modals = [...fileModals, ...apiConfigurationModals, ...contextDataModals, ...monitoringModals, ...activityNewModals, ...contextDataTreeModals, ...fileAttachmentsModals, ...RolloutModals];
 
 export { modals };

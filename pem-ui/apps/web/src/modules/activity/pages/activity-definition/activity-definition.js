@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Designer from '@b2bi/flow-designer';
 import './activity-definition.scss';
 import useActivityStore from '../../store';
-import { getActivityDetails, saveActivityData } from '../../services/activity-service';
+import { getActivityDetails, saveActivityData, getAPIConfiguration, getRoles } from '../../services/activity-service';
 import { updateActivityVersion } from '../../services/actvity-version-service';
 import { OPERATIONS } from '../../constants';
 import {
@@ -45,10 +45,18 @@ export default function ActivityDefinition() {
   const [loading, setLoading] = useState(false);
 
   const readOnly = currentActivity?.operation === OPERATIONS.VIEW ? true : false;
-  const ref = useRef();
   const [activityStatistics, setActivityStatistics] = useState();
   const [activityBreadcrumbs, setActivityBreadcrumbs] = useState([]);
   const [activityDesignerStack, setActivityDesignerStack] = useState([]);
+
+
+  const [isDialogFlowActive, setIsDialogFlowActive] = useState(false);
+  const [isPageDesignerActive, setIsPageDesignerActive] = useState(false);
+
+  const [openTaskPropertiesBlock, setOpenTaskPropertiesBlock] = useState();
+  const [openDialogPropertiesBlock, setOpenDialogPropertiesBlock] = useState(false);
+  // -------------------------------- Node Deletion -------------------------------------------
+  const nodeDataRefActivity = useRef();
 
   useEffect(() => {
     const getActivityData = (activityDefKey, versionKey) => {
@@ -94,6 +102,21 @@ export default function ActivityDefinition() {
   }, []);
 
   useEffect(() => {
+    if (store.activityData?.definition) {
+      setActivityDesignerStack(() => {
+        return [
+          {
+            type: 'ACTIVITY',
+            label: activityObj.definition.name,
+            pathname: activityObj.definition.id,
+            id: activityObj.definition.id
+          }
+        ];
+      });
+    }
+  }, [activityObj.definition.name])
+
+  useEffect(() => {
     setActivityBreadcrumbs(
       activityDesignerStack.map((item) => {
         return {
@@ -103,6 +126,8 @@ export default function ActivityDefinition() {
         };
       })
     );
+    setOpenDialogPropertiesBlock(false);
+    setOpenTaskPropertiesBlock(false);
   }, [activityDesignerStack, setActivityBreadcrumbs]);
 
   const onVersionSelection = (selectedVersionObj) => {
@@ -152,8 +177,6 @@ export default function ActivityDefinition() {
         contextData: activityObj.definition.contextData
       }
     };
-    console.log('finalNewActivityData', finalNewActivityData);
-
     const file = new Blob([JSON.stringify(finalNewActivityData)], { type: 'text/json' });
     saveAs(file, `${finalNewActivityData.name}.json`);
 
@@ -185,7 +208,7 @@ export default function ActivityDefinition() {
   };
 
   const getNodeTypesCount = (nodes) => {
-    const counts = nodes.reduce(
+    const counts = nodes !== undefined && nodes.reduce(
       (acc, node) => {
         acc[node.type] = (acc[node.type] || 0) + 1;
         return acc;
@@ -249,6 +272,54 @@ export default function ActivityDefinition() {
     }
   }, [activityObj, activityDesignerStack]);
 
+  //API Configuration List Call
+  const getApiConfiguration = async () => {
+    try {
+      const apiConfig = await getAPIConfiguration(); // Ensure this is awaited if it's a promise
+      return apiConfig;
+    } catch (error) {
+      console.error('Error fetching API configuration:', error);
+    }
+  };
+
+  //Roles List Call
+  const getRoleList = async () => {
+    try {
+      const roleList = await getRoles();
+      return roleList
+    } catch (error) {
+      console.error('Error fetching Role list:', error);
+
+    }
+  }
+
+  const handleClick = (event) => {
+    if (event.currentTarget.getAttribute('id') === '1' && activityDesignerStack.length > 2) {
+      setIsDialogFlowActive(true);
+      setIsPageDesignerActive(false);
+      setActivityDesignerStack((prevValue) => {
+        return prevValue.slice(0, -1);
+      });
+    } else if (event.currentTarget.getAttribute('id') === '0' && activityDesignerStack.length >= 1) {
+      nodeDataRefActivity.current = { ...nodeDataRefActivity.current, state: true };
+      setIsDialogFlowActive(false);
+      setIsPageDesignerActive(false);
+      if (activityDesignerStack.length === 3) {
+        setActivityDesignerStack((prevValue) => {
+          return prevValue.slice(0, -2);
+        });
+      } else if (activityDesignerStack.length === 1) {
+        setOpenTaskPropertiesBlock(false);
+        setShowActivityDefineDrawer(true);
+      }
+      else {
+        setActivityDesignerStack((prevValue) => {
+          return prevValue.slice(0, -1);
+        });
+      }
+    }
+  }
+
   return (
     <>
       {/* Workflow Designer Header */}
@@ -272,7 +343,7 @@ export default function ActivityDefinition() {
             <Breadcrumb noTrailingSlash data-testid="breadcrumb">
               {activityBreadcrumbs.map(({ breadcrumbLabel, pathname }, index, items) => {
                 return (
-                  <BreadcrumbItem key={pathname} isCurrentPage={index === items.length - 1}>
+                  <BreadcrumbItem id={index} key={pathname} isCurrentPage={index === items.length - 1} onClick={handleClick}>
                     <Link to={pathname}>{breadcrumbLabel}</Link>
                   </BreadcrumbItem>
                 );
@@ -314,22 +385,32 @@ export default function ActivityDefinition() {
       {loading
         ? 'Loading...'
         : activityDefinitionData && (
-            <Designer.WorkFlowDesigner
-              ref={ref}
-              showActivityDefineDrawer={showActivityDefineDrawer}
-              setShowActivityDefineDrawer={setShowActivityDefineDrawer}
-              setActivityDesignerStack={setActivityDesignerStack}
-              updateActivityDetails={activityDetailsSave}
-              updateActivitySchema={updateActivitySchema}
-              activityDefinitionData={activityDefinitionData}
-              activityOperation={store.selectedActivity ? store.selectedActivity.operation : 'New'}
-              readOnly={readOnly}
-              onVersionSelection={(selectedVersion) => onVersionSelection(selectedVersion)}
-              versionData={activityVersions} //todo -- this data will be based on version api response
-              selectedVersion={store.selectedActivity ? store.selectedActivity.version : 1} //todo - pass current version id being loaded
-              setNotificationProps={setNotificationProps} // to show the success notification
-            />
-          )}
+          <Designer.WorkFlowDesigner
+            showActivityDefineDrawer={showActivityDefineDrawer}
+            setShowActivityDefineDrawer={setShowActivityDefineDrawer}
+            setActivityDesignerStack={setActivityDesignerStack}
+            updateActivityDetails={activityDetailsSave}
+            updateActivitySchema={updateActivitySchema}
+            activityDefinitionData={activityDefinitionData}
+            activityOperation={store.selectedActivity ? store.selectedActivity.operation : 'New'}
+            readOnly={readOnly}
+            onVersionSelection={(selectedVersion) => onVersionSelection(selectedVersion)}
+            versionData={activityVersions} //todo -- this data will be based on version api response
+            selectedVersion={store.selectedActivity ? store.selectedActivity.version : 1} //todo - pass current version id being loaded
+            setNotificationProps={setNotificationProps} // to show the success notification
+            getApiConfiguration={getApiConfiguration}//to call the API Configuration
+            getRoleList={getRoleList} // to call Role List
+            isDialogFlowActive={isDialogFlowActive}
+            setIsDialogFlowActive={setIsDialogFlowActive}
+            isPageDesignerActive={isPageDesignerActive}
+            setIsPageDesignerActive={setIsPageDesignerActive}
+            openTaskPropertiesBlock={openTaskPropertiesBlock}
+            setOpenTaskPropertiesBlock={setOpenTaskPropertiesBlock}
+            openDialogPropertiesBlock={openDialogPropertiesBlock}
+            setOpenDialogPropertiesBlock={setOpenDialogPropertiesBlock}
+            nodeDataRefActivity={nodeDataRefActivity}
+          />
+        )}
       {notificationProps && notificationProps.open && <Notification {...notificationProps} />}
     </>
   );

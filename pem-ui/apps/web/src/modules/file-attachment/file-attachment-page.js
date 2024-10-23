@@ -47,7 +47,7 @@ const FileAttachment = () => {
           selectedRow: '',
           selectedFile: undefined,
           selectedIndex: 0,
-          errorState: undefined
+          errorState: undefined,
         },
         form: {
           file: {
@@ -101,7 +101,7 @@ const FileAttachment = () => {
                   })
                   .catch((err) => { });
             } else {
-              pageUtil.showNotificationMessage('toast', 'error', "Please select the File from datatable.");
+              pageUtil.showNotificationMessage('toast', pageUtil.t('shell:common.action.error'), "Please select the File from datatable.");
 
             }
           }
@@ -111,28 +111,25 @@ const FileAttachment = () => {
           let params = this.form.file.getValues();
           if (params.uploadFile !== undefined) {
             formData.append('documentContents', this.ui.selectedFile);
-
             formData.append('documentName', params.documentName);
             formData.append('documentDescription', params.documentDescription);
-            formData.append('documentCategory', params.documentCategory);
+            formData.append('documentCategory', 'ACTIVITY');
             formData.append('isEncrypted', params.isEncrypted);
             params = {};
-
             this.ds.uploadFile(formData, {
               headers: {
                 'Content-Type': 'multipart/form-data'
               }, params: params
-            }).then(() => {
+            }).then((response) => {
               this.setUI('selectedFile', undefined);
+              modalConfig.onAction('submit', { data: this.form.file.getValues() })
               this.form.file.reset(pageUtil.getSubsetJson(this.form.file.attributes));
-              pageUtil.showNotificationMessage('toast', 'success', pageUtil.t('mod-sponsor-server:field.uploadField.success'));
+              pageUtil.showNotificationMessage('toast', pageUtil.t('shell:common.actions.success'), pageUtil.t('mod-sponsor-server:field.uploadField.success'));
             }).catch((error) => {
               this.setUI('errorState', error.response?.data?.errorDescription)
-              //  pageUtil.showNotificationMessage('toast', 'error', error.response?.data?.errorDescription);
             });
           } else {
             this.setUI('errorState', 'Please attach the file.')
-            // pageUtil.showNotificationMessage('toast', 'error', "Please attach the file.");
           }
         },
         uiOnAddFile: function (event, files) {

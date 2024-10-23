@@ -3,10 +3,10 @@ import Textarea from './textarea';
 import DatePicker from './datepicker';
 import Select from './select';
 import FileUploader from './file-upload';
-import Accordion from './accordion';
+/* import Accordion from './accordion'; */
 import Link from './link';
 import Group from './group';
-import Tab from './tab';
+/* import Tab from './tab'; */
 import Toggle from './toggle';
 import Text from './text';
 import CheckboxGroup from './checkbox-group';
@@ -35,7 +35,7 @@ export const formFields = [
   FileUploader,
   FileDownload,
   DatePicker,
-  DataTable,
-  Accordion,
-  Tab
+  DataTable
+  //Accordion,
+  //Tab
 ];

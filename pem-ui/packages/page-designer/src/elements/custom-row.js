@@ -28,7 +28,7 @@ const Row = ({ data, handleDrop, path, componentMapper, onFieldSelect, renderRow
     return (
       <CarbonColumn
         // onClick={(e) => onFieldSelect(e, column, currentPath)}
-        lg={column.customsize ? Number(column.customsize)-1 : Number(column.defaultsize)-1}
+        lg={column.customsize ? Number(column.customsize) - 1 : Number(column.defaultsize) - 1}
         className={classNames(!previewMode && 'column-zone')}
       >
         <Column

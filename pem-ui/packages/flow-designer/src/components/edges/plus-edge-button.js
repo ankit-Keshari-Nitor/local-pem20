@@ -27,7 +27,7 @@ const PlusEdgeButton = (props) => {
     >
       <Popover open={openContextMenu}>
         <button
-          className="edge-add-Button"
+        style={{backgroundColor:'red'}}
           type="button"
           onClick={() => {
             setOpenContextMenu(!openContextMenu);

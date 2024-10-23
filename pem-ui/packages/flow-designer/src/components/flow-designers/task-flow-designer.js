@@ -43,6 +43,7 @@ const TaskFlowDesigner = ({
   selectedVersion,
   deleteBranchNodeConnector,
   isDialogFlowActive,
+  getRoleList,
   setNotificationProps //toast message config
 }) => {
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
@@ -112,7 +113,7 @@ const TaskFlowDesigner = ({
         {openTaskPropertiesBlock && (
           <>
             <PanelResizeHandle />
-            <Panel minSize={40} defaultSize={40} ref={blockPropPanelRef}>
+            <Panel minSize={40} defaultSize={50} ref={blockPropPanelRef}>
               <div className="dnd-flow">
                 <div className="task-properties-container">
                   <BlockPropertiesTray
@@ -123,6 +124,7 @@ const TaskFlowDesigner = ({
                     setNotificationProps={setNotificationProps}
                     deleteBranchNodeConnector={deleteBranchNodeConnector}
                     isDialogFlowActive={isDialogFlowActive}
+                    getRoleList={getRoleList}
                   />
                 </div>
               </div>
@@ -132,7 +134,7 @@ const TaskFlowDesigner = ({
         {showActivityDefineDrawer && !openTaskPropertiesBlock && (
           <>
             <PanelResizeHandle />
-            <Panel ref={activityDefPanelRef} defaultSize={40} minSize={40}>
+            <Panel ref={activityDefPanelRef} defaultSize={50} minSize={40}>
               <div className="dnd-flow">
                 <div className="task-properties-container">
                   <ActivityDefinitionForm

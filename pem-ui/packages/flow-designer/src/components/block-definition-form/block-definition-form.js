@@ -8,7 +8,7 @@ import { COMPONENT_MAPPER, INITIAL_QUERY, NODE_TYPE, queryValidation } from '../
 import ConditionalBuilder from '../condition-builder';
 import { FormSpy } from '@data-driven-forms/react-form-renderer';
 
-export default function BlockDefinitionForm({ id, selectedNode, selectedTaskNode = null, schema, readOnly, setOpenPropertiesBlock, onDesignFormBtnClick, setNotificationProps }) {
+export default function BlockDefinitionForm({ id, selectedNode, selectedTaskNode = null, schema, readOnly, setOpenPropertiesBlock, setNotificationProps }) {
   let newSchema = { ...schema };
   newSchema.fields = newSchema.fields.map((item) => ({ ...item, isReadOnly: readOnly, helperText: readOnly ? '' : item.helperText }));
   const [openCancelDialog, setOpenCancelDialog] = useState(false);
@@ -16,6 +16,7 @@ export default function BlockDefinitionForm({ id, selectedNode, selectedTaskNode
   const editDialog = useTaskStore((state) => state.editDialogNodePros);
   const formValidator = useRef({});
   const queryValidator = useRef({});
+  const formValidationKey = useRef();
   let initialValues = {};
   initialValues.name = selectedNode.data.id;
 
@@ -31,25 +32,6 @@ export default function BlockDefinitionForm({ id, selectedNode, selectedTaskNode
     setOpenCancelDialog(true);
   };
 
-  // const onSubmitExitValidationForm = (modifiedQuery, errorMessage) => {
-  //   if (selectedNode.type === NODE_TYPE.API || selectedNode.type === NODE_TYPE.DIALOG || selectedNode.type === NODE_TYPE.XSLT) {
-  //     editDialog(selectedNode, selectedTaskNode, 'exitValidationQuery', query);
-  //     editDialog(selectedNode, selectedTaskNode, 'validateExitValidationQuery', modifiedQuery);
-  //     editDialog(selectedNode, selectedTaskNode, 'exitValidationMessage', errorMessage);
-  //     setOpenPropertiesBlock(false);
-  //   } else {
-  //     editTask(selectedNode, 'exitValidationQuery', query);
-  //     editTask(selectedNode, 'validateExitValidationQuery', modifiedQuery);
-  //     editTask(selectedNode, 'exitValidationMessage', errorMessage);
-  //   }
-  //   setNotificationProps({
-  //     open: true,
-  //     title: 'Success',
-  //     subtitle: `${selectedNode?.data?.editableProps?.name ? selectedNode?.data?.editableProps?.name : selectedNode.data.id} Exit Validations saved successfully!`,
-  //     kind: 'success',
-  //     onCloseButtonClick: () => setNotificationProps(null)
-  //   });
-  // };
   const OnPropertySave = () => {
     queryValidator.current = queryValidation(query, {});
     if (Object.keys(formValidator.current).length === 0 && Object.keys(queryValidator.current).length === 0) {
@@ -71,10 +53,12 @@ export default function BlockDefinitionForm({ id, selectedNode, selectedTaskNode
     } else {
       let errorMsg =
         Object.keys(queryValidator.current).length > 0 && Object.keys(formValidator.current).length > 0
-          ? 'Define and ExitValidation tab has some inappropriate data'
+          ? 'Define and Exit Validation tab has some mandatory fields'
           : Object.keys(queryValidator.current).length > 0
-            ? 'ExitValidation tab has some inappropriate data'
-            : 'Define tab has some inappropriate data';
+            ? `Exit Validation Tab Error - ${queryValidator.current.reasons}`
+            : formValidationKey.current
+              ? `Define Tab Error - ${formValidator.current[formValidationKey.current]}`
+              : 'Define tab has some mandatory fields';
       setNotificationProps({
         open: true,
         title: 'Error',
@@ -88,6 +72,7 @@ export default function BlockDefinitionForm({ id, selectedNode, selectedTaskNode
   const FORM_TEMPLATE = ({ formFields }) => {
     let newFormFieldsObj = formFields.map(({ props, ...rest }) => {
       if (Object.keys(formValidator.current).includes(rest.key)) {
+        formValidationKey.current = rest.key;
         return {
           ...rest,
           props: {
@@ -128,7 +113,6 @@ export default function BlockDefinitionForm({ id, selectedNode, selectedTaskNode
         <TabList aria-label="List of tabs" contained style={{ display: 'contents' }}>
           <Tab>Define</Tab>
           <Tab>Exit Validation</Tab>
-          {selectedNode.type === NODE_TYPE.DIALOG ? <Button onClick={onDesignFormBtnClick}>Design Form</Button> : null}
         </TabList>
         <TabPanels>
           {/* Define Form */}

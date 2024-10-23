@@ -54,7 +54,7 @@ const routes = [
 const modals = [
   {
     page: 'CONFIRMATION_MODAL.VIEW',
-    size: 'md',
+    size: 'sm',
     element: (
       <Shell.PageContainer mode="MODAL_PAGE" dataLoaderConfig={ActivityWizard.DataLoaderConfig}>
         <ActivityWizard.ConfirmationModal />

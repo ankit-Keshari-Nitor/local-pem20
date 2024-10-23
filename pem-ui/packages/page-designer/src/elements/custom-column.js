@@ -4,7 +4,21 @@ import { COLUMN } from '../constants/constants';
 import DropZone from './drop-zone';
 import FieldRenderer from '../components/canvas/field-renderer/field-renderer';
 
-const Column = ({ data, handleDrop, path, componentMapper, onFieldSelect, renderRow, onFieldDelete, previewMode, onChangeHandle, colSize, isSelected, setIsSelected, onGroupChange }) => {
+const Column = ({
+  data,
+  handleDrop,
+  path,
+  componentMapper,
+  onFieldSelect,
+  renderRow,
+  onFieldDelete,
+  previewMode,
+  onChangeHandle,
+  colSize,
+  isSelected,
+  setIsSelected,
+  onGroupChange
+}) => {
   const ref = useRef(null);
   const [{ isDragging }, drag] = useDrag({
     type: COLUMN,

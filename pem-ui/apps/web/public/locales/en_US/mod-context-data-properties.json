@@ -1,7 +1,9 @@
 {
   "form": {
     "name": "Name (required)",
+    "namePlaceholder": "Enter Name",
     "description": "Description",
+    "descriptionPlaceholder": "Enter Description",
     "contextData": "Context Data",
     "iconDescription": "Context Data",
     "button": {

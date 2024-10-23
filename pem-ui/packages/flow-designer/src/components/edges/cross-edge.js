@@ -1,5 +1,5 @@
 import React, { useRef, useCallback, useState, useEffect } from 'react';
-import { EdgeLabelRenderer, getSmoothStepPath, useReactFlow } from 'reactflow';
+import { EdgeLabelRenderer, getStraightPath, useReactFlow } from 'reactflow';
 import './style.scss';
 import useTaskStore from '../../store';
 import { Column, Grid, Popover, PopoverContent } from '@carbon/react';
@@ -15,7 +15,7 @@ function CrossEdge({ id, sourceX, sourceY, targetX, targetY, sourcePosition, tar
   const addNewTaskNodes = useTaskStore((state) => state.addNewTaskNodes);
   const addNewTaskEdges = useTaskStore((state) => state.addNewTaskEdges);
   const addNewDialogEdges = useTaskStore((state) => state.addNewDialogEdges);
-  const [edgePath, labelX, labelY] = getSmoothStepPath({
+  const [edgePath, labelX, labelY] = getStraightPath({
     sourceX,
     sourceY,
     sourcePosition,
@@ -33,7 +33,7 @@ function CrossEdge({ id, sourceX, sourceY, targetX, targetY, sourcePosition, tar
   const [newNodePosition, setNewNodePosition] = useState();
 
   const callBack = useCallback((isEnter) => {
-    edgePathRef.current?.parentElement.classList[isEnter ? 'add' : 'remove']('animated', 'redlines');
+    // edgePathRef.current?.parentElement.classList[isEnter ? 'add' : 'remove']('animated', 'redlines');
     if (isEnter) {
       removeEdgeBtnRef.current?.classList['remove']('hidebuttons');
       addBlockBtnRef.current?.classList['remove']('hidebuttons');
@@ -58,7 +58,9 @@ function CrossEdge({ id, sourceX, sourceY, targetX, targetY, sourcePosition, tar
       setOpen(false);
       return;
     }
-    const nodeId = uuid();
+    const nodeId = `pem_${uuid()
+      .replace(/[^0-9]/g, '')
+      .substring(0, 5)}`;
     const newNodeObj = {
       id: nodeId,
       position: newNodePosition,
@@ -69,7 +71,17 @@ function CrossEdge({ id, sourceX, sourceY, targetX, targetY, sourcePosition, tar
       }
     };
     if (data?.category === CATEGORYS.TASK) {
-      let initialNodeData = getInitialNodeEdges(nodeId, uuid(), uuid(), 'dialog', data.onContextMenuClick);
+      let initialNodeData = getInitialNodeEdges(
+        nodeId,
+        `pem_${uuid()
+          .replace(/[^0-9]/g, '')
+          .substring(0, 5)}`,
+        `pem_${uuid()
+          .replace(/[^0-9]/g, '')
+          .substring(0, 5)}`,
+        'dialog',
+        data.onContextMenuClick
+      );
       newNodeObj.data.dialogNodes = initialNodeData.nodes;
       newNodeObj.data.dialogEdges = initialNodeData.edges;
       newNodeObj.data.onContextMenuClick = (id, menu) => data.onContextMenuClick(id, menu, false);
@@ -97,7 +109,8 @@ function CrossEdge({ id, sourceX, sourceY, targetX, targetY, sourcePosition, tar
     <>
       <path id={'1'} style={style} className="react-flow__edge-path" d={edgePath} markerEnd={markerEnd} ref={edgePathRef} />
       {!data?.readOnly && (
-        <div onMouseOver={() => callBack(true)} onMouseLeave={() => callBack(false)}>
+        <div>
+          {/* <div onMouseOver={() => callBack(true)} onMouseLeave={() => callBack(false)}> */}
           <EdgeLabelRenderer style={{ width: '100%' }}>
             <div
               style={{
@@ -108,16 +121,8 @@ function CrossEdge({ id, sourceX, sourceY, targetX, targetY, sourcePosition, tar
                 flexDirection: buttonDirection,
                 pointerEvents: 'all'
               }}
-              className="nodrag nopan"
             >
-              <button
-                size="sm"
-                ref={removeEdgeBtnRef}
-                className="edge-button remove-edge-button hidebuttons"
-                style={{ margin: 2 }}
-                disabled={data?.readOnly}
-                onClick={() => onEdgeClick(id)}
-              >
+              <button size="sm" ref={removeEdgeBtnRef} className="edge-button remove-edge-button" style={{ margin: 2 }} disabled={data?.readOnly} onClick={() => onEdgeClick(id)}>
                 x
               </button>
               <Popover open={open} align="bottom-start">
@@ -125,7 +130,7 @@ function CrossEdge({ id, sourceX, sourceY, targetX, targetY, sourcePosition, tar
                   size="sm"
                   ref={addBlockBtnRef}
                   style={{ margin: 2 }}
-                  className="edge-button add-block-button hidebuttons"
+                  className="edge-button add-block-button"
                   disabled={data?.readOnly}
                   onClick={(e) => {
                     setOpen(!open);

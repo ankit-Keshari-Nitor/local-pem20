@@ -149,4 +149,9 @@ export const FONT_FAMILY = [
   { fontFamily: 'Sans-serif' }
 ];
 
-export const FONT_STYLE = [{ fontStyle: 'Light', value: '300' }, { fontStyle: 'Normal', value: '400' }, { fontStyle: 'Medium', value: '500' }, { fontStyle: 'Semi bold', value: '600' }];
+export const FONT_STYLE = [
+  { fontStyle: 'Light', value: '300' },
+  { fontStyle: 'Normal', value: '400' },
+  { fontStyle: 'Medium', value: '500' },
+  { fontStyle: 'Semi bold', value: '600' }
+];

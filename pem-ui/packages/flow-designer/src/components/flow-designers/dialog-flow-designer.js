@@ -33,15 +33,15 @@ const DialogFlowDesigner = ({
   selectedDialogNode,
   setOpenDialogPropertiesBlock,
   readOnly,
-  onDesignFormBtnClick,
   isDialogFlowActive,
   setNotificationProps, //toast message config
-  deleteBranchNodeConnector
+  deleteBranchNodeConnector,
+  getApiConfiguration //API Call API configuration
 }) => {
   const dialogPropPanelRef = useRef();
   const [tasks, setTasks] = useState([]);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
-  
+
   const handleExpansion = (expand, ref) => {
     expand ? ref.current?.resize(180) : ref.current?.resize(34);
   };
@@ -101,10 +101,11 @@ const DialogFlowDesigner = ({
             </ReactFlowProvider>
           </div>
         </Panel>
+        {/* Properties Block  */}
         {openDialogPropertiesBlock && (
           <>
             <PanelResizeHandle />
-            <Panel minSize={40} defaultSize={40} ref={dialogPropPanelRef}>
+            <Panel minSize={40} defaultSize={50} ref={dialogPropPanelRef}>
               <div className="dnd-flow">
                 <div className="task-properties-container">
                   <BlockPropertiesTray
@@ -112,13 +113,11 @@ const DialogFlowDesigner = ({
                     setOpenPropertiesBlock={setOpenDialogPropertiesBlock}
                     selectedTaskNode={selectedTaskNode}
                     readOnly={readOnly}
-                    onDesignFormBtnClick={(e) => {
-                      onDesignFormBtnClick(e, selectedDialogNode);
-                    }}
                     onExpand={(isExpanded) => handleExpansion(isExpanded, dialogPropPanelRef)}
                     setNotificationProps={setNotificationProps}
                     deleteBranchNodeConnector={deleteBranchNodeConnector}
                     isDialogFlowActive={isDialogFlowActive}
+                    getApiConfiguration={getApiConfiguration}
                   />
                 </div>
               </div>

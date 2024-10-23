@@ -18,8 +18,6 @@ import {
   indexForChild,
   capitalizeFirstLetter,
   defaultProps,
-  convertToSchema,
-  getFormObject,
   copyComponent,
   collectPaletteEntries
 } from '../../utils/helpers';
@@ -51,17 +49,17 @@ import {
   RADIO,
   EXTENSIONS
 } from '../../constants/constants';
-import ViewSchema from './../view-schema';
-import { Button, Grid, Modal, Column, Layer, IconButton } from '@carbon/react';
+import { Button, Grid, Modal, Column, Layer } from '@carbon/react';
 import FormPreview from '../preview-mode';
-import { View, CloseLarge } from '@carbon/icons-react';
 import { FormPropsPanel } from '../props-panel';
 
 export default function Designer({ componentMapper, onClickPageDesignerBack, activityDefinitionData, saveFormDesignerData, formFields }) {
   const initialLayout = [
     {
       type: 'FORM',
-      id: uuid(),
+      id: `pem_${uuid()
+        .replace(/[^0-9]/g, '')
+        .substring(0, 5)}`,
       name: 'form-test',
       width: '100px',
       height: '100px',
@@ -112,7 +110,6 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
   const [propsPanelActiveTab, setPropsPanelActiveTab] = useState(0);
   const [isRowDelete, setIsRowDelete] = useState(false);
   const rowDataForDelete = useRef();
-  console.log('layout>>>', layout);
   const handleDrop = useCallback(
     (dropZone, item) => {
       const splitDropZonePath = dropZone.path.split('-');
@@ -133,7 +130,9 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
       if (item.type === SIDEBAR_ITEM) {
         // 1. Move sidebar item into page
         const newComponent = {
-          id: uuid(),
+          id: `pem_${uuid()
+            .replace(/[^0-9]/g, '')
+            .substring(0, 5)}`,
           ...item.component
         };
         setComponents({
@@ -263,7 +262,14 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
     if (key === SUBTAB) {
       const position = indexForChild(layout, componentPosition, 0);
       componentPosition.push(position);
-      const newLayout = addChildToChildren(layout, componentPosition, { id: uuid(), tabTitle: DEFAULTTITLE, type: SUBTAB, children: [] });
+      const newLayout = addChildToChildren(layout, componentPosition, {
+        id: `pem_${uuid()
+          .replace(/[^0-9]/g, '')
+          .substring(0, 5)}`,
+        tabTitle: DEFAULTTITLE,
+        type: SUBTAB,
+        children: []
+      });
       setLayout([...newLayout]);
     } else if (key === CUSTOM_COLUMN) {
       const position = indexForChild(layout, componentPosition, 0);
@@ -399,18 +405,18 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
     const newPath = Number(path) + 1;
     const newItem = {
       ...originalComponent,
-      id: uuid(),
+      id: `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`,
       children: []
     };
     newItem.children = copyComponent(originalComponent.children, newItem.children);
-    setLayout(addChildToChildren(layout, [newPath], newItem))
+    setLayout(addChildToChildren(layout, [newPath], newItem));
     //setLayout(handleMoveSidebarComponentIntoParent(layout, [newPath], newItem));
   };
 
   const onAddRow = (e, path) => {
     e.stopPropagation();
     const newPath = Number(path) + 1;
-    const newId = uuid();
+    const newId = `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`;
     const newItem = {
       id: newId,
       type: COMPONENT,
@@ -421,7 +427,7 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
   const onGroupChange = (e, componentGroup, path) => {
     e.stopPropagation();
     const newPath = path.split('-');
-    const newItemId = uuid();
+    const newItemId = `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`;
     const newItem = collectPaletteEntries(componentMapper).filter((items) => items.component.type === componentGroup)[0];
     const newFormField = {
       id: newItemId,
@@ -436,7 +442,7 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
     e.stopPropagation();
     setDeletedFieldPath(path);
     defaultProps(newItem);
-    const newItemId = uuid();
+    const newItemId = `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`;
     const splitDropZonePath = path.split('-');
     const oldLayout = handleRemoveItemFromLayout(layout, splitDropZonePath);
     const newFormField = {
@@ -499,12 +505,12 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
             <span onClick={onClickPageDesignerBack} className="cross-icon">
               <CrossIcon />
             </span>*/}
-            <IconButton label="Preview" size="md" kind="ghost" align="bottom-right" onClick={() => setOpenPreview(true)}>
-              <View size={16} />
-            </IconButton>
-            <IconButton label="Close" size="md" kind="ghost" align="bottom-right" onClick={onClickPageDesignerBack}>
+            <Button size="sm" kind="primary" align="bottom-right" onClick={() => setOpenPreview(true)}>
+              Preview
+            </Button>
+            {/* <IconButton label="Close" size="md" kind="ghost" align="bottom-right" onClick={onClickPageDesignerBack}>
               <CloseLarge size={16} />
-            </IconButton>
+            </IconButton> */}
           </div>
         </Layer>
         <div className="layout-container">

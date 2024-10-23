@@ -278,6 +278,9 @@ export const handleMoveToDifferentParent = (layout, splitDropZonePath, splitItem
 };
 
 export const handleMoveSidebarComponentIntoParent = (layout, splitDropZonePath, item) => {
+  console.log('layout>>>', layout);
+  console.log('splitDropZonePath>>>', splitDropZonePath);
+  console.log('item>>>', item);
   let newLayoutStructure;
   if (item?.component?.type === GROUP) {
     switch (splitDropZonePath.length) {
@@ -862,13 +865,19 @@ export const copyComponent = (originalComponent, newComponent) => {
         children: []
       });
       return copyComponent(component.children, newComponent[index].children);
-    }
-    if (component.type === COMPONENT) {
+    } else if (component.type === COMPONENT) {
       const newId = uuid();
       return newComponent.push({
         ...component,
         component: { ...component.component, id: newId },
         id: newId
+      });
+    } 
+    else if (component.type === COLUMN) {
+      return newComponent.push({
+        ...component,
+        id: uuid(),
+        children: []
       });
     }
   });

@@ -52,10 +52,10 @@ export default function Canvas({
       <div className="canvas">
         {layout.slice(0, 1).map((formComponent, formIndex) => {
           return (
-            <form key={formComponent.id}>
+            <form className='form-area' key={formComponent.id}>
               <div className="form-canvas">
                 {layout.slice(1).map((component, index) => {
-                  const currentPath = `${index + 1}`;
+                  const currentPath = `${Number(index) + 1}`;
                   return (
                     <React.Fragment key={component.id}>
                       {!previewMode && (

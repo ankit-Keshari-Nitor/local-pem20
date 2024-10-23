@@ -32,61 +32,53 @@ export const FormPropsPanel = ({ formFieldProps, onFormPropsChange }) => {
               <Column className="props-field" lg={8}>
                 <TextInput
                   labelText={'Form Name'}
-                  value={''}
-                  // onChange={(e) =>
-                  //   onFormPropsChange({
-                  //     ...rest,
-                  //     customProps: {
-                  //       ...customProps,
-                  //       fontColor: e.target.value
-                  //     }
-                  //   })
-                  // }
+                  value={formProps.current.name}
+                  onChange={(e) =>
+                    onFormPropsChange({
+                      ...rest,
+                      customProps,
+                      name: e.target.value
+                    })
+                  }
                 />
               </Column>
               <Column className="props-field" lg={8}>
                 <TextInput
                   labelText={'ID (required)'}
-                  value={''}
-                  // onChange={(e) =>
-                  //   onFormPropsChange({
-                  //     ...rest,
-                  //     customProps: {
-                  //       ...customProps,
-                  //       fontColor: e.target.value
-                  //     }
-                  //   })
-                  // }
+                  value={formProps.current.id}
+                  onChange={(e) =>
+                    onFormPropsChange({
+                      ...rest,
+                      customProps,
+                      id: e.target.value
+                    })
+                  }
                 />
               </Column>
               <Column className="props-field" lg={8}>
                 <TextInput
                   labelText={'Width in px (required)'}
-                  value={''}
-                  // onChange={(e) =>
-                  //   onFormPropsChange({
-                  //     ...rest,
-                  //     customProps: {
-                  //       ...customProps,
-                  //       fontColor: e.target.value
-                  //     }
-                  //   })
-                  // }
+                  value={formProps.current.width}
+                  onChange={(e) =>
+                    onFormPropsChange({
+                      ...rest,
+                      customProps,
+                      width: e.target.value
+                    })
+                  }
                 />
               </Column>
               <Column className="props-field" lg={8}>
                 <TextInput
                   labelText={'Height in px (required)'}
-                  value={''}
-                  // onChange={(e) =>
-                  //   onFormPropsChange({
-                  //     ...rest,
-                  //     customProps: {
-                  //       ...customProps,
-                  //       fontColor: e.target.value
-                  //     }
-                  //   })
-                  // }
+                  value={formProps.current.height}
+                  onChange={(e) =>
+                    onFormPropsChange({
+                      ...rest,
+                      customProps,
+                      height: e.target.value
+                    })
+                  }
                 />
               </Column>
             </Grid>

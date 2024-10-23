@@ -72,6 +72,14 @@
     height: 100%;
     overflow-y: auto;
     border: 1px dashed #a3a5a7;
+
+    .form-area {
+      height: 100%;
+      
+      .form-canvas {
+        height: 100%;
+      }
+    }
   }
 }
 

@@ -63,6 +63,8 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
       type: 'FORM',
       id: uuid(),
       name: 'form-test',
+      width: '100px',
+      height: '100px',
       defaultStyle: true,
       defaultProps: {
         fontFamily: 'IBM Plex Sans',
@@ -401,7 +403,8 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
       children: []
     };
     newItem.children = copyComponent(originalComponent.children, newItem.children);
-    setLayout(handleMoveSidebarComponentIntoParent(layout, [newPath], newItem));
+    setLayout(addChildToChildren(layout, [newPath], newItem))
+    //setLayout(handleMoveSidebarComponentIntoParent(layout, [newPath], newItem));
   };
 
   const onAddRow = (e, path) => {
@@ -447,10 +450,6 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
     setComponentsNames([...newElements, { id: newItemId, name: 'form-control-' + newItemId.substring(0, 2) }]);
     onFieldSelect(e, newFormField, path, newFormField);
   };
-
-  // const onFormSelect = () => {
-  //   setFormFieldProps(layout.slice(0,1));
-  // }
 
   const onFormPropsChange = (newPropsObjs) => {
     layout.shift();

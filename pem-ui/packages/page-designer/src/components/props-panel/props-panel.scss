@@ -53,7 +53,7 @@
   margin-top: 2.5rem;
 }
 
-.opt-btn>svg {
+.opt-btn > svg {
   margin-right: 1rem;
 }
 
@@ -75,7 +75,7 @@
   border-color: #0f62fe;
 }
 
-.mapping-button>svg {
+.mapping-button > svg {
   margin-right: 1rem;
 }
 
@@ -120,18 +120,18 @@
 }
 
 .add-row {
-  padding-right: 3rem;
+  // padding-right: 3rem;
   margin-left: 4.55rem;
   margin-bottom: 1rem;
 }
 
-.right-palette-container>.cds--tabs--contained {
+.right-palette-container > .cds--tabs--contained {
   border-bottom: 1px solid #989696;
 }
 
-.right-palette-container>.cds--tabs.cds--tabs--contained .cds--tabs__nav-item.cds--tabs__nav-item--selected {
+.right-palette-container > .cds--tabs.cds--tabs--contained .cds--tabs__nav-item.cds--tabs__nav-item--selected {
   box-shadow: none;
-  border-bottom: 2px solid #0F62FE;
+  border-bottom: 2px solid #0f62fe;
   background-color: unset;
 }
 
@@ -161,7 +161,7 @@
 }
 
 .right-props-icon {
-  border: 1px solid #0F62FE;
+  border: 1px solid #0f62fe;
   width: 100%;
   height: 55%;
   padding-top: 0.4rem;
@@ -170,11 +170,11 @@
 }
 
 .right-props-icon-color {
-  color: #0F62FE;
+  color: #0f62fe;
 }
 
 .right-props-icon-background {
-  background-color: #0F62FE;
+  background-color: #0f62fe;
 }
 
 .right-props-margin-icon {
@@ -241,7 +241,7 @@
   margin-bottom: -0.7rem;
 }
 
-.file-upload-textarea>.cds--text-area__wrapper>.cds--text-area {
+.file-upload-textarea > .cds--text-area__wrapper > .cds--text-area {
   border-block-end: none;
   outline: none;
 }
@@ -266,17 +266,23 @@
   min-block-size: 2.5rem;
   min-inline-size: 10rem;
   resize: vertical;
-  transition: background-color 70ms cubic-bezier(0.2, 0, 0.38, 0.9), outline 70ms cubic-bezier(0.2, 0, 0.38, 0.9);
+  transition:
+    background-color 70ms cubic-bezier(0.2, 0, 0.38, 0.9),
+    outline 70ms cubic-bezier(0.2, 0, 0.38, 0.9);
 }
 
 .tags-area-border {
   outline: 2px solid var(--cds-focus, #0f62fe);
-  outline-offset: -2px
+  outline-offset: -2px;
 }
 
 .tags-align {
   display: flex;
   align-items: center;
+}
+
+.props-field {
+  margin-right: 1rem;
 }
 
 .context-mapping-btn {

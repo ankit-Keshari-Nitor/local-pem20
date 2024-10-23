@@ -58,6 +58,7 @@ export const reorderChildren = (children, splitDropZonePath, splitItemPath) => {
 export const removeChildFromChildren = (children, splitDropZonePath) => {
   if (splitDropZonePath.length === 1) {
     const itemIndex = Number(splitDropZonePath[0]);
+    children[0].defaultsize = 16;
     return remove(children, itemIndex);
   }
 
@@ -124,10 +125,11 @@ export const addChildToChildren = (children, splitDropZonePath, item) => {
     const dropZoneIndex = Number(splitDropZonePath[0]);
     let newLayoutStructure = item;
     if (children[0]?.type === 'column') {
+      children[0].defaultsize = '8';
       newLayoutStructure = {
         type: COLUMN,
         id: `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`,
-        defaultsize: '16',
+        defaultsize: '8',
         children: item.length ? [item] : []
       };
     }
@@ -277,7 +279,7 @@ export const handleMoveToDifferentParent = (layout, splitDropZonePath, splitItem
 
 export const handleMoveSidebarComponentIntoParent = (layout, splitDropZonePath, item) => {
   let newLayoutStructure;
-  if (item.component.type === GROUP) {
+  if (item?.component?.type === GROUP) {
     switch (splitDropZonePath.length) {
       case 1: {
         newLayoutStructure = {
@@ -315,12 +317,12 @@ export const handleMoveSidebarComponentIntoParent = (layout, splitDropZonePath, 
       }
     }
   } else {
-    if (item.component.type === GROUP) {
+    if (item?.component?.type === GROUP) {
       newLayoutStructure = {
         maintype: item.component.type,
         ...item
       };
-    } else if (item.component.type === ACCORDION) {
+    } else if (item?.component?.type === ACCORDION) {
       newLayoutStructure = {
         id: `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`,
         type: item.component.type,
@@ -328,7 +330,7 @@ export const handleMoveSidebarComponentIntoParent = (layout, splitDropZonePath, 
         children: [],
         component: item.component
       };
-    } else if (item.component.type === TAB) {
+    } else if (item?.component?.type === TAB) {
       newLayoutStructure = {
         id: `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`,
         type: item.component.type,
@@ -344,9 +346,18 @@ export const handleMoveSidebarComponentIntoParent = (layout, splitDropZonePath, 
         ]
       };
     } else {
-      newLayoutStructure = {
-        ...item
-      };
+      if (splitDropZonePath.length > 1) {
+        newLayoutStructure = {
+          ...item
+        };
+      } else {
+        newLayoutStructure = {
+          type: ROW,
+          id: `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`,
+          maintype: 'group',
+          children: [{ type: COLUMN, id: `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`, defaultsize: '16', children: [{ ...item }] }]
+        };
+      }
     }
   }
   return addChildToChildren(layout, splitDropZonePath, newLayoutStructure);
@@ -500,7 +511,7 @@ export const nestedLayoutViewForAPi = (childLayout, childSchema) => {
         nestedLayoutViewForAPi(childLayout[index]?.children, childSchema);
         break;
       default: {
-        const { label, type, group, ...others } = item.component;
+        const { label, type, group, ...others } = item?.component;
         childSchema.push({
           cType: 'COLUMN',
           props: {
@@ -783,14 +794,25 @@ export const collectPaletteEntries = (formFields) => {
   return Object.entries(formFields)
     .map(([type, formField]) => {
       const { config: fieldConfig } = formField;
-      return {
-        type: SIDEBAR_ITEM,
-        component: {
-          type: type,
-          label: fieldConfig.label,
-          icon: fieldConfig.icon
-        }
-      };
+      if (fieldConfig.type !== 'group') {
+        return {
+          type: SIDEBAR_ITEM,
+          component: {
+            type: type,
+            label: fieldConfig.label,
+            icon: fieldConfig.icon
+          }
+        };
+      } else {
+        return {
+          type: 'default',
+          component: {
+            type: type,
+            label: fieldConfig.label,
+            icon: fieldConfig.icon
+          }
+        };
+      }
     })
     .filter(({ type }) => type !== 'default');
 };
@@ -829,4 +851,31 @@ export const defaultProps = (item) => {
     default:
       break;
   }
+};
+
+export const copyComponent = (originalComponent, newComponent) => {
+  originalComponent.map((component, index) => {
+    if (component?.children?.length > 0) {
+      newComponent.push({
+        ...component,
+        id: `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`,
+        children: []
+      });
+      return copyComponent(component.children, newComponent[index].children);
+    } else if (component.type === COMPONENT) {
+      const newId = `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`;
+      return newComponent.push({
+        ...component,
+        component: { ...component.component, id: newId },
+        id: newId
+      });
+    } else if (component.type === COLUMN) {
+      return newComponent.push({
+        ...component,
+        id: `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`,
+        children: []
+      });
+    }
+  });
+  return newComponent;
 };

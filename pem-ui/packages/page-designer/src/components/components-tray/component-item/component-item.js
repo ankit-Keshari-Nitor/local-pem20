@@ -9,7 +9,13 @@ const ComponentItem = ({ data }) => {
 
   const [{ opacity }, drag] = useDrag({
     type: data.type,
-    item: { id: `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`, type: data.type, component: { type, label } },
+    item: {
+      id: `pem_${uuid()
+        .replace(/[^0-9]/g, '')
+        .substring(0, 5)}`,
+      type: data.type,
+      component: { type, label }
+    },
     collect: (monitor) => ({
       opacity: monitor.isDragging() ? 0.4 : 1
     })

@@ -262,6 +262,14 @@ export default function PropsPanel({
     }
   };
 
+  const mappingSelector = (selectedValue) => {
+    mappedPropsName === TABLE_ROWS
+      ? handleRowOpt(tableColId, selectedValue, tableColKey)
+      : handleSchemaChanges(mappedId, mappedKey, mappedPropsName, selectedValue, mappedCurrentPathDetail);
+    setMappingSelectorValue(selectedValue);
+    setOpenMappingDialog(false);
+  };
+
   const handleFileExtensionTag = (id, advance, propsName, newExtension, path) => {
     const newExtensionValue = [...fileExtensionValue, newExtension];
     setFileExtensionValue(newExtensionValue);
@@ -305,15 +313,7 @@ export default function PropsPanel({
     tableolumns.map((item) => {
       tableRow[item.key] = '';
     });
-    setTableRows((preRows) => [
-      ...preRows,
-      {
-        id: `pem_${uuid()
-          .replace(/[^0-9]/g, '')
-          .substring(0, 5)}`,
-        ...tableRow
-      }
-    ]);
+    setTableRows((preRows) => [...preRows, { id: `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`, ...tableRow }]);
   };
 
   const handleRowOpt = (index, value, key) => {

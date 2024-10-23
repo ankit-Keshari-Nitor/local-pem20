@@ -136,7 +136,6 @@ const WorkFlowDesigner = forwardRef(
         setTaskNodes(newNodes);
         nodeDataRefActivity.current = { ...nodeDataRefActivity.current, state: false }
       } else {
-        console.log('nodeDataRefActivity useEffect', nodeDataRefActivity)
         nodeDataRefActivity.current = { state: false, store: storeData }
 
       }

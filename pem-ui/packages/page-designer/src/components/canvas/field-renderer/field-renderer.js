@@ -3,8 +3,9 @@ import { useDrag } from 'react-dnd';
 import { TrashCan, Draggable } from '@carbon/icons-react';
 
 import './field-renderer.scss';
-import { COMPONENT } from '../../../constants/constants';
+import { COMPONENT, CUSTOM_COLUMN } from '../../../constants/constants';
 import { Column, Grid } from '@carbon/react';
+import { AddRowIcon, CopyIcon, SplitIcon } from '../../../icon';
 
 const FieldRenderer = ({
   data,
@@ -19,11 +20,15 @@ const FieldRenderer = ({
   colSize = 16,
   isSelected = [],
   setIsSelected,
+  handleSchemaChanges,
+  onRowCopy,
+  onAddRow,
+  onGroupChange
 }) => {
   let compent_type;
   let dragItem;
   var isNestedBlock = false;
-  const NewcolSize = Number(colSize) - 2;
+  const NewcolSize = Number(colSize) - 1;
   if (data.maintype) {
     compent_type = data.maintype;
     isNestedBlock = true;
@@ -60,8 +65,9 @@ const FieldRenderer = ({
       onFieldDelete={onFieldDelete}
       previewMode={previewMode}
       onChangeHandle={onChangeHandle}
-      isSelected = {isSelected}
+      isSelected={isSelected}
       setIsSelected={setIsSelected}
+      onGroupChange={onGroupChange}
     />
   ) : (
     <FormFieldComponent field={data.component} id={data.id} currentPath={path} onChangeHandle={onChangeHandle} previewMode={previewMode} />
@@ -76,18 +82,46 @@ const FieldRenderer = ({
         className={isSelected[0] !== undefined && isSelected[0][path] ? 'element form-fields-Selected' : 'element'}
       >
         <Grid className="custom-field-grid">
-          <Column lg={1}>
-            <span className="drag-icon">
-              <Draggable />
-            </span>
-          </Column>
+          {isNestedBlock && (
+            <Column lg={1}>
+              <span className="drag-icon">
+                <Draggable />
+              </span>
+            </Column>
+          )}
           <Column lg={NewcolSize <= 0 ? 16 : NewcolSize}> {formFieldData}</Column>
-          <Column lg={1}>
-            <span className="delete-icon">
-              <TrashCan onClick={(e) => onFieldDelete(e, path, data.id)} />
-            </span>
-          </Column>
         </Grid>
+        {isNestedBlock && (
+          <>
+            <div className="add-row" onClick={(e) => onAddRow(e, path)}>
+              <AddRowIcon />
+            </div>
+            {isSelected[0] !== undefined && isSelected[0][path] && (
+              <div className="action-container">
+                <Grid className="actions-icons">
+                  <Column lg={5}>
+                    <span className="icon-pointer" onClick={(e) => onRowCopy(e, path, data)}>
+                      <CopyIcon />
+                    </span>
+                  </Column>
+                  <Column lg={6}>
+                    <span
+                      className="icon-pointer"
+                      onClick={(e) => (data.children.length >= 2 ? onFieldDelete(e, `${path}-1`, 0) : handleSchemaChanges(data.id, CUSTOM_COLUMN, '', 1, path))}
+                    >
+                      <SplitIcon />
+                    </span>
+                  </Column>
+                  <Column lg={5}>
+                    <span className="icon-pointer delete-icon" onClick={(e) => onFieldDelete(e, path, 1, data.id)}>
+                      <TrashCan />
+                    </span>
+                  </Column>
+                </Grid>
+              </div>
+            )}
+          </>
+        )}
       </div>
     </div>
   ) : (

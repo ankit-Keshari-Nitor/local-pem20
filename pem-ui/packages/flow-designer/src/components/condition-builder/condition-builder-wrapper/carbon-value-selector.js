@@ -26,7 +26,16 @@ const carbonValueSelector = ({
 }) => {
   // Select Datatype
   return (
-    <Select id="selector-label" labelText={''} className={className} title={title} value={value} disabled={disabled} onChange={(e) => handleOnChange(e.target.value)} {...extraProps}>
+    <Select
+      id="selector-label"
+      labelText={''}
+      className={className}
+      title={title}
+      value={value}
+      disabled={disabled}
+      onChange={(e) => handleOnChange(e.target.value)}
+      {...extraProps}
+    >
       {toOptions(options)}
     </Select>
   );

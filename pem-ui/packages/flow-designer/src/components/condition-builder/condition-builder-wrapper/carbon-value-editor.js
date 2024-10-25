@@ -1,10 +1,10 @@
- 
 import * as React from 'react';
-import { Checkbox, TextArea, TextInput, Toggle, TreeView, TreeNode, Button, DatePicker, DatePickerInput, Select, SelectItem } from '@carbon/react';
+import { Checkbox, TextArea, TextInput, Toggle, Button, DatePicker, DatePickerInput, Select, SelectItem } from '@carbon/react';
 import { ValueSelector, getFirstOption, standardClassnames, useValueEditor } from 'react-querybuilder';
-import { ElippsisIcon } from '../../../icons';
+import { VectorIcon } from '../../../icons';
 import { useState } from 'react';
-import WrapperModal from '../../helpers';
+import Shell from '@b2bi/shell';
+
 const CarbonValueEditor = (allProps) => {
   const {
     fieldData,
@@ -24,9 +24,16 @@ const CarbonValueEditor = (allProps) => {
     disabled,
     selectorComponent: SelectorComponent = allProps.schema.controls.valueSelector,
     extraProps,
+    context: _context,
     ...props
   } = allProps;
-  const [openCancelDialog, setOpenCancelDialog] = useState(false);
+
+  const pageUtil = Shell.PageUtil();
+  const [error, setError] = useState('');
+  const placeHolderText = fieldData?.placeholder ?? '';
+  const inputTypeCoerced = ['in', 'notIn'].includes(operator[1]) ? 'text' : inputType || 'text';
+  let rightOperandInput = null;
+
   const { valueAsArray, multiValueHandler } = useValueEditor({
     handleOnChange,
     inputType,
@@ -37,25 +44,15 @@ const CarbonValueEditor = (allProps) => {
     parseNumbers,
     values
   });
+
   if (operator[1] === 'null' || operator[1] === 'notNull') {
     return null;
   }
+
   const operandSelector = (selectedValue) => {
     handleOnChange(selectedValue);
-    setOpenCancelDialog(false);
   };
-  const Temp = (
-    <TreeView label="Demo Data">
-      <TreeNode label="Enabled-1">
-        <TreeNode label="Disabled-1" onClick={(e) => operandSelector('Disabled-1')} />
-      </TreeNode>
-      <TreeNode label="Enabled-2">
-        <TreeNode label="Disabled-2" onClick={(e) => operandSelector('Disabled-2')} />
-      </TreeNode>
-    </TreeView>
-  );
-  const placeHolderText = fieldData?.placeholder ?? '';
-  const inputTypeCoerced = ['in', 'notIn'].includes(operator[1]) ? 'text' : inputType || 'text';
+
   if ((operator[1] === 'between' || operator[1] === 'notBetween') && (type === 'select' || type === 'text')) {
     const editors = ['from', 'to'].map((key, i) => {
       if (type === 'text') {
@@ -92,7 +89,7 @@ const CarbonValueEditor = (allProps) => {
       </span>
     );
   }
-  let rightOperandInput = null;
+
   switch (allProps?.field) {
     case 'string':
       rightOperandInput = (
@@ -201,16 +198,28 @@ const CarbonValueEditor = (allProps) => {
       rightOperandInput = <Checkbox className={className} title={title} onChange={(e) => handleOnChange(e.target.checked)} isChecked={!!value} {...extraProps} />;
       break;
   }
+
+  const OpenMappingDialog = () => {
+    try {
+      pageUtil
+        .showPageModal('CONTEXT_DATA_MAPPING.SELECT', {
+          data: JSON.parse(_context.definition?.contextData ? _context.definition.contextData : _context?.version?.contextData)
+        })
+        .then((modalData) => {
+          operandSelector(modalData?.data?.data);
+        });
+      setError('');
+    } catch (e) {
+      setError('Please enter valid context json data');
+    }
+  };
+
   // Right Operand
   return (
     <>
       {rightOperandInput}
-      <Button size="md" className="opt-btn" kind="secondary" renderIcon={ElippsisIcon} onClick={() => setOpenCancelDialog(true)} style={{ marginTop: '1rem' }}></Button>
-      <WrapperModal openCancelDialog={openCancelDialog} setOpenCancelDialog={setOpenCancelDialog}>
-        {Temp}
-      </WrapperModal>
+      <Button size="md" className="opt-btn" kind="secondary" renderIcon={VectorIcon} onClick={OpenMappingDialog} style={{ marginTop: '1rem' }}></Button>
     </>
   );
 };
 export default CarbonValueEditor;
- 

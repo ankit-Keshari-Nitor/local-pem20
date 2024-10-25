@@ -36,7 +36,8 @@ const DialogFlowDesigner = ({
   isDialogFlowActive,
   setNotificationProps, //toast message config
   deleteBranchNodeConnector,
-  getApiConfiguration //API Call API configuration
+  getApiConfiguration, //API Call API configuration
+  activityDefinitionData
 }) => {
   const dialogPropPanelRef = useRef();
   const [tasks, setTasks] = useState([]);
@@ -118,6 +119,7 @@ const DialogFlowDesigner = ({
                     deleteBranchNodeConnector={deleteBranchNodeConnector}
                     isDialogFlowActive={isDialogFlowActive}
                     getApiConfiguration={getApiConfiguration}
+                    activityDefinitionData={activityDefinitionData}
                   />
                 </div>
               </div>

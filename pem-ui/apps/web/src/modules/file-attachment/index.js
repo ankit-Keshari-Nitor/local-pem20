@@ -9,11 +9,20 @@ const FileAttachment = {
 
 const modals = [
   {
-    page: 'FILE_ATTACHMENT.VIEW',
+    page: 'FILE_ATTACHMENT.ACTIVITY',
     size: 'lg',
     element: (
       <Shell.PageContainer mode="MODAL_PAGE" dataLoaderConfig={FileAttachment.DataLoaderConfig}>
-        <FileAttachment.FileListPage></FileAttachment.FileListPage>
+        <FileAttachment.FileListPage mode='ACTIVITY'></FileAttachment.FileListPage>
+      </Shell.PageContainer>
+    )
+  },
+  {
+    page: 'FILE_ATTACHMENT.LOGO',
+    size: 'lg',
+    element: (
+      <Shell.PageContainer mode="MODAL_PAGE" dataLoaderConfig={FileAttachment.DataLoaderConfig}>
+        <FileAttachment.FileListPage mode='LOGO'></FileAttachment.FileListPage>
       </Shell.PageContainer>
     )
   }

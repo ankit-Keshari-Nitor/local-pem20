@@ -5,7 +5,7 @@ import { Tabs, Tab, TabList, TabPanels, TabPanel, Grid, Layer, Column } from '@c
 
 import './style.scss';
 
-const FileAttachment = () => {
+const FileAttachment = ({ mode }) => {
   const pageUtil = Shell.PageUtil();
   const pageArgs = pageUtil.pageParams;
   const { modalConfig } = Shell.useModal();
@@ -20,16 +20,30 @@ const FileAttachment = () => {
             meta: {
               totalItems: 0
             }
+          },
+          logoList: {
+            data: [],
+            meta: {
+              totalItems: 0
+            }
           }
         },
         datasources: {
           getActivityFileList: {
-            dataloader: 'FILE.LIST',
+            dataloader: 'FILE.LISTACTIVITY',
             inputModel: {},
             outputModel: 'activityFileList',
             init: true,
             loadingState: 'tableLoadingState',
-            handleOutput: ['_updateEmptyState']
+            handleOutput: ['_updateActivityEmptyState']
+          },
+          getLogoFileList: {
+            dataloader: 'FILE.LISTLOGO',
+            inputModel: {},
+            outputModel: 'logoList',
+            init: true,
+            loadingState: 'tableLoadingState',
+            handleOutput: ['_updateLogoEmptyState']
           },
           viewDocumentList: {
             dataloader: 'FILE.VIEW'
@@ -48,6 +62,7 @@ const FileAttachment = () => {
           selectedFile: undefined,
           selectedIndex: 0,
           errorState: undefined,
+          imageSrc: undefined,
         },
         form: {
           file: {
@@ -55,7 +70,7 @@ const FileAttachment = () => {
             documentDescription: '',
             isEncrypted: false,
             documentContents: undefined,
-            documentCategory: 'ACTIVITY',
+            documentCategory: mode,
             partnerKey: '',
             selectedFile: undefined
           }
@@ -63,9 +78,12 @@ const FileAttachment = () => {
         datatable: {
           activityFileList: {
             getListData: function (listInput) {
-              const params = {};
-              params.documentCategory = 'ACTIVITY';
-              return this.ds.getActivityFileList({}, { params: params });
+              return this.ds.getActivityFileList({});
+            }
+          },
+          logoList: {
+            getListData: function (listInput) {
+              return this.ds.getLogoFileList({});
             }
           }
         },
@@ -73,7 +91,7 @@ const FileAttachment = () => {
         uiOnRequestClose: function () {
           modalConfig.onAction('cancel', {});
         },
-        _updateEmptyState: function (data) {
+        _updateActivityEmptyState: function (data) {
           if (data.data.length === 0) {
             if (this.datatable.activityFileList.filter.current || this.datatable.activityFileList.searchText.current) {
               this.setUI('tableEmptyState', 'noRecords');
@@ -83,6 +101,30 @@ const FileAttachment = () => {
           } else {
             this.setUI('tableEmptyState', undefined);
           }
+        },
+        _updateLogoEmptyState: function (data) {
+          if (data.data.length === 0) {
+            if (this.datatable.logoList.filter.current || this.datatable.logoList.searchText.current) {
+              this.setUI('tableEmptyState', 'noRecords');
+            } else {
+              this.setUI('tableEmptyState', 'initNoRecords');
+            }
+          } else {
+            this.setUI('tableEmptyState', undefined);
+          }
+        },
+        uiOnConvertBinaryToImage: function (blob) {
+          return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+
+            reader.onloadend = () => {
+              resolve(reader.result); // The full Data URL, including the MIME type
+            };
+
+            reader.onerror = reject;
+
+            reader.readAsDataURL(blob); // Reads the blob as a Data URL (with base64 encoding)
+          });
         },
         uiOnRequestSubmit: function () {
           this.setUI('errorState', undefined);
@@ -113,7 +155,7 @@ const FileAttachment = () => {
             formData.append('documentContents', this.ui.selectedFile);
             formData.append('documentName', params.documentName);
             formData.append('documentDescription', params.documentDescription);
-            formData.append('documentCategory', 'ACTIVITY');
+            formData.append('documentCategory', mode);
             formData.append('isEncrypted', params.isEncrypted);
             params = {};
             this.ds.uploadFile(formData, {
@@ -143,7 +185,7 @@ const FileAttachment = () => {
           this.setUI('errorState', undefined);
           this.setUI('selectedIndex', args[0].selectedIndex);
           if (args[0].selectedIndex === 0) {
-            page.datatable.activityFileList.refresh();
+            mode === 'ACTIVITY' ? page.datatable.activityFileList.refresh() : page.datatable.logoList.refresh();
           } else {
             this.setUI('selectedFile', undefined);
             this.form.file.reset(pageUtil.getSubsetJson(this.form.file.attributes));
@@ -284,12 +326,12 @@ const FileAttachment = () => {
               <TabPanel>
                 <Shell.DataTable
                   className={`pem--datatable--file-list modal-height`}
-                  controller={page.datatable.activityFileList}
-                  data={page.model.activityFileList.data}
+                  controller={mode === 'ACTIVITY' ? page.datatable.activityFileList : page.datatable.logoList}
+                  data={mode === 'ACTIVITY' ? page.model.activityFileList.data : page.model.logoList.data}
                   config={pageConfig.activityFileList}
                   loadingState={page.ui.tableLoadingState}
-                  emptyState={page.datatable.activityFileList.emptyState}
-                  totalItems={page.model.activityFileList.meta.totalItems}
+                  emptyState={mode === 'ACTIVITY' ? page.datatable.activityFileList.emptyState : page.datatable.logoList.emptyState}
+                  totalItems={mode === 'ACTIVITY' ? page.model.activityFileList.meta.totalItems : page.model.logoList.meta.totalItems}
                 ></Shell.DataTable>
               </TabPanel>
               <TabPanel>

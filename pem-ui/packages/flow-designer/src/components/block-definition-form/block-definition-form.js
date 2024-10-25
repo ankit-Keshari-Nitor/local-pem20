@@ -8,7 +8,7 @@ import { COMPONENT_MAPPER, INITIAL_QUERY, NODE_TYPE, queryValidation } from '../
 import ConditionalBuilder from '../condition-builder';
 import { FormSpy } from '@data-driven-forms/react-form-renderer';
 
-export default function BlockDefinitionForm({ id, selectedNode, selectedTaskNode = null, schema, readOnly, setOpenPropertiesBlock, setNotificationProps }) {
+export default function BlockDefinitionForm({ id, selectedNode, selectedTaskNode = null, schema, readOnly, setOpenPropertiesBlock, setNotificationProps, activityDefinitionData }) {
   let newSchema = { ...schema };
   newSchema.fields = newSchema.fields.map((item) => ({ ...item, isReadOnly: readOnly, helperText: readOnly ? '' : item.helperText }));
   const [openCancelDialog, setOpenCancelDialog] = useState(false);
@@ -135,6 +135,7 @@ export default function BlockDefinitionForm({ id, selectedNode, selectedTaskNode
               setQuery={setQuery}
               errorMessage={errorMessage}
               setErrorMessage={setErrorMessage}
+              activityDefinitionData={activityDefinitionData}
             />
           </TabPanel>
           <Grid fullWidth className="button-container-container">

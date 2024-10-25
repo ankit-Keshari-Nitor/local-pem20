@@ -260,6 +260,15 @@ const mapping = {
   size: { col: 16 }
 };
 
+const mappingFileUpload = {
+  propsName: 'mapping',
+  label: 'Mapping',
+  value: '',
+  placeholder: 'Enter text',
+  type: 'mapping',
+  size: { col: 10 }
+};
+
 const orientation = {
   propsName: 'orientation',
   label: 'Orientation',
@@ -275,6 +284,13 @@ const orientation = {
 const height = {
   propsName: 'height',
   label: 'Height',
+  value: '1',
+  type: 'TextInput',
+  size: { col: 8 }
+};
+const width = {
+  propsName: 'width',
+  label: 'Width',
   value: '1',
   type: 'TextInput',
   size: { col: 8 }
@@ -331,13 +347,22 @@ const dragDropText = {
   size: { col: 8 }
 };
 
-const fileUploader = {
+const fileUploaderLogo = {
   propsName: 'fileUploader',
   label: 'File Upload',
   value: '',
-  type: 'FileUpload'
+  type: 'FileUpload',
+  size: { col: 6 },
+  documentCategory: 'LOGO'
 };
-
+const fileUploaderActivity = {
+  propsName: 'fileUploader',
+  label: 'File Upload',
+  value: '',
+  type: 'FileUpload',
+  size: { col: 6 },
+  documentCategory: 'ACTIVITY'
+};
 const mulitipleAllow = {
   propsName: 'mulitipleAllow',
   label: 'Multiple Allow',
@@ -471,7 +496,7 @@ const toggleValues = {
   value: 'True',
   options: [
     { label: 'True', value: 'true' },
-    { label: 'False', value: 'false' },
+    { label: 'False', value: 'false' }
   ],
   size: { col: 8 }
 };
@@ -493,6 +518,15 @@ const valueAsLabel = {
   label: 'Value as Label',
   value: 'false',
   size: { col: 8 }
+};
+
+const alternativeText = {
+  propsName: 'alternativeText',
+  label: 'Alternative Text',
+  value: 'Alternative Text',
+  placeholder: 'Enter Text',
+  type: 'TextInput',
+  size: { col: 16 }
 };
 
 const ElementTypeConfig = {
@@ -565,6 +599,13 @@ const ElementTypeConfig = {
     options: [FORM_FIELD_TYPE.DATATABLE],
     type: 'select',
     size: { col: 8 }
+  },
+  [FORM_FIELD_TYPE.IMAGE]: {
+    propsName: 'elementType',
+    label: 'Element Type',
+    options: [FORM_FIELD_TYPE.IMAGE],
+    type: 'select',
+    size: { col: 8 }
   }
 };
 
@@ -576,18 +617,28 @@ export const PropsPanelFields = {
   [FORM_FIELD_TYPE.NUMBER]: [ElementTypeConfig[FORM_FIELD_TYPE.TEXT_INPUT], Id, labelText, readOnly, isRequired, valueLabel, placeHolder, helperText, mapping],
   [FORM_FIELD_TYPE.INFO]: [ElementTypeConfig[FORM_FIELD_TYPE.INFO], Id, helperText],
   [FORM_FIELD_TYPE.HELP]: [ElementTypeConfig[FORM_FIELD_TYPE.HELP], Id, labelText],
-  [FORM_FIELD_TYPE.FILE_DOWNLOADER]: [ElementTypeConfig[FORM_FIELD_TYPE.FILE_UPLOADER], Id, labelText, helperText, buttonLabel, fileUploader],
+  [FORM_FIELD_TYPE.FILE_DOWNLOADER]: [
+    ElementTypeConfig[FORM_FIELD_TYPE.FILE_UPLOADER],
+    Id,
+    labelText,
+    isRequired,
+    buttonLabel,
+    helperText,
+    mappingFileUpload,
+    fileUploaderActivity
+  ],
   [FORM_FIELD_TYPE.FILE_UPLOADER]: [ElementTypeConfig[FORM_FIELD_TYPE.FILE_UPLOADER], Id, labelText, isRequired, dragDropText, helperText],
   [FORM_FIELD_TYPE.LINK]: [ElementTypeConfig[FORM_FIELD_TYPE.LINK], Id, labelText, labelLinkText, helperText, hrefText],
   [FORM_FIELD_TYPE.TOGGLE]: [ElementTypeConfig[FORM_FIELD_TYPE.TOGGLE], Id, labelText, toggleValues, helperText, labelB, labelA, readOnly, mapping],
   [FORM_FIELD_TYPE.SELECT]: [ElementTypeConfig[FORM_FIELD_TYPE.SELECT], Id, mapValueType, labelText, placeHolder, readOnly, isRequired, helperText, options, valueAsLabel],
-  [FORM_FIELD_TYPE.RADIOGROUP]: [ElementTypeConfig[FORM_FIELD_TYPE.SELECT], Id,  mapValueType, labelText, helperText, readOnly, isRequired, orientation, options, valueAsLabel],
+  [FORM_FIELD_TYPE.RADIOGROUP]: [ElementTypeConfig[FORM_FIELD_TYPE.SELECT], Id, mapValueType, labelText, helperText, readOnly, isRequired, orientation, options, valueAsLabel],
   [FORM_FIELD_TYPE.CHECKBOXGROUP]: [ElementTypeConfig[FORM_FIELD_TYPE.SELECT], Id, mapValueType, labelText, helperText, readOnly, isRequired, orientation, options, valueAsLabel],
   [FORM_FIELD_TYPE.TEXT]: [ElementTypeConfig[FORM_FIELD_TYPE.TEXT], Id, fontSize, labelText, mapping],
   [FORM_FIELD_TYPE.DATATABLE]: [ElementTypeConfig[FORM_FIELD_TYPE.DATATABLE], Id, labelText, helperText, selectRow, pageSize, tableColumn, tableRows],
   [FORM_FIELD_TYPE.ACCORDION]: [labelText],
   [FORM_FIELD_TYPE.GROUP]: [addColumnInGroup],
-  [FORM_FIELD_TYPE.TAB]: [addTab]
+  [FORM_FIELD_TYPE.TAB]: [addTab],
+  [FORM_FIELD_TYPE.IMAGE]: [ElementTypeConfig[FORM_FIELD_TYPE.IMAGE], Id, alternativeText, mappingFileUpload, fileUploaderLogo, width, height]
 };
 
 export const PropsPanelValidationFields = {
@@ -609,5 +660,6 @@ export const PropsPanelValidationFields = {
   [FORM_FIELD_TYPE.DATATABLE]: [],
   [FORM_FIELD_TYPE.ACCORDION]: [],
   [FORM_FIELD_TYPE.GROUP]: [],
-  [FORM_FIELD_TYPE.TAB]: []
+  [FORM_FIELD_TYPE.TAB]: [],
+  [FORM_FIELD_TYPE.IMAGE]: []
 };

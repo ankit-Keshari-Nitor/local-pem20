@@ -125,6 +125,8 @@ const TaskFlowDesigner = ({
                     deleteBranchNodeConnector={deleteBranchNodeConnector}
                     isDialogFlowActive={isDialogFlowActive}
                     getRoleList={getRoleList}
+                    activityDefinitionData={activityDefinitionData}
+
                   />
                 </div>
               </div>

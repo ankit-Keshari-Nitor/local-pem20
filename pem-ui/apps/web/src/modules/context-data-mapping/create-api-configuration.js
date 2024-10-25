@@ -20,7 +20,7 @@ const CreateApiConfiguration = ({ mode, cdmPage }) => {
           }
         },
         ui: {
-          mode: mode,
+          mode: mode
         },
         form: {
           apiConfiguration: {
@@ -45,7 +45,7 @@ const CreateApiConfiguration = ({ mode, cdmPage }) => {
         },
         uiSave: function () {
           const apiConfigurationInput = pageUtil.removeEmptyAttributes(this.form.apiConfiguration.getValues());
-          cdmPage.setUI('successStateApiForm', undefined)
+          cdmPage.setUI('successStateApiForm', undefined);
           cdmPage.setUI('errorStateApiForm', undefined);
 
           let handler;
@@ -57,10 +57,11 @@ const CreateApiConfiguration = ({ mode, cdmPage }) => {
           handler
             .then((response) => {
               this.form.apiConfiguration.reset(pageUtil.getSubsetJson(this.form.apiConfiguration.attributes));
-              cdmPage.setUI('successStateApiForm', pageUtil.t('mod-sponsor-server:message.success'))
-
+              cdmPage.setUI('successStateApiForm', pageUtil.t('mod-sponsor-server:message.success'));
             })
-            .catch((error) => { cdmPage.setUI('errorStateApiForm', error.response?.data?.errorDescription) });
+            .catch((error) => {
+              cdmPage.setUI('errorStateApiForm', error.response?.data?.errorDescription);
+            });
         },
         uiOnAuthenticalTypeChange: function (event) {
           page.form.apiConfiguration.resetField('userName', { defaultValue: '' });
@@ -100,8 +101,8 @@ const CreateApiConfiguration = ({ mode, cdmPage }) => {
           <CDS.Form name="apiConfiguration" context={page.form.apiConfiguration} className="apiConfiguration-form">
             <Layer level={0} className="sfg--page-details-container" style={{ margin: '1rem 0rem' }}>
               <Grid className="sfg--grid-container sfg--grid--form">
-                <Column lg={12}>  {cdmPage.ui.errorStateApiForm !== undefined && (<span className='errorMessage'>{cdmPage.ui.errorStateApiForm}</span>)}</Column>
-                <Column lg={12}>  {cdmPage.ui.successStateApiForm !== undefined && (<span className='successMessage'>{cdmPage.ui.successStateApiForm}</span>)}</Column>
+                <Column lg={12}> {cdmPage.ui.errorStateApiForm !== undefined && <span className="errorMessage">{cdmPage.ui.errorStateApiForm}</span>}</Column>
+                <Column lg={12}> {cdmPage.ui.successStateApiForm !== undefined && <span className="successMessage">{cdmPage.ui.successStateApiForm}</span>}</Column>
 
                 <Column lg={6} md={6}>
                   <CDS.TextInput
@@ -149,7 +150,7 @@ const CreateApiConfiguration = ({ mode, cdmPage }) => {
                     disabled={page.form.apiConfiguration.watch('protocol') !== 'https'}
                   ></CDS.ComboBox>
                 </Column>
-                <Column lg={6} md={6} className='authentication-wrapper'>
+                <Column lg={6} md={6} className="authentication-wrapper">
                   <CDS.Checkbox
                     labelText={
                       <span className="pem--name-label">
@@ -220,8 +221,15 @@ const CreateApiConfiguration = ({ mode, cdmPage }) => {
                   </>
                 )}
                 <Column lg={7}></Column>
-                <Column lg={5} className='btn-wrapper'>
-                  <Button kind="tertiary" onClick={() => { page.form.apiConfiguration.handleSubmit(page.uiSave)() }}>Create</Button>
+                <Column lg={5} className="btn-wrapper">
+                  <Button
+                    kind="tertiary"
+                    onClick={() => {
+                      page.form.apiConfiguration.handleSubmit(page.uiSave)();
+                    }}
+                  >
+                    Create
+                  </Button>
                 </Column>
               </Grid>
             </Layer>

@@ -15,6 +15,7 @@
   a.cds--header__name {
     padding-left: 0px;
   }
+
   .activity-task-section {
     flex-grow: 1;
     justify-content: center;
@@ -22,15 +23,19 @@
 
     .activity-task-count {
       margin: 0.5rem;
+
       .node-type-task {
         color: #0585fc;
       }
+
       .node-type-form {
         color: #d21cf0;
       }
+
       .node-type-api {
         color: #ff611d;
       }
+
       .node-type-xslt {
         color: #3fba13;
       }
@@ -50,4 +55,8 @@
   right: 0;
   padding-top: 3rem;
   height: calc(100% - 3rem);
+}
+
+.cds--breadcrumb-item .cds--link {
+  cursor: pointer !important;
 }

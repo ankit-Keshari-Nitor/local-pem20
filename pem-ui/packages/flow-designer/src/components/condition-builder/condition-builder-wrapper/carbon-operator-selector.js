@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { toOptions, useValueEditor } from 'react-querybuilder';
-import { TextInput, TreeView, TreeNode, Button, DatePicker, DatePickerInput, Select, SelectItem } from '@carbon/react';
-import { ElippsisIcon } from '../../../icons';
+import { TextInput, Button, DatePicker, DatePickerInput, Select, SelectItem } from '@carbon/react';
+import { VectorIcon } from '../../../icons';
 import { useState } from 'react';
-import WrapperModal from '../../helpers';
+import Shell from '@b2bi/shell';
 
 const CarbonOperatorSelector = ({
   className,
@@ -27,7 +27,8 @@ const CarbonOperatorSelector = ({
   schema: _schema,
   ...extraProps
 }) => {
-  const [openCancelDialog, setOpenCancelDialog] = useState(false);
+  const pageUtil = Shell.PageUtil();
+  const [error, setError] = useState('');
   const { valueAsArray, multiValueHandler } = useValueEditor({
     handleOnChange,
     inputType: 'text',
@@ -41,19 +42,7 @@ const CarbonOperatorSelector = ({
 
   const operandSelector = (selectedValue) => {
     multiValueHandler(selectedValue, 0);
-    setOpenCancelDialog(false);
   };
-
-  const Temp = (
-    <TreeView label="Demo Data">
-      <TreeNode label="Enabled-1">
-        <TreeNode label="Disabled-1" onClick={(e) => operandSelector('Disabled-1')} />
-      </TreeNode>
-      <TreeNode label="Enabled-2">
-        <TreeNode label="Disabled-2" onClick={(e) => operandSelector('Disabled-2')} />
-      </TreeNode>
-    </TreeView>
-  );
 
   const handleChange = (value) => {
     multiValueHandler(value, 0);
@@ -139,13 +128,25 @@ const CarbonOperatorSelector = ({
       break;
   }
 
+  const OpenMappingDialog = () => {
+    try {
+      pageUtil
+        .showPageModal('CONTEXT_DATA_MAPPING.SELECT', {
+          data: JSON.parse(_context.definition?.contextData ? _context.definition.contextData : _context?.version?.contextData)
+        })
+        .then((modalData) => {
+          operandSelector(modalData?.data?.data);
+        });
+      setError('');
+    } catch (e) {
+      setError('Please enter valid context json data');
+    }
+  };
+
   return (
     <>
       {leftOperandInput}
-      <Button size="md" className="opt-btn" kind="secondary" renderIcon={ElippsisIcon} onClick={() => setOpenCancelDialog(true)} style={{ marginTop: '1rem' }}></Button>
-      <WrapperModal openCancelDialog={openCancelDialog} setOpenCancelDialog={setOpenCancelDialog}>
-        {Temp}
-      </WrapperModal>
+      <Button size="md" className="opt-btn" kind="secondary" renderIcon={VectorIcon} onClick={OpenMappingDialog} style={{ marginTop: '1rem' }}></Button>
       {/* Relational Operator Dropdown */}
       <Select
         id="selector-label"
@@ -164,4 +165,3 @@ const CarbonOperatorSelector = ({
 };
 
 export default CarbonOperatorSelector;
- 

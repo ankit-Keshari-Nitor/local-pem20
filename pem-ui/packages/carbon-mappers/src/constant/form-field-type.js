@@ -21,10 +21,12 @@ export const FORM_FIELD_TYPE = {
   NUMBER: 'Number',
   SWITCH: 'switch',
   DATATABLE: 'data-table',
-  FILE_DOWNLOADER: 'File Download'
+  FILE_DOWNLOADER: 'File Download',
+  IMAGE:'Image'
 };
 
 export const FORM_FIELD_LABEL = {
+  IMAGE:'Image',
   TEXT_INPUT: 'Text Input',
   TEXT_AREA: 'Text Area',
   PASSWORD: 'Password Input',

@@ -789,6 +789,7 @@ const WorkFlowDesigner = forwardRef(
                   deleteBranchNodeConnector={deleteBranchNodeConnector}
                   isDialogFlowActive={isDialogFlowActive}
                   getApiConfiguration={getApiConfiguration}
+                  activityDefinitionData={activityDefinitionData}
                 />
               ) : (
                 activityDefinitionData && (

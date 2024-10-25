@@ -44,7 +44,7 @@ const DropConnector = ({ children, index, moveDialogItem }) => {
   );
 };
 
-export default function BranchStartPropertiesTrayTwo({ readOnly, selectedNode, selectedTaskNode, isDialogFlowActive, deleteBranchNodeConnector, setOpenPropertiesBlock }) {
+export default function   BranchStartPropertiesTrayTwo({ readOnly, selectedNode, selectedTaskNode, isDialogFlowActive, deleteBranchNodeConnector, setOpenPropertiesBlock }) {
   const store = useTaskStore();
   const storeData = useTaskStore((state) => state.tasks);
   const editTask = useTaskStore((state) => state.editTaskNodePros);

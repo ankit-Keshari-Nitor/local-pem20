@@ -22,7 +22,17 @@ const DataLoaderConfig = {
         }
       };
     },
-    LIST: ({ getEnvironmentValue }) => {
+    LISTLOGO: ({ getEnvironmentValue }) => {
+      return {
+        type: 'RESTAPI',
+        method: 'GET',
+        url: `/rest/sponsors/b2b/vchdocuments/?documentCategory=LOGO`,
+        handleOutput: (responseData) => {
+          ListAPIHandler.handleResponse(responseData, 'documentKey');
+        }
+      };
+    },
+    LISTACTIVITY: ({ getEnvironmentValue }) => {
       return {
         type: 'RESTAPI',
         method: 'GET',

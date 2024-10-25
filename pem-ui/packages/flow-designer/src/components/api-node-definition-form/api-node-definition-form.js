@@ -9,7 +9,17 @@ import ConditionalBuilder from '../condition-builder';
 import { INITIAL_QUERY, queryValidation } from '../../constants';
 import APINodePropertyForm from './api-node-property-form';
 
-export default function APINodeDefinitionForm({ id, selectedNode, selectedTaskNode = null, schema, readOnly, setOpenPropertiesBlock, setNotificationProps, getApiConfiguration }) {
+export default function APINodeDefinitionForm({
+  id,
+  selectedNode,
+  selectedTaskNode = null,
+  schema,
+  readOnly,
+  setOpenPropertiesBlock,
+  setNotificationProps,
+  getApiConfiguration,
+  activityDefinitionData
+}) {
   const pageUtil = Shell.PageUtil();
   const queryValidator = useRef({});
   const [query, setQuery] = useState(INITIAL_QUERY);
@@ -78,7 +88,7 @@ export default function APINodeDefinitionForm({ id, selectedNode, selectedTaskNo
       try {
         const headersArray = JSON.parse(selectedNode.data.api.requestHeaders);
 
-        const parsedHeaders = headersArray.map(header => ({
+        const parsedHeaders = headersArray.map((header) => ({
           id: Date.now() + Math.random(),
           name: Object.keys(header)[0],
           value: Object.values(header)[0]
@@ -268,7 +278,8 @@ export default function APINodeDefinitionForm({ id, selectedNode, selectedTaskNo
     if (!validateHeaders()) {
       return; // Prevent toggling if validation fails
     }
-    const filteredHeaders = headers.filter((header) => header.name.trim() !== '' && header.value.trim() !== ''); setHeaders(filteredHeaders);
+    const filteredHeaders = headers.filter((header) => header.name.trim() !== '' && header.value.trim() !== '');
+    setHeaders(filteredHeaders);
 
     setHeaders(filteredHeaders);
     setSelectedHeaders((prevSelected) => prevSelected.filter((id) => filteredHeaders.some((header) => header.id === id)));
@@ -298,7 +309,7 @@ export default function APINodeDefinitionForm({ id, selectedNode, selectedTaskNo
   };
 
   const onOpenFiles = () => {
-    pageUtil.showPageModal('FILE_ATTACHMENT.VIEW').then((modalData) => {
+    pageUtil.showPageModal('FILE_ATTACHMENT.ACTIVITY').then((modalData) => {
       if (modalData.actionType === 'submit') {
         setFile({
           status: 'edit',
@@ -339,7 +350,9 @@ export default function APINodeDefinitionForm({ id, selectedNode, selectedTaskNo
       name: defineFormData.name,
       description: defineFormData.description
     };
+
     editDialog(selectedNode, selectedTaskNode, 'editableProps', defineForm); // Define Form
+
     // Save Property Form Data
     const apiConfiguration = {
       hostPrefix: propertyFormData.hostPrefix,
@@ -351,11 +364,7 @@ export default function APINodeDefinitionForm({ id, selectedNode, selectedTaskNo
       responseContentType: propertyFormData.inputOutputFormats,
       method: propertyFormData.requestMethod,
       file: file ? JSON.stringify(file) : '',
-      requestHeaders:
-        headers.length > 0
-          ? JSON.stringify(
-            headers.map(header => ({ [header.name]: header.value }))
-          ) : JSON.stringify([]),
+      requestHeaders: headers.length > 0 ? JSON.stringify(headers.map((header) => ({ [header.name]: header.value }))) : JSON.stringify([]),
       request: propertyFormData.request,
       sampleResponse: propertyFormData.response
     };
@@ -472,6 +481,7 @@ export default function APINodeDefinitionForm({ id, selectedNode, selectedTaskNo
                   errorMessage={errorMessage}
                   setErrorMessage={setErrorMessage}
                   queryValidator={queryValidator.current}
+                  activityDefinitionData={activityDefinitionData}
                 />
               </Layer>
             </Layer>

@@ -1,6 +1,3 @@
-import * as ReactDnD from 'react-dnd';
-import { QueryBuilderDnD } from '@react-querybuilder/dnd';
-import * as ReactDndHtml5Backend from 'react-dnd-html5-backend';
 import React from 'react';
 import { Grid, Column } from '@carbon/react';
 import CarbonWrapper from './condition-builder-wrapper/carbon-wrapper';
@@ -14,7 +11,6 @@ export default function BranchConditionalBuilder({ readOnly = { readOnly }, quer
     <Grid>
       <Column className="form-field" lg={16}>
         <CarbonWrapper>
-          {/* <QueryBuilderDnD dnd={{ ...ReactDnD, ...ReactDndHtml5Backend }}> */}
           <QueryBuilder
             fields={QUERY_FIELDS}
             query={query}
@@ -23,7 +19,6 @@ export default function BranchConditionalBuilder({ readOnly = { readOnly }, quer
             controlClassnames={{ queryBuilder: 'queryBuilder-branches', body: 'inline-indycomb-left' }}
             disabled={readOnly}
           />
-          {/* </QueryBuilderDnD> */}
         </CarbonWrapper>
       </Column>
     </Grid>

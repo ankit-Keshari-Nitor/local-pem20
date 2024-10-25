@@ -28,6 +28,7 @@ import {
   CheckboxGroup,
   Tooltip,
   TextArea,
+  FileUploaderItem,
   Tag
 } from '@carbon/react';
 import { v4 as uuid } from 'uuid';
@@ -96,6 +97,9 @@ export default function PropsPanel({
   const [tableHeader, setTableHeader] = React.useState([]);
   const [tableRows, setTableRows] = React.useState([]);
   const [currentTab, setCurrentTab] = useState(propsPanelActiveTab);
+
+  const [file, setFile] = useState();
+  
   const items = [
     { text: '1' },
     { text: '2' },
@@ -129,6 +133,7 @@ export default function PropsPanel({
     setTableHeader(selectedFieldProps?.component?.editableProps?.Basic?.find((prop) => prop.propsName === TABLE_COLUMNS)?.value || []);
     setTableRows(selectedFieldProps?.component?.editableProps?.Basic?.find((prop) => prop.propsName === TABLE_ROWS)?.value || []);
     setIsValueAsLabel(selectedFieldProps?.component?.editableProps?.Basic?.find((prop) => prop.propsName === 'valueAsLabel')?.value || false);
+    setFile(selectedFieldProps?.component?.editableProps?.Basic?.find((prop) => prop.type === 'FileUpload')?.value || undefined);
     setFileExtensionValue(selectedFieldProps?.component?.advanceProps?.find((prop) => prop.type === 'TextArea')?.value || []);
   }, [selectedFieldProps, componentMapper, customRegexPattern]);
 
@@ -141,8 +146,8 @@ export default function PropsPanel({
     setComponentStyle([{ labelText: 'Column Size', text: e.target.value }]);
   };
 
-  const handleFileChange = (e, key, propsName, selectedFieldProps) => {
-    const file = e.target?.files[0];
+  /* const handleFileChange = (e, key, propsName, selectedFieldProps) => {
+   const file = e.target?.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -151,7 +156,35 @@ export default function PropsPanel({
       };
       reader.readAsDataURL(file);
     }
-  };
+      };
+ */
+  const onDeleteFile = (key, propsName, selectedFieldProps) => {
+    setFile();
+    handleSchemaChanges(selectedFieldProps?.id, key, propsName, '', selectedFieldProps?.currentPathDetail)
+  }
+
+  const onOpenFiles = (key, propsName, selectedFieldProps, documentCategory) => {
+    pageUtil.showPageModal(`FILE_ATTACHMENT.${documentCategory}`).then((modalData) => {
+      if (modalData.actionType === 'submit') {
+        const file = {
+          status: 'edit',
+          iconDescription: 'Delete Icon',
+          invalid: true,
+          errorSubject: 'InValid ',
+          name: modalData?.data?.data?.documentName,
+          filesize: modalData?.data?.data?.contentLength || modalData?.data?.data?.uploadFile?.addedFiles[0]?.size
+        }
+        setFile({
+          ...file
+        });
+
+        handleSchemaChanges(selectedFieldProps?.id, key, propsName, file, selectedFieldProps?.currentPathDetail)
+      } else {
+        setFile();
+        handleSchemaChanges(selectedFieldProps?.id, key, propsName, '', selectedFieldProps?.currentPathDetail)
+      }
+    });
+  }
 
   const handleAddOption = (newIndex) => {
     const index = options.length + 1;
@@ -407,6 +440,7 @@ export default function PropsPanel({
                                     )}
                                     {/* Mapping */}
                                     {item.type === MAPPING && (
+
                                       <Column lg={item.size.col}>
                                         <TextInput
                                           key={idx}
@@ -419,6 +453,7 @@ export default function PropsPanel({
                                           invalidText={error}
                                           onChange={(e) => handleSchemaChanges(selectedFieldProps?.id, key, item.propsName, e.target.value, selectedFieldProps?.currentPathDetail)}
                                         />
+
                                         <Button
                                           size="md"
                                           className="opt-btn context-mapping-btn"
@@ -564,21 +599,23 @@ export default function PropsPanel({
                                     )}
                                     {/* File Uploader */}
                                     {item.type === FILE_UPLOAD && (
-                                      <div className="right-palette-form-item">
-                                        <FileUploader
-                                          labelTitle="File Attachment"
-                                          labelDescription=""
-                                          buttonLabel="Select"
-                                          buttonKind="primary"
-                                          size="sm"
-                                          filenameStatus="edit"
-                                          multiple={false}
-                                          iconDescription="Delete file"
-                                          name=""
-                                          onChange={(e) => handleFileChange(e, key, item.propsName, selectedFieldProps)}
-                                          onDelete={() => handleSchemaChanges(selectedFieldProps?.id, key, item.propsName, '', selectedFieldProps?.currentPathDetail)}
-                                        />
-                                      </div>
+                                      <Column lg={item.size.col ? item.size.col : 16}>
+                                        <div className="right-palette-form-item">
+                                          {file == undefined ? (
+                                            <Button className="attachment-btn" onClick={() => onOpenFiles(key, item.propsName, selectedFieldProps, item.documentCategory)}> Select </Button>
+                                          ) : (
+                                            <FileUploaderItem
+                                              errorBody={`500kb max file size. Select a new file and try again.`}
+                                              errorSubject="File size exceeds limit"
+                                              iconDescription="Delete file"
+                                              name={file.name}
+                                              status="edit"
+                                              size={file.filesize}
+                                              onDelete={() => onDeleteFile(key, item.propsName, selectedFieldProps)}
+                                            />
+                                          )}
+                                        </div>
+                                      </Column>
                                     )}
                                     {/* Date Picker */}
                                     {item.type === 'Date' && (
@@ -1160,49 +1197,49 @@ export default function PropsPanel({
                                       e.preventDefault();
                                       advncProps.type === OPTIONS
                                         ? handleSchemaChanges(
-                                            selectedFieldProps?.id,
-                                            'advance',
-                                            advncProps.propsName,
-                                            { ...advncProps.value, message: getValidationMessage(selectedFieldProps?.component?.label, advncProps.propsName, e.target.value) },
-                                            selectedFieldProps?.currentPathDetail,
-                                            currentTab
-                                          )
+                                          selectedFieldProps?.id,
+                                          'advance',
+                                          advncProps.propsName,
+                                          { ...advncProps.value, message: getValidationMessage(selectedFieldProps?.component?.label, advncProps.propsName, e.target.value) },
+                                          selectedFieldProps?.currentPathDetail,
+                                          currentTab
+                                        )
                                         : handleSchemaChanges(
-                                            selectedFieldProps?.id,
-                                            'advance',
-                                            advncProps.propsName,
-                                            {
-                                              value: advncProps.value.value,
-                                              message: getValidationMessage(selectedFieldProps?.component?.label, advncProps.propsName, e.target.value)
-                                            },
-                                            selectedFieldProps?.currentPathDetail,
-                                            currentTab
-                                          );
+                                          selectedFieldProps?.id,
+                                          'advance',
+                                          advncProps.propsName,
+                                          {
+                                            value: advncProps.value.value,
+                                            message: getValidationMessage(selectedFieldProps?.component?.label, advncProps.propsName, e.target.value)
+                                          },
+                                          selectedFieldProps?.currentPathDetail,
+                                          currentTab
+                                        );
                                     } else {
                                       advncProps.type === OPTIONS
                                         ? handleSchemaChanges(
-                                            selectedFieldProps?.id,
-                                            'advance',
-                                            advncProps.propsName,
-                                            {
-                                              pattern: advncProps.value.pattern,
-                                              value: advncProps.value.value,
-                                              message: getValidationMessage(selectedFieldProps?.component?.label, advncProps.propsName, e.target.value)
-                                            },
-                                            selectedFieldProps?.currentPathDetail,
-                                            currentTab
-                                          )
+                                          selectedFieldProps?.id,
+                                          'advance',
+                                          advncProps.propsName,
+                                          {
+                                            pattern: advncProps.value.pattern,
+                                            value: advncProps.value.value,
+                                            message: getValidationMessage(selectedFieldProps?.component?.label, advncProps.propsName, e.target.value)
+                                          },
+                                          selectedFieldProps?.currentPathDetail,
+                                          currentTab
+                                        )
                                         : handleSchemaChanges(
-                                            selectedFieldProps?.id,
-                                            'advance',
-                                            advncProps.propsName,
-                                            {
-                                              value: advncProps.value.value,
-                                              message: getValidationMessage(selectedFieldProps?.component?.label, advncProps.propsName, e.target.value)
-                                            },
-                                            selectedFieldProps?.currentPathDetail,
-                                            currentTab
-                                          );
+                                          selectedFieldProps?.id,
+                                          'advance',
+                                          advncProps.propsName,
+                                          {
+                                            value: advncProps.value.value,
+                                            message: getValidationMessage(selectedFieldProps?.component?.label, advncProps.propsName, e.target.value)
+                                          },
+                                          selectedFieldProps?.currentPathDetail,
+                                          currentTab
+                                        );
                                     }
                                   }}
                                 />

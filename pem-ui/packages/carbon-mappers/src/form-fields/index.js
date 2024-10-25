@@ -17,16 +17,19 @@ import NumberInput from './number';
 import DataTable from './data-table';
 import FileDownload from './file-download';
 import HelpText from './help-text';
+import Image from './image';
 
 export const formFields = [
   Group,
   Text,
   TextInput,
   Textarea,
-  Password,
+  Text,
+  Select,
   RadioButtonGroup,
   CheckboxGroup,
-  Select,
+  Password,
+  Image,
   Toggle,
   NumberInput,
   Link,

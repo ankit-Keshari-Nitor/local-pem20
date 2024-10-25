@@ -28,15 +28,14 @@ export default function BlockPropertiesTray(props) {
     isDialogFlowActive,
     selectedTaskNode,
     getApiConfiguration,
-    getRoleList
+    getRoleList,
+    activityDefinitionData
   } = props;
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [partnerFormSchema, setPartnerFormSchema] = useState(PARTNER_FORM_SCHEMA);
   const [sponsorFormSchema, seSponsorFormSchema] = useState(SPONSOR_FORM_SCHEMA);
   const [approvalFormSchema, seApprovalFormSchema] = useState(APPROVAL_FORM_SCHEMA);
-
-
 
   useEffect(() => {
     // If the selected node is of type PARTNER and SPONSOR, fetch role options and update schema
@@ -46,10 +45,10 @@ export default function BlockPropertiesTray(props) {
           const roleOptions = await getRoleList();
           const updatedRoleOptions = [
             { label: '--Select--', value: '' }, // Add the default option here
-            ...roleOptions.map(role => ({
+            ...roleOptions.map((role) => ({
               label: role.name,
               value: role.name
-            })),
+            }))
           ];
 
           if (selectedNode.type === NODE_TYPE.PARTNER) {

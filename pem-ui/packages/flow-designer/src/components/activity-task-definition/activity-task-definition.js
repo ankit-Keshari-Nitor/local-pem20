@@ -35,7 +35,7 @@ const ActivityTaskDefinition = ({ id, onSubmitDefinitionForm, setShowActivityDef
         jsonData = JSON.parse(data);
         isValidData = jsonData && typeof jsonData === 'object' && Object.keys(jsonData).length > 0;
       } catch (error) {
-        console.error("Failed to parse context data:", error);
+        console.error('Failed to parse context data:', error);
         isValidData = false;
       }
       if (isValidData) {
@@ -57,8 +57,6 @@ const ActivityTaskDefinition = ({ id, onSubmitDefinitionForm, setShowActivityDef
           errors: 'Please enter valid json data.'
         });
       }
-
-
     } catch (e) {
       defineErrors.contextData = 'Please enter valid json data.';
       setErrors({

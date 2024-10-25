@@ -11,8 +11,8 @@ const FileDownload = ({ field }) => {
 
   return (
     <div id={id} data-testid={id}>
-      <span> {labelText === undefined ? label : labelText}</span>
-      <Button className="filedownload-button">{buttonLabel === undefined ? 'Download' : buttonLabel}</Button>
+      <div> {labelText === undefined ? label : labelText}</div>
+      <Button className="file-download-button" size="md" renderIcon={FileDownloadIcon}>{buttonLabel === undefined ? 'Download' : buttonLabel}</Button>
       <span>{helperText}</span>
     </div>
   );

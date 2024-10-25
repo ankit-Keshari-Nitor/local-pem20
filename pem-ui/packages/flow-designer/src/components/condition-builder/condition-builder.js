@@ -9,7 +9,7 @@ import { QUERY_COMBINATOR, QUERY_FIELDS } from '../../constants';
 
 import './condition-builder.scss';
 
-export default function ConditionalBuilder({ queryValidator, readOnly = { readOnly }, query, setQuery }) {
+export default function ConditionalBuilder({ queryValidator, readOnly = { readOnly }, query, setQuery, activityDefinitionData }) {
   const validator = () => queryValidator;
   return (
     <Grid>
@@ -24,6 +24,7 @@ export default function ConditionalBuilder({ queryValidator, readOnly = { readOn
             controlClassnames={{ queryBuilder: 'queryBuilder-branches', body: 'inline-indycomb-left' }}
             disabled={readOnly}
             validator={validator}
+            context={activityDefinitionData}
           />
           {/* </QueryBuilderDnD> */}
         </CarbonWrapper>

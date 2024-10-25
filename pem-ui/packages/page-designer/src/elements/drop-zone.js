@@ -66,15 +66,15 @@ const DropZone = ({ data, onDrop, isLast, className, onGroupChange }) => {
   const [componentGroup, setComponentGroup] = useState(false);
   return (
     <div className={classNames('dropZone', { active: isActive, isLast }, className)} ref={drop}>
-      {isActive ? <span className="release-text">Release</span> : null}
+      {/* {isActive ? <span className="release-text">Release</span> : null} */}
       {className === 'plus-icon' &&
         (mouseOut ? (
           <span className="hover-plus-icon" onMouseOver={(e) => setMouseOut(false)}>
-            <ColumnMenuIcon />
+            <ColumnMenuIcon /> <span className='drag-text'>Drag Here From Element</span>
           </span>
         ) : (
           <span className="hover-plus-icon" onClick={(e) => setComponentGroup(!componentGroup)} onMouseOut={(e) => setMouseOut(true)}>
-            <ColumnMenuHoverIcon />
+            <ColumnMenuHoverIcon /> <span className='drag-text'>Drop Here From Element</span>
           </span>
         ))}
       {componentGroup && (

@@ -3,7 +3,6 @@ import React, { useRef } from 'react';
 import { FONT_FAMILY, FONT_SIZE, FONT_STYLE } from '../../constants/constants';
 
 export const FormPropsPanel = ({ formFieldProps, onFormPropsChange }) => {
-  console.log('formFieldProps>>>', formFieldProps);
   const formProps = useRef();
   formProps.current = formFieldProps[0];
   const { customProps, ...rest } = formProps.current;

@@ -384,15 +384,38 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
       actionCode:0 - For Merge Action
       actionCode:1 - For Delete Action
     */
+
     e.stopPropagation();
     rowDataForDelete.current = { path, deletedElement, actionCode };
     setIsRowDelete(true);
   };
 
-  const onRowDelete = ({ path, deletedElement }) => {
+  const onRowDelete = ({ path, deletedElement, actionCode }) => {
+    let updatedLayout = layout;
+    if (!actionCode) {
+      if (deletedElement[0].children.length > 0 && deletedElement[1].children.length) {
+        const newItem = {
+          id: `pem_${uuid()
+            .replace(/[^0-9]/g, '')
+            .substring(0, 5)}`,
+          type: 'row',
+          maintype: 'group',
+          children: [{...deletedElement[1], defaultsize: 16}]
+        };
+        updatedLayout = addChildToChildren(layout, [Number(path) + 1], newItem);
+        deletedElement = deletedElement[1].id;
+        path = `${path}-1`;
+      } else if (deletedElement[1].children.length > 0) {
+        path = `${path}-0`;
+        deletedElement = deletedElement[0].id;
+      } else {
+        path = `${path}-1`;
+        deletedElement = deletedElement[1].id;
+      }
+    }
     setDeletedFieldPath(path);
     const splitDropZonePath = path.split('-');
-    setLayout(handleRemoveItemFromLayout(layout, splitDropZonePath));
+    setLayout(handleRemoveItemFromLayout(updatedLayout, splitDropZonePath));
     const newElements = componentsNames.filter((item) => item.id !== deletedElement);
     setComponentsNames(newElements);
     setSelectedFiledProps();
@@ -405,7 +428,9 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
     const newPath = Number(path) + 1;
     const newItem = {
       ...originalComponent,
-      id: `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`,
+      id: `pem_${uuid()
+        .replace(/[^0-9]/g, '')
+        .substring(0, 5)}`,
       children: []
     };
     newItem.children = copyComponent(originalComponent.children, newItem.children);
@@ -416,7 +441,9 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
   const onAddRow = (e, path) => {
     e.stopPropagation();
     const newPath = Number(path) + 1;
-    const newId = `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`;
+    const newId = `pem_${uuid()
+      .replace(/[^0-9]/g, '')
+      .substring(0, 5)}`;
     const newItem = {
       id: newId,
       type: COMPONENT,
@@ -427,7 +454,9 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
   const onGroupChange = (e, componentGroup, path) => {
     e.stopPropagation();
     const newPath = path.split('-');
-    const newItemId = `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`;
+    const newItemId = `pem_${uuid()
+      .replace(/[^0-9]/g, '')
+      .substring(0, 5)}`;
     const newItem = collectPaletteEntries(componentMapper).filter((items) => items.component.type === componentGroup)[0];
     const newFormField = {
       id: newItemId,
@@ -442,7 +471,9 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
     e.stopPropagation();
     setDeletedFieldPath(path);
     defaultProps(newItem);
-    const newItemId = `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`;
+    const newItemId = `pem_${uuid()
+      .replace(/[^0-9]/g, '')
+      .substring(0, 5)}`;
     const splitDropZonePath = path.split('-');
     const oldLayout = handleRemoveItemFromLayout(layout, splitDropZonePath);
     const newFormField = {

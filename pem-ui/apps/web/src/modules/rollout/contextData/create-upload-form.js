@@ -61,7 +61,7 @@ const CreateUploadForm = ({ documentCategory, contextPage, cdmPage }) => {
               })
               .then((response) => {
                 this.setUI('selectedFile', undefined);
-                documentCategory === 'LOGO' ? contextPage.page.setUI('selectedRowHeaderLogo', response.data.response) : contextPage.page.setUI('selectedRowActivityFile', response.data.response);
+                documentCategory === 'LOGO' ? cdmPage.uiOnMap('LOGO_FILE', response.data.response, cdmPage.ui.selectedNode) : cdmPage.uiOnMap('ACTIVITY_FILE', response.data.response, cdmPage.ui.selectedNode)
                 this.form.file.reset(pageUtil.getSubsetJson(this.form.file.attributes));
                 this.setUI('successState', pageUtil.t('mod-sponsor-server:field.uploadField.success'))
               }).catch((error) => {
@@ -91,9 +91,9 @@ const CreateUploadForm = ({ documentCategory, contextPage, cdmPage }) => {
           <Grid className="sfg--grid-container sfg--grid--form">
             <Column lg={12}>  {page.ui.errorState !== undefined && (<span className='errorMessage'>{page.ui.errorState}</span>)}</Column>
             <Column lg={12}>  {page.ui.successState !== undefined && (<span className='successMessage'>{page.ui.successState}</span>)}</Column>
-            <Column lg={6}>
+            <Column lg={8}>
               <Grid>
-                <Column lg={6}>
+                <Column lg={8}>
                   <CDS.TextInput
                     labelText={pageUtil.t('mod-sponsor-server:field.uploadField.name')}
                     name="documentName"
@@ -104,7 +104,7 @@ const CreateUploadForm = ({ documentCategory, contextPage, cdmPage }) => {
                     }}
                   />
                 </Column>
-                <Column lg={6} md={6}>
+                <Column lg={8} md={8}>
                   <CDS.TextArea
                     labelText={pageUtil.t('mod-sponsor-server:field.uploadField.description')}
                     name="documentDescription"
@@ -121,7 +121,7 @@ const CreateUploadForm = ({ documentCategory, contextPage, cdmPage }) => {
                 </Column>
               </Grid>
             </Column>
-            <Column lg={6}>
+            <Column lg={8}>
               {''}
               <p className="cds--file--label label">{pageUtil.t('mod-sponsor-server:field.uploadField.uploadFiles')}</p>
               <CDS.FileUpload
@@ -134,10 +134,10 @@ const CreateUploadForm = ({ documentCategory, contextPage, cdmPage }) => {
               ></CDS.FileUpload>
             </Column>
 
-            <Column lg={12} md={12}>
+            <Column lg={16} md={16}>
               <CDS.Checkbox labelText={pageUtil.t('mod-sponsor-server:field.uploadField.encrypt')} name="isEncrypted"></CDS.Checkbox>
             </Column>
-            <Column lg={7}></Column>
+            <Column lg={11}></Column>
             <Column lg={5} className='btn-wrapper'>
               <Button kind="tertiary" onClick={() => { page.form.apiConfiguration.handleSubmit(page.uiSave)() }}>Create</Button>
             </Column>

@@ -101,9 +101,9 @@ const CreateApiConfiguration = ({ mode, cdmPage }) => {
           <CDS.Form name="apiConfiguration" context={page.form.apiConfiguration} className="apiConfiguration-form">
             <Layer level={0} className="sfg--page-details-container" style={{ margin: '1rem 0rem' }}>
               <Grid className="sfg--grid-container sfg--grid--form">
-                <Column lg={12}> {cdmPage.ui.errorStateApiForm !== undefined && <span className="errorMessage">{cdmPage.ui.errorStateApiForm}</span>}</Column>
-                <Column lg={12}> {cdmPage.ui.successStateApiForm !== undefined && <span className="successMessage">{cdmPage.ui.successStateApiForm}</span>}</Column>
-
+                {/*  <Column lg={12}>  {cdmPage.ui.errorStateApiForm !== undefined && (<span className='errorMessage'>{cdmPage.ui.errorStateApiForm}</span>)}</Column>
+                <Column lg={12}>  {cdmPage.ui.successStateApiForm !== undefined && (<span className='successMessage'>{cdmPage.ui.successStateApiForm}</span>)}</Column>
+ */}
                 <Column lg={6} md={6}>
                   <CDS.TextInput
                     labelText={

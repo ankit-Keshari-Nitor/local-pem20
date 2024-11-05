@@ -6,8 +6,6 @@ import RolloutWizard from './rollout-wizard';
 import RolloutContextData from './rollout-contextData';
 import './styles.scss';
 
-import { JSONPath } from 'jsonpath-plus';
-
 const RolloutPage = () => {
     const pageUtil = Shell.PageUtil();
     const pageArgs = pageUtil.pageParams;
@@ -60,9 +58,6 @@ const RolloutPage = () => {
                     groupsData: [],
                     filterPartnerList: [],
                     showContextPage: false,
-                    selectedRowActivityFile: '',
-                    selectedRowHeaderLogo: '',
-                    selectedRowSponsorServer: '',
                     selectedNode: '',
                     errorWizard: undefined,
                     errorPreview: undefined,
@@ -118,24 +113,6 @@ const RolloutPage = () => {
                     if (page.ui.partnerPage) {
                         this.setUI('partnerPage', false)
                     } else if (page.ui.showContextPage) {
-                        // Update pValue for API_Config
-                        const apiConfigRef = JSONPath({ path: '$.application.Configuration', json: this.model.originalData, wrap: false });
-                        if (apiConfigRef.pType === "API_CONFIG") {
-                            apiConfigRef.pValue = this.ui.selectedRowSponsorServer;
-                        }
-
-                        // Update pValue for LOGO_FILE
-                        const logoRef = JSONPath({ path: '$.application.Logo', json: this.model.originalData, wrap: false });
-                        if (logoRef.pType === "LOGO_FILE") {
-                            logoRef.pValue = this.ui.selectedRowHeaderLogo;
-                        }
-
-                        // Update pValue for Activity_FILE
-                        const activityRef = JSONPath({ path: '$.application.Activity', json: this.model.originalData, wrap: false });
-                        if (activityRef.pType === "ACTIVITY_FILE") {
-                            activityRef.pValue = this.ui.selectedRowActivityFile;
-                        }
-
                         this.form.rollout.setValue('rolloutContextData', JSON.stringify(this.model.originalData))
                         this.setUI('showContextPage', false);
                     }
@@ -284,12 +261,12 @@ const RolloutPage = () => {
             <Layer>
                 {!page.ui.showContextPage ? (
                     <div style={{ margin: '0.5rem 0 0 0.5rem' }}>
-                        <span style={{ fontSize: '12px', color: 'var(--cds-text-secondary,"#525252")' }}>
+                        <span style={{ fontSize: '16px', color: 'var(--cds-text-secondary,"#525252")' }}>
                             Activity Rollout - {activityName}
                         </span>
                     </div>
                 ) : (<div style={{ margin: '0.5rem 0 0 0.5rem' }}>
-                    <span style={{ fontSize: '12px', color: 'var(--cds-text-secondary,"#525252")' }}>
+                    <span style={{ fontSize: '16px', color: 'var(--cds-text-secondary,"#525252")' }}>
                         {activityName}
                     </span>
                 </div>)}

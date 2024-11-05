@@ -2,8 +2,9 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  padding: 0.5rem;
-  box-shadow: 0px 0px 5px -2px;
+  padding: 0.2rem;
+  //box-shadow: 0px 0px 5px -2px;
+  border: 1.01px solid #E8E8E8;
 }
 
 .element:hover {
@@ -45,7 +46,7 @@
 .action-container {
   position: absolute;
   right: 5rem;
-  bottom: -1rem;
+  bottom: -1.5rem;
   border-radius: -12px;
   width: 8rem;
   height: 3rem;
@@ -66,7 +67,8 @@
 
 .canvas-form-fields {
   position: relative;
-  width: 93%;
+  width: 89%;
+  margin-left: 1rem;
 }
 
 .custom-field-grid {
@@ -78,4 +80,8 @@
 
 .form-fields-Selected{
   border: 1px solid hsl(205, 100%, 50%);
+}
+
+.col-span-margin {
+  margin-left: -3rem;
 }

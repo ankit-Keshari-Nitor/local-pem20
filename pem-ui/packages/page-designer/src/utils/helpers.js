@@ -1,5 +1,5 @@
 import { v4 as uuid } from 'uuid';
-import { ROW, COLUMN, COMPONENT, GROUP, TAB, ACCORDION, CUSTOM_SIZE, SUBTAB, DEFAULTTITLE, SIDEBAR_ITEM } from '../constants/constants';
+import { ROW, COLUMN, COMPONENT, GROUP, TAB, ACCORDION, CUSTOM_SIZE, SUBTAB, DEFAULTTITLE, SIDEBAR_ITEM, FORM, GRID } from '../constants/constants';
 import { validAlphaNumericOnly, validAlphaNumericNumber, validEmail, validInteger, validURL } from './regex';
 
 // a little function to help us with reordering the result
@@ -55,11 +55,13 @@ export const reorderChildren = (children, splitDropZonePath, splitItemPath) => {
   return updatedChildren;
 };
 
-export const removeChildFromChildren = (children, splitDropZonePath) => {
+export const removeChildFromChildren = (children, splitDropZonePath, actionCode) => {
   if (splitDropZonePath.length === 1) {
     const itemIndex = Number(splitDropZonePath[0]);
-    const sizeIndex = itemIndex === 1 ? 0 : 1;
-    children[sizeIndex].defaultsize = 16;
+    if (actionCode === 'onRowDelete') {
+      const sizeIndex = itemIndex === 1 ? 0 : 1;
+      children[sizeIndex].defaultsize = 16;
+    }
     return remove(children, itemIndex);
   }
 
@@ -72,7 +74,7 @@ export const removeChildFromChildren = (children, splitDropZonePath) => {
   const nodeChildren = updatedChildren[curIndex];
   updatedChildren[curIndex] = {
     ...nodeChildren,
-    children: removeChildFromChildren(nodeChildren.children, splitItemChildrenPath)
+    children: removeChildFromChildren(nodeChildren.children, splitItemChildrenPath, actionCode)
   };
 
   return updatedChildren;
@@ -86,9 +88,7 @@ export const updateConfigChildToChildren = (children, splitDropZonePath, item, r
     if (children[0]?.type === COLUMN) {
       newLayoutStructure = {
         type: COLUMN,
-        id: `pem_${uuid()
-          .replace(/[^0-9]/g, '')
-          .substring(0, 5)}`,
+        id: elementId('COLUMN'),
         defaultsize: '16',
         children: item.length ? [item] : []
       };
@@ -131,9 +131,7 @@ export const addChildToChildren = (children, splitDropZonePath, item) => {
       children[0].defaultsize = '8';
       newLayoutStructure = {
         type: COLUMN,
-        id: `pem_${uuid()
-          .replace(/[^0-9]/g, '')
-          .substring(0, 5)}`,
+        id: elementId('COLUMN'),
         defaultsize: '8',
         children: item.length ? [item] : []
       };
@@ -211,9 +209,7 @@ export const handleAddColumDataToRow = (layout) => {
   const layoutCopy = [...layout];
   const COLUMN_STRUCTURE = {
     type: COLUMN,
-    id: `pem_${uuid()
-      .replace(/[^0-9]/g, '')
-      .substring(0, 5)}`,
+    id: elementId('COLUMN'),
     children: []
   };
 
@@ -229,17 +225,13 @@ export const handleMoveToDifferentParent = (layout, splitDropZonePath, splitItem
   let newLayoutStructure;
   const COLUMN_STRUCTURE = {
     type: COLUMN,
-    id: `pem_${uuid()
-      .replace(/[^0-9]/g, '')
-      .substring(0, 5)}`,
+    id: elementId('COLUMN'),
     children: [item]
   };
 
   const ROW_STRUCTURE = {
     type: ROW,
-    id: `pem_${uuid()
-      .replace(/[^0-9]/g, '')
-      .substring(0, 5)}`
+    id: elementId('ROW')
   };
 
   switch (splitDropZonePath.length) {
@@ -295,16 +287,12 @@ export const handleMoveSidebarComponentIntoParent = (layout, splitDropZonePath, 
       case 1: {
         newLayoutStructure = {
           type: ROW,
-          id: `pem_${uuid()
-            .replace(/[^0-9]/g, '')
-            .substring(0, 5)}`,
+          id: elementId('ROW'),
           maintype: item.component.type,
           children: [
             {
               type: COLUMN,
-              id: `pem_${uuid()
-                .replace(/[^0-9]/g, '')
-                .substring(0, 5)}`,
+              id: elementId('COLUMN'),
               defaultsize: '16',
               children: []
             }
@@ -316,16 +304,12 @@ export const handleMoveSidebarComponentIntoParent = (layout, splitDropZonePath, 
         if (item.component.type === GROUP) {
           newLayoutStructure = {
             type: ROW,
-            id: `pem_${uuid()
-              .replace(/[^0-9]/g, '')
-              .substring(0, 5)}`,
+            id: elementId('ROW'),
             maintype: item.component.type,
             children: [
               {
                 type: COLUMN,
-                id: `pem_${uuid()
-                  .replace(/[^0-9]/g, '')
-                  .substring(0, 5)}`,
+                id: elementId('COLUMN'),
                 defaultsize: '16',
                 children: []
               }
@@ -334,9 +318,7 @@ export const handleMoveSidebarComponentIntoParent = (layout, splitDropZonePath, 
         } else {
           newLayoutStructure = {
             type: COLUMN,
-            id: `pem_${uuid()
-              .replace(/[^0-9]/g, '')
-              .substring(0, 5)}`,
+            id: elementId('COLUMN'),
             children: [item]
           };
         }
@@ -345,17 +327,12 @@ export const handleMoveSidebarComponentIntoParent = (layout, splitDropZonePath, 
       default: {
         newLayoutStructure = {
           type: ROW,
-          id: `pem_${uuid()
-            .replace(/[^0-9]/g, '')
-            .substring(0, 5)}`,
+          id: elementId('ROW'),
           maintype: item.component.type,
           children: [
             {
               type: COLUMN,
-              id: `pem_${uuid()
-                .replace(/[^0-9]/g, '')
-                .substring(0, 5)}`,
-              defaultsize: '16',
+              id: elementId('COLUMN'),
               children: []
             }
           ]
@@ -370,9 +347,7 @@ export const handleMoveSidebarComponentIntoParent = (layout, splitDropZonePath, 
       };
     } else if (item?.component?.type === ACCORDION) {
       newLayoutStructure = {
-        id: `pem_${uuid()
-          .replace(/[^0-9]/g, '')
-          .substring(0, 5)}`,
+        id: elementId(item.component.type),
         type: item.component.type,
         maintype: item.component.type,
         children: [],
@@ -380,17 +355,13 @@ export const handleMoveSidebarComponentIntoParent = (layout, splitDropZonePath, 
       };
     } else if (item?.component?.type === TAB) {
       newLayoutStructure = {
-        id: `pem_${uuid()
-          .replace(/[^0-9]/g, '')
-          .substring(0, 5)}`,
+        id: elementId(item.component.type),
         type: item.component.type,
         maintype: item.component.type,
         component: item.component,
         children: [
           {
-            id: `pem_${uuid()
-              .replace(/[^0-9]/g, '')
-              .substring(0, 5)}`,
+            id: elementId('SUB_TAB'),
             tabTitle: DEFAULTTITLE,
             type: SUBTAB,
             children: []
@@ -405,16 +376,12 @@ export const handleMoveSidebarComponentIntoParent = (layout, splitDropZonePath, 
       } else {
         newLayoutStructure = {
           type: ROW,
-          id: `pem_${uuid()
-            .replace(/[^0-9]/g, '')
-            .substring(0, 5)}`,
+          id: elementId('ROW'),
           maintype: 'group',
           children: [
             {
               type: COLUMN,
-              id: `pem_${uuid()
-                .replace(/[^0-9]/g, '')
-                .substring(0, 5)}`,
+              id: elementId('COLUMN'),
               defaultsize: '16',
               children: [{ ...item }]
             }
@@ -426,8 +393,8 @@ export const handleMoveSidebarComponentIntoParent = (layout, splitDropZonePath, 
   return addChildToChildren(layout, splitDropZonePath, newLayoutStructure);
 };
 
-export const handleRemoveItemFromLayout = (layout, splitItemPath) => {
-  return removeChildFromChildren(layout, splitItemPath);
+export const handleRemoveItemFromLayout = (layout, splitItemPath, actionCode) => {
+  return removeChildFromChildren(layout, splitItemPath, actionCode);
 };
 
 export const getFormFieldDetails = (path, layout) => {
@@ -506,7 +473,7 @@ export const nestedLayoutView = (childLayout, childSchema) => {
       case ROW: {
         childSchema.push({
           id: item.id,
-          type: item.type,
+          cType: item.type.toUpperCase(),
           children: []
         });
         nestedLayoutView(childLayout[index]?.children, childSchema[index].children);
@@ -515,8 +482,8 @@ export const nestedLayoutView = (childLayout, childSchema) => {
       case COLUMN: {
         childSchema.push({
           id: item.id,
-          type: item.type,
-          size: item?.customsize ? item?.customsize : item?.defaultsize,
+          cType: item.type.toUpperCase(),
+          //size: item?.customsize ? item?.customsize : item?.defaultsize,
           children: []
         });
         nestedLayoutView(childLayout[index]?.children, childSchema[index].children);
@@ -552,10 +519,13 @@ export const nestedLayoutView = (childLayout, childSchema) => {
         break;
       }
       default: {
-        const { icon, label, group, ...others } = item.component;
+        const { icon, label, group, type, id, ...others } = item.component;
         childSchema.push({
-          id: item.id,
-          ...others
+          id: id,
+          cType: componentNames[type].toUpperCase(),
+          props: {
+            ...others
+          }
         });
       }
     }
@@ -563,169 +533,117 @@ export const nestedLayoutView = (childLayout, childSchema) => {
   return childSchema;
 };
 
-export const nestedLayoutViewForAPi = (childLayout, childSchema) => {
-  childLayout.forEach((item, index) => {
-    switch (item.type) {
-      case ROW:
-      case COLUMN:
-      case ACCORDION:
-      case TAB:
-      case SUBTAB:
-        nestedLayoutViewForAPi(childLayout[index]?.children, childSchema);
-        break;
-      default: {
-        const { label, type, group, ...others } = item?.component;
-        childSchema.push({
-          cType: 'COLUMN',
-          props: {
-            id: `pem_${uuid()
-              .replace(/[^0-9]/g, '')
-              .substring(0, 5)}`,
-            uId: `pem_${uuid()
-              .replace(/[^0-9]/g, '')
-              .substring(0, 5)}`,
-            lg: '6',
-            md: '8',
-            sm: '16'
+export const convertToApiSchema = (layout) => {
+  const schema = nestedLayoutView(layout.slice(1), []);
+  const { customProps, defaultProps, id, type, ...rest } = layout.slice(0, 1)[0];
+  const formProps = rest.defaultStyle ? defaultProps : customProps;
+  const formSchema = {
+    id: id,
+    cType: type,
+    props: {
+      ...rest,
+      ...formProps
+    },
+    children: [
+      {
+        id: elementId('GRID'),
+        cType: 'GRID',
+        children: schema
+      }
+    ]
+  };
+  return formSchema;
+};
+
+export const defaultFormProps = {
+  fontFamily: 'IBM Plex Sans',
+  fontSize: '14px',
+  fontColor: '#161616',
+  formBackground: 'white',
+  labelStyle: '400',
+  labelFontSize: '14px',
+  labelColor: '#161616'
+};
+
+export const formInitializer = (formObj) => {
+  return formObj.form?.cType
+    ? getFormObject([formObj.form], [])
+    : [
+        {
+          type: 'FORM',
+          id: `pem_${formObj.formId}`,
+          name: 'Form',
+          width: '100px',
+          height: '100px',
+          defaultStyle: true,
+          defaultProps: {
+            ...defaultFormProps
           },
+          customProps: {
+            ...defaultFormProps
+          }
+        },
+        {
+          type: 'row',
+          id: elementId('ROW'),
+          maintype: 'group',
           children: [
             {
-              cType: componentNames[type],
-              props: {
-                id: others.id,
-                uId: item.id,
-                ...others
-              }
+              type: 'column',
+              id: elementId('COLUMN'),
+              defaultsize: '16',
+              children: []
             }
           ]
-        });
-      }
-    }
-  });
-  return childSchema;
-};
-
-export const convertToSchema = (layout) => {
-  //const schema = nestedLayoutView(layout, []);
-  const schema = nestedLayoutViewForAPi(layout, []);
-  const FinalSchema = [
-    {
-      cType: 'FORM',
-      props: {
-        id: `pem_${uuid()
-          .replace(/[^0-9]/g, '')
-          .substring(0, 5)}`,
-        uId: `pem_${uuid()
-          .replace(/[^0-9]/g, '')
-          .substring(0, 5)}`,
-        name: 'test'
-      },
-      children: [
-        {
-          cType: 'GRID',
-          props: {
-            id: `pem_${uuid()
-              .replace(/[^0-9]/g, '')
-              .substring(0, 5)}`,
-            uId: `pem_${uuid()
-              .replace(/[^0-9]/g, '')
-              .substring(0, 5)}`,
-            defaultColumnSizeLg: '6',
-            defaultColumnSizeMd: '8',
-            defaultColumnSizeSm: '16',
-            narrow: true,
-            condensed: true,
-            fullWidth: true
-          },
-          children: schema
         }
-      ]
-    }
-  ];
-  return FinalSchema;
-  //return { fields: schema };
+      ];
 };
 
-export const getFormObject = (schema, formObj) => {
-  // old schema code
-  // schema.forEach((item, index)=> {
-  //   switch (item.type) {
-  //     case ROW: {
-  //       formObj.push({
-  //         id: item.id,
-  //         type: item.type,
-  //         maintype: GROUP,
-  //         children: []
-  //       })
-  //       getFormObject(schema[index]?.children, formObj[index].children);
-  //       break;
-  //     }
-  //     case COLUMN: {
-  //       formObj.push({
-  //         id: item.id,
-  //         type: item.type,
-  //         defaultsize: item.size,
-  //         children: []
-  //       })
-  //       getFormObject(schema[index]?.children, formObj[index].children);
-  //       break;
-  //     }
-  //     case ACCORDION: {
-  //       const {children, ...others} = item;
-  //       formObj.push({
-  //         id: item.id,
-  //         type: item.type,
-  //         maintype: ACCORDION,
-  //         component: {
-  //           ...others
-  //         },
-  //         children: []
-  //       })
-  //       getFormObject(children, formObj[index].children);
-  //       break;
-  //     }
-  //     case TAB: {
-  //       const {children, ...others} = item;
-  //       formObj.push({
-  //         id: item.id,
-  //         type: item.type,
-  //         maintype: TAB,
-  //         component: {
-  //           ...others
-  //         },
-  //         children: []
-  //       })
-  //       getFormObject(children, formObj[index].children);
-  //       break;
-  //     }
-  //     case SUBTAB: {
-  //       const {children, ...others} = item;
-  //       formObj.push({
-  //         ...others,
-  //         children: []
-  //       })
-  //       getFormObject(children, formObj[index].children);
-  //       break;
-  //     }
-  //     default: {
-  //       formObj.push({
-  //         id: item.id,
-  //         type: COMPONENT,
-  //         component: {
-  //           ...item
-  //         }
-  //       })
-  //     }
-  //   }
-  // });
+export const getFormObject = (schema, formObj, colSize = 16) => {
   schema.forEach((item, index) => {
-    switch (item.cType) {
-      case 'GRID': {
+    switch (item.cType.toLowerCase()) {
+      case FORM: {
+        const {
+          id,
+          cType,
+          props: { defaultStyle, height, name, width, ...rest }
+        } = item;
+        formObj.push({
+          id: id,
+          type: cType.toLowerCase(),
+          defaultStyle: defaultStyle,
+          height: height,
+          name: name,
+          width: width,
+          customProps: { ...rest },
+          defaultProps: { ...defaultFormProps }
+        });
         getFormObject(schema[index]?.children, formObj);
         break;
       }
-      case 'COLUMN': {
+      case GRID: {
         getFormObject(schema[index]?.children, formObj);
+        break;
+      }
+      case ROW: {
+        const size = item.children.length > 1 ? 8 : 16;
+        formObj.push({
+          id: item.id,
+          type: item.cType.toLowerCase(),
+          maintype: GROUP,
+          children: []
+        });
+        getFormObject(schema[index]?.children, formObj[index+1].children, size);
+        break;
+      }
+      case COLUMN: {
+        formObj.push({
+          id: item.id,
+          type: item.cType.toLowerCase(),
+          defaultsize: colSize,
+          children: []
+        });
+        getFormObject(schema[index]?.children, formObj[index].children);
         break;
       }
       case ACCORDION: {
@@ -767,9 +685,10 @@ export const getFormObject = (schema, formObj) => {
       }
       default: {
         formObj.push({
-          id: item.props.id,
+          id: item.id,
           type: COMPONENT,
           component: {
+            id: item.id,
             type: componentReNames[item.cType],
             ...item.props
           }
@@ -777,6 +696,64 @@ export const getFormObject = (schema, formObj) => {
       }
     }
   });
+  //   switch (item.cType) {
+  //     case 'GRID': {
+  //       getFormObject(schema[index]?.children, formObj);
+  //       break;
+  //     }
+  //     case 'COLUMN': {
+  //       getFormObject(schema[index]?.children, formObj);
+  //       break;
+  //     }
+  //     case ACCORDION: {
+  //       const { children, ...others } = item;
+  //       formObj.push({
+  //         id: item.id,
+  //         type: item.type,
+  //         maintype: ACCORDION,
+  //         component: {
+  //           ...others
+  //         },
+  //         children: []
+  //       });
+  //       getFormObject(children, formObj[index].children);
+  //       break;
+  //     }
+  //     case TAB: {
+  //       const { children, ...others } = item;
+  //       formObj.push({
+  //         id: item.id,
+  //         type: item.type,
+  //         maintype: TAB,
+  //         component: {
+  //           ...others
+  //         },
+  //         children: []
+  //       });
+  //       getFormObject(children, formObj[index].children);
+  //       break;
+  //     }
+  //     case SUBTAB: {
+  //       const { children, ...others } = item;
+  //       formObj.push({
+  //         ...others,
+  //         children: []
+  //       });
+  //       getFormObject(children, formObj[index].children);
+  //       break;
+  //     }
+  //     default: {
+  //       formObj.push({
+  //         id: item.props.id,
+  //         type: COMPONENT,
+  //         component: {
+  //           type: componentReNames[item.cType],
+  //           ...item.props
+  //         }
+  //       });
+  //     }
+  //   }
+  // });
   return formObj;
 };
 

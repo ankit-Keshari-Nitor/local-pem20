@@ -34,6 +34,8 @@ export const DROPDOWN = 'DropDown';
 export const FILE_UPLOAD = 'FileUpload';
 export const ELEMENT_TYPES = 'elementType';
 export const EXTENSIONS = 'extensions';
+export const FORM = 'form';
+export const GRID = 'grid';
 
 export const PALETTE_GROUPS = [
   {
@@ -100,13 +102,13 @@ export const GROUP_MENU = [
     value: 'Input Element'
   },
   {
-    key: 'radio',
+    key: 'Radio Button Group',
     value: 'Radio Checkbox Dropdown'
   },
-  {
-    key: 'Table',
-    value: 'Table'
-  },
+  // {
+  //   key: 'data-table',
+  //   value: 'Table'
+  // },
   {
     key: 'Image',
     value: 'Image'

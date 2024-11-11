@@ -159,6 +159,7 @@
 
 .right-pane {
     position: absolute;
+    width: -webkit-fill-available;
 }
 
 .sfg--tree-view .cds--label {
@@ -337,4 +338,9 @@
 
 .cds--radio-button__label-text {
     color: var(--cds-text-primary, #161616);
+}
+
+.cds--modal-md .cds--modal-container {
+    height: 70% !important;
+    width: 55% !important;
 }

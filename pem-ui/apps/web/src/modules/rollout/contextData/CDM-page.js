@@ -6,14 +6,25 @@ import '@b2bi/styles/pages/list-page.scss';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 
 import { CONTEXT_MAPPING_TYPES, CONTEXT_TYPES } from './constant';
-import { generateTreeData } from './CDM-utils';
+import { generateTreeData, updateTreeNodeIcon } from './CDM-utils';
 
 import '../styles.scss';
 
-import { ListBoxes } from '@carbon/icons-react';
+import { StringText, Api_1, Image, Schematics, Table, TreeViewAlt, ProgressBar, DataVolume, ListBoxes } from '@carbon/icons-react';
 
 import CreateApiConfiguration from './create-api-configuration';
 import CreateUploadForm from './create-upload-form';
+
+const iconMapping = {
+    TEXT: StringText,
+    API_CONFIG: Api_1,
+    LOGO_FILE: Image,
+    ACTIVITY_FILE: Schematics,
+    OBJECT: TreeViewAlt,
+    ARRAY: Table,
+    ARRAY_ITEM: ProgressBar,
+    DEFAULT: DataVolume
+};
 
 const ContextDataModal = ({ contextData, contextPage }) => {
     const pageUtil = Shell.PageUtil();
@@ -93,10 +104,7 @@ const ContextDataModal = ({ contextData, contextPage }) => {
                     tableLoadingState: false,
                     tableEmptyState: undefined,
                     view: 'table',
-                    successStateUploadForm: undefined,
-                    errorStateUploadForm: undefined,
-                    successStateApiForm: undefined,
-                    errorStateApiForm: undefined
+
                 },
                 form: {
                     property: {
@@ -166,6 +174,7 @@ const ContextDataModal = ({ contextData, contextPage }) => {
                 },
                 _processProperty: function () {
                     const transformedData = generateTreeData(contextData);
+                    updateTreeNodeIcon(transformedData, iconMapping)
                     this.setModel('data', transformedData);
                     contextPage.page.setModel('originalData', contextData);
                 },
@@ -201,6 +210,7 @@ const ContextDataModal = ({ contextData, contextPage }) => {
                     this.ui.selectedNode.value.value = event.target.value;
                     propertyRef.pValue = event.target.value;
                     const transformedData = generateTreeData(contextPage.page.model.originalData);
+                    updateTreeNodeIcon(transformedData, iconMapping)
                     this.setModel('data', transformedData);
                 },
                 uiTabChange: function (...args) {
@@ -214,12 +224,6 @@ const ContextDataModal = ({ contextData, contextPage }) => {
                         if (args[1] === CONTEXT_MAPPING_TYPES.ACTIVITY_FILE) {
                             page.datatable.activityFileList.refresh();
                         }
-                    } else {
-                        this.setUI('errorStateApiForm', undefined);
-                        this.setUI('errorStateUploadForm', undefined);
-                        this.setUI('successStateApiForm', undefined);
-                        this.setUI('successStateUploadForm', undefined);
-
                     }
                 },
                 uiOnUnmapBtn: function (event, type, selectedNode) {
@@ -243,6 +247,7 @@ const ContextDataModal = ({ contextData, contextPage }) => {
                     selectedNode.value.value = ''
                     propertyRef.pValue = '';
                     const transformedData = generateTreeData(contextPage.page.model.originalData);
+                    updateTreeNodeIcon(transformedData, iconMapping)
                     this.setModel('data', transformedData);
                 },
                 uiOnMap: function (type, val, selectedNode = undefined) {
@@ -286,6 +291,7 @@ const ContextDataModal = ({ contextData, contextPage }) => {
                     selectedNode.value.value = val
                     propertyRef.pValue = val;
                     const transformedData = generateTreeData(contextPage.page.model.originalData);
+                    updateTreeNodeIcon(transformedData, iconMapping)
                     this.setModel('data', transformedData);
                 }
             };
@@ -294,6 +300,11 @@ const ContextDataModal = ({ contextData, contextPage }) => {
 
     const pageConfig = {
         cdpTreeView: {
+            search: {
+                closeLabel: 'shell:common.actions.close',
+                label: 'shell:common.actions.search',
+                placeholder: 'mod-context-data-properties:actions.search'
+            },
             treeView: {
                 onSelect: (...args) => {
                     return page.uiOnSelectNode.apply(page, args);

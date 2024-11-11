@@ -43,13 +43,11 @@ const CreateApiConfiguration = ({ mode, contextPage, cdmPage }) => {
           }
         },
         init: function () {
-          cdmPage.setUI('successStateApiForm', undefined);
-          cdmPage.setUI('errorStateApiForm', undefined);
+
           this.form.apiConfiguration.reset(pageUtil.getSubsetJson(this.form.apiConfiguration.attributes));
         },
         uiSave: function () {
-          cdmPage.setUI('errorStateApiForm', undefined);
-          cdmPage.setUI('successStateApiForm', undefined)
+
           const apiConfigurationInput = pageUtil.removeEmptyAttributes(this.form.apiConfiguration.getValues());
 
           let handler;
@@ -62,9 +60,11 @@ const CreateApiConfiguration = ({ mode, contextPage, cdmPage }) => {
             .then((response) => {
               this.form.apiConfiguration.reset(pageUtil.getSubsetJson(this.form.apiConfiguration.attributes));
               cdmPage.uiOnMap('API_CONFIG', response.data.apiConfigurationKey, cdmPage.ui.selectedNode)
-              cdmPage.setUI('successStateApiForm', pageUtil.t('mod-sponsor-server:message.success'))
+              pageUtil.showNotificationMessage('toast', pageUtil.t('shell:common.actions.success'), pageUtil.t('mod-sponsor-server:message.success'));
             })
-            .catch((error) => { cdmPage.setUI('errorStateApiForm', error.response?.data?.errorDescription) });
+            .catch((error) => {
+              pageUtil.showNotificationMessage('toast', pageUtil.t('shell:common.actions.error'), error.response?.data?.errorDescription);
+            });
         },
         uiOnAuthenticalTypeChange: function (event) {
           page.form.apiConfiguration.resetField('userName', { defaultValue: '' });
@@ -117,9 +117,6 @@ const CreateApiConfiguration = ({ mode, contextPage, cdmPage }) => {
       <CDS.Form name="apiConfiguration" context={page.form.apiConfiguration} className="apiConfiguration-form">
         <Layer level={0} className="sfg--page-details-container" style={{ margin: '1rem 0rem' }}>
           <Grid className="sfg--grid-container sfg--grid--form">
-            <Column lg={12}>  {cdmPage.ui.errorStateApiForm !== undefined && (<span className='errorMessage'>{cdmPage.ui.errorStateApiForm}</span>)}</Column>
-            <Column lg={12}>  {cdmPage.ui.successStateApiForm !== undefined && (<span className='successMessage'>{cdmPage.ui.successStateApiForm}</span>)}</Column>
-
             <Column lg={8} md={8}>
               <CDS.TextInput
                 labelText={

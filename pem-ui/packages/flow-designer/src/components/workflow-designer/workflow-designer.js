@@ -23,6 +23,7 @@ import { useEffect } from 'react';
 import useTaskStore from '../../store';
 import { v4 as uuid } from 'uuid';
 import { getInitialNodeEdges } from '../../utils/workflow-element-utils';
+import { Modal } from '@carbon/react';
 
 let dialogBranchId = 1;
 const getNewDialogBranchId = () => `Branch_${dialogBranchId++}`;
@@ -51,11 +52,17 @@ const WorkFlowDesigner = forwardRef(
     selectedVersion, //current selected version,
     setNotificationProps, //toast message config
     getApiConfiguration, //to call API Config
-    getRoleList,// to call the role List
-    isDialogFlowActive, setIsDialogFlowActive, isPageDesignerActive, setIsPageDesignerActive, setOpenTaskPropertiesBlock, openTaskPropertiesBlock, openDialogPropertiesBlock,
-    setOpenDialogPropertiesBlock, nodeDataRefActivity
+    getRoleList, // to call the role List
+    isDialogFlowActive,
+    setIsDialogFlowActive,
+    isPageDesignerActive,
+    setIsPageDesignerActive,
+    setOpenTaskPropertiesBlock,
+    openTaskPropertiesBlock,
+    openDialogPropertiesBlock,
+    setOpenDialogPropertiesBlock,
+    nodeDataRefActivity
   }) => {
-
     //-------------------------------- State Management -------------------------------------
     const store = useTaskStore();
     let storeData = useTaskStore((state) => state.tasks);
@@ -83,6 +90,7 @@ const WorkFlowDesigner = forwardRef(
 
     // -------------------------------- Node Deletion -------------------------------------------
     const nodeDataRef = useRef(storeData);
+    const [isNodeDelete, setIsNodeDelete] = useState({ state: false });
 
     // -------------------------------- For Updating Node Position -----------------------------
     const isTaskNodePositionChange = useRef(false);
@@ -134,10 +142,9 @@ const WorkFlowDesigner = forwardRef(
           return { ...node, position: n ? n.position : node.position };
         });
         setTaskNodes(newNodes);
-        nodeDataRefActivity.current = { ...nodeDataRefActivity.current, state: false }
+        nodeDataRefActivity.current = { ...nodeDataRefActivity.current, state: false };
       } else {
-        nodeDataRefActivity.current = { state: false, store: storeData }
-
+        nodeDataRefActivity.current = { state: false, store: storeData };
       }
     }, [setTaskNodes, setTaskEdges, storeData, updateActivitySchema]);
 
@@ -421,7 +428,11 @@ const WorkFlowDesigner = forwardRef(
     const onNodeContextOptionClick = (id, mode, isdialog, selectedTaskNodeId = selectedTaskNode?.id) => {
       switch (mode.toUpperCase()) {
         case 'DELETE':
-          deleteNode(id, isdialog, selectedTaskNodeId);
+          setIsNodeDelete({
+            state: true,
+            data: { id, isdialog, selectedTaskNodeId }
+          });
+          //deleteNode(id, isdialog, selectedTaskNodeId);
           break;
         case 'COPY':
           copyNode(id, isdialog, selectedTaskNodeId);
@@ -434,7 +445,17 @@ const WorkFlowDesigner = forwardRef(
     useEffect(() => {
       store.reset();
       if (activityDefinitionData.schema.nodes.length === 0 || activityDefinitionData.schema.edges.length === 0) {
-        let initialNodeData = getInitialNodeEdges(null, `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`, `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`, 'task', onNodeContextOptionClick);
+        let initialNodeData = getInitialNodeEdges(
+          null,
+          `pem_${uuid()
+            .replace(/[^0-9]/g, '')
+            .substring(0, 5)}`,
+          `pem_${uuid()
+            .replace(/[^0-9]/g, '')
+            .substring(0, 5)}`,
+          'task',
+          onNodeContextOptionClick
+        );
         setTaskNodes(initialNodeData.nodes);
         setTaskEdges(initialNodeData.edges);
         store.addTaskNodes(initialNodeData.nodes);
@@ -481,7 +502,9 @@ const WorkFlowDesigner = forwardRef(
           id = getNewDialogId();
         }
 
-        const newDialogId = `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`;
+        const newDialogId = `pem_${uuid()
+          .replace(/[^0-9]/g, '')
+          .substring(0, 5)}`;
         const newDialog = {
           id: newDialogId,
           position,
@@ -545,10 +568,7 @@ const WorkFlowDesigner = forwardRef(
           }
           return copyNode;
         });
-        const formData = {
-          form: node.data?.form?.cType ? node.data.form : [],
-          formId: node.data.editableProps?.name ? node.data.editableProps?.name : node.data.id
-        };
+        const formData = node.data?.form?.length ? JSON.parse(node.data.form)[0].children : []; // old schema code
         setDialogNodes([...copyNodes]);
         setSelectedDialogNode(node);
         setFormFields(formData);
@@ -610,8 +630,20 @@ const WorkFlowDesigner = forwardRef(
           id = getNewTaskId();
         }
 
-        const taskId = `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`;
-        let initialNodeData = getInitialNodeEdges(taskId, `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`, `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`, 'dialog', onNodeContextOptionClick);
+        const taskId = `pem_${uuid()
+          .replace(/[^0-9]/g, '')
+          .substring(0, 5)}`;
+        let initialNodeData = getInitialNodeEdges(
+          taskId,
+          `pem_${uuid()
+            .replace(/[^0-9]/g, '')
+            .substring(0, 5)}`,
+          `pem_${uuid()
+            .replace(/[^0-9]/g, '')
+            .substring(0, 5)}`,
+          'dialog',
+          onNodeContextOptionClick
+        );
         const newTask = {
           id: taskId,
           position,
@@ -743,10 +775,10 @@ const WorkFlowDesigner = forwardRef(
     useEffect(() => {
       if (!isDialogFlowActive) {
         if (selectedTaskNode) {
-          store?.setDialogNodes(selectedTaskNode?.id, dialogFlowInstance?.getNodes())
+          store?.setDialogNodes(selectedTaskNode?.id, dialogFlowInstance?.getNodes());
         }
       }
-    }, [isDialogFlowActive, isPageDesignerActive, setIsDialogFlowActive, setIsPageDesignerActive])
+    }, [isDialogFlowActive, isPageDesignerActive, setIsDialogFlowActive, setIsPageDesignerActive]);
 
     return (
       <>
@@ -754,7 +786,6 @@ const WorkFlowDesigner = forwardRef(
           <DndProvider debugMode={true} backend={HTML5Backend}>
             <PageDesigner.Designer
               componentMapper={componentMapper}
-
               activityDefinitionData={activityDefinitionData}
               saveFormDesignerData={saveFormDesignerData}
               formFields={formFields}
@@ -763,7 +794,32 @@ const WorkFlowDesigner = forwardRef(
         ) : (
           <>
             <div className="workflow-designer">
-
+              <Modal
+                open={isNodeDelete.state}
+                onRequestClose={() =>
+                  setIsNodeDelete((preState) => {
+                    return { ...preState, state: false };
+                  })
+                }
+                onRequestSubmit={() => {
+                  deleteNode(isNodeDelete.data.id, isNodeDelete.data.isdialog, isNodeDelete.data.selectedTaskNodeId);
+                  setIsNodeDelete((preState) => {
+                    return { ...preState, state: false };
+                  });
+                }}
+                isFullWidth
+                modalHeading="Confirmation"
+                primaryButtonText={'Delete'}
+                secondaryButtonText="Cancel"
+              >
+                <p
+                  style={{
+                    padding: '0px 0px 1rem 1rem'
+                  }}
+                >
+                  {'Are you sure you want to delete'}
+                </p>
+              </Modal>
               {isDialogFlowActive ? (
                 <DialogFlowDesigner
                   connectionLineStyle={connectionLineStyle}

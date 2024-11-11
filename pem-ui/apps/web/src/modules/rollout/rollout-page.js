@@ -259,17 +259,11 @@ const RolloutPage = () => {
     return (
         <Layer>
             <Layer>
-                {!page.ui.showContextPage ? (
-                    <div style={{ margin: '0.5rem 0 0 0.5rem' }}>
-                        <span style={{ fontSize: '16px', color: 'var(--cds-text-secondary,"#525252")' }}>
-                            Activity Rollout - {activityName}
-                        </span>
-                    </div>
-                ) : (<div style={{ margin: '0.5rem 0 0 0.5rem' }}>
+                <div style={{ margin: '0.5rem 0 0 0.5rem' }}>
                     <span style={{ fontSize: '16px', color: 'var(--cds-text-secondary,"#525252")' }}>
-                        {activityName}
+                        Activity Rollout - {activityName}
                     </span>
-                </div>)}
+                </div>
                 <Shell.Page type="ROLLOUT" className="pem--page--rollout">
                     <Shell.PageHeader title={!page.ui.partnerPage ? !page.ui.showContextPage ? 'Details' : 'Context Data Mapping' : 'Adding Partners'} />
                     <Shell.PageBody className={!page.ui.showContextPage ? "rollout-body" : ""}>

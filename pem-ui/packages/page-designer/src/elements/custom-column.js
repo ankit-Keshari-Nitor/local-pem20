@@ -96,7 +96,7 @@ const Column = ({
             const currentPath = `${path}-${index}`;
             return (
               <React.Fragment key={component.id}>
-                {/* {!previewMode && (
+                {!previewMode && (
                   <DropZone
                     data={{
                       path: currentPath,
@@ -104,12 +104,12 @@ const Column = ({
                     }}
                     onDrop={handleDrop}
                   />
-                )} */}
+                )}
                 {renderComponent(component, currentPath)}
               </React.Fragment>
             );
           })}
-          {!previewMode && data.children.length === 0 && (
+          {!previewMode && (
             <DropZone
               data={{
                 path: `${path}-${data.children.length}`,

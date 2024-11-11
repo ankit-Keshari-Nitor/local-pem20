@@ -83,13 +83,13 @@ const FieldRenderer = ({
       >
         <Grid className="custom-field-grid">
           {isNestedBlock && (
-            <Column lg={1} className='col-span-margin'>
+            <Column lg={1}>
               <span className="drag-icon">
                 <Draggable />
               </span>
             </Column>
           )}
-          <Column className={isNestedBlock && 'col-span-margin'} lg={NewcolSize <= 0 ? 16 : NewcolSize}> {formFieldData}</Column>
+          <Column lg={NewcolSize <= 0 ? 16 : NewcolSize}> {formFieldData}</Column>
         </Grid>
         {isNestedBlock && (
           <>
@@ -107,7 +107,7 @@ const FieldRenderer = ({
                   <Column lg={6}>
                     <span
                       className="icon-pointer"
-                      onClick={(e) => (data.children.length >= 2 ? onFieldDelete(e, path, 0, data.children) : handleSchemaChanges(data.id, CUSTOM_COLUMN, '', 1, path))}
+                      onClick={(e) => (data.children.length >= 2 ? onFieldDelete(e, `${path}-1`, 0) : handleSchemaChanges(data.id, CUSTOM_COLUMN, '', 1, path))}
                     >
                       <SplitIcon />
                     </span>

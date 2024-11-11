@@ -32,13 +32,9 @@ const CreateUploadForm = ({ documentCategory, contextPage, cdmPage }) => {
           }
         },
         init: function () {
-          cdmPage.setUI('successState', undefined);
-          cdmPage.setUI('errorState', undefined);
           this.form.file.reset(pageUtil.getSubsetJson(this.form.file.attributes));
         },
         uiOnRequestSubmit: function () {
-          this.setUI('errorState', undefined);
-          this.setUI('successState', undefined);
           this.form.file.handleSubmit(this.uiUpload)();
         },
         uiUpload: function () {
@@ -63,16 +59,15 @@ const CreateUploadForm = ({ documentCategory, contextPage, cdmPage }) => {
                 this.setUI('selectedFile', undefined);
                 documentCategory === 'LOGO' ? cdmPage.uiOnMap('LOGO_FILE', response.data.response, cdmPage.ui.selectedNode) : cdmPage.uiOnMap('ACTIVITY_FILE', response.data.response, cdmPage.ui.selectedNode)
                 this.form.file.reset(pageUtil.getSubsetJson(this.form.file.attributes));
-                this.setUI('successState', pageUtil.t('mod-sponsor-server:field.uploadField.success'))
+                pageUtil.showNotificationMessage('toast', pageUtil.t('shell:common.actions.success'), pageUtil.t('mod-sponsor-server:field.uploadField.success'));
               }).catch((error) => {
-                this.setUI('errorState', error.response?.data?.errorDescription)
+                pageUtil.showNotificationMessage('toast', pageUtil.t('shell:common.actions.error'), error.response?.data?.errorDescription);
               });
           } else {
-            this.setUI('errorState', 'Please attach the file.')
+            pageUtil.showNotificationMessage('toast', pageUtil.t('shell:common.actions.error'), 'Please attach the file.');
           }
         },
         uiOnAddFile: function (event, files) {
-          this.setUI('errorState', undefined);
           this.setUI('selectedFile', files.addedFiles[0]);
         },
         uiOnDeleteFile: function (...args) {
@@ -89,8 +84,6 @@ const CreateUploadForm = ({ documentCategory, contextPage, cdmPage }) => {
       <CDS.Form name="file" context={page.form.file}>
         <Layer level={0} className="sfg--page-details-container" style={{ margin: '1rem 0rem' }}>
           <Grid className="sfg--grid-container sfg--grid--form">
-            <Column lg={12}>  {page.ui.errorState !== undefined && (<span className='errorMessage'>{page.ui.errorState}</span>)}</Column>
-            <Column lg={12}>  {page.ui.successState !== undefined && (<span className='successMessage'>{page.ui.successState}</span>)}</Column>
             <Column lg={8}>
               <Grid>
                 <Column lg={8}>

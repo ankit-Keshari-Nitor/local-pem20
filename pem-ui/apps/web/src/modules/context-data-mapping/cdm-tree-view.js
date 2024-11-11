@@ -2,15 +2,14 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from 'react';
 import { TreeView, TreeNode } from '@carbon/react';
-
 const renderTreeNodes = (nodes) => {
   return nodes.map((node) => {
     return node.children.length > 0 ? (
-      <TreeNode key={node.id} id={node.id} label={node.title} type={node.type} value={node.value} isExpanded={true}>
-        {renderTreeNodes(node.children)}
+      <TreeNode key={node.id} id={node.id} label={node?.title} type={node.type} value={node.value} isExpanded={false}>
+        {renderTreeNodes(node.children)}{' '}
       </TreeNode>
     ) : (
-      <TreeNode key={node.id} id={node.id} label={node.title} type={node.type} value={node.value} isExpanded={true}></TreeNode>
+      <TreeNode key={node.id} id={node.id} label={node?.title} type={node.type} value={node.value} isExpanded={false}></TreeNode>
     );
   });
 };
@@ -24,7 +23,7 @@ const CDMTreeView = ({ data, onSelect }) => {
   }, [data]);
 
   return (
-    <>
+    <div style={{ height: '400px', background: '#FFFFFF', overflowY: 'auto' }}>
       <TreeView
         label="Context Data"
         hideLabel={true}
@@ -37,7 +36,7 @@ const CDMTreeView = ({ data, onSelect }) => {
       >
         {treeData}
       </TreeView>
-    </>
+    </div>
   );
 };
 

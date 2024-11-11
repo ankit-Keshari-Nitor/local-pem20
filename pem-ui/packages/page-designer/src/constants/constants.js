@@ -34,8 +34,6 @@ export const DROPDOWN = 'DropDown';
 export const FILE_UPLOAD = 'FileUpload';
 export const ELEMENT_TYPES = 'elementType';
 export const EXTENSIONS = 'extensions';
-export const FORM = 'form';
-export const GRID = 'grid';
 
 export const PALETTE_GROUPS = [
   {
@@ -102,13 +100,13 @@ export const GROUP_MENU = [
     value: 'Input Element'
   },
   {
-    key: 'Radio Button Group',
+    key: 'radio',
     value: 'Radio Checkbox Dropdown'
   },
-  // {
-  //   key: 'data-table',
-  //   value: 'Table'
-  // },
+  {
+    key: 'Table',
+    value: 'Table'
+  },
   {
     key: 'Image',
     value: 'Image'
@@ -135,7 +133,9 @@ export const GROUP_MENU = [
   }
 ];
 
-/* Form Properties */
+{
+  /* Form Properties */
+}
 
 export const FONT_SIZE = [{ fontSize: '14px' }, { fontSize: '16px' }, { fontSize: '18px' }, { fontSize: '20px' }, { fontSize: '22px' }];
 
@@ -155,26 +155,3 @@ export const FONT_STYLE = [
   { fontStyle: 'Medium', value: '500' },
   { fontStyle: 'Semi bold', value: '600' }
 ];
-
-/* Prefix Constant for Form/Elements ids*/
-export const ELEMENT_PREFIX = {
-  grid: 'grid',
-  row: 'row',
-  column: 'column',
-  label: 'label',
-  textInput: 'textInput',
-  textArea: 'testArea',
-  password: 'password',
-  radioGroup: 'radioGroup',
-  checkBoxGroup: 'checkBoxGroup',
-  dropDown: 'dropDown',
-  toggle: 'toggle',
-  number: 'number',
-  hyperLink: 'hyperLink',
-  info: 'info',
-  helpText: 'helpText',
-  fileUpload: 'fileUpload',
-  fileDownload: 'fileDownload',
-  date: 'date',
-  dataTable: 'dataTable'
-};

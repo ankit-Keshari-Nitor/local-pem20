@@ -55,4 +55,12 @@ const generateTreeData = (definition, path = '$') => {
   }).filter(item => item !== null); // Remove nulls if necessary
 };
 
-module.exports = { generateTreeData };
+const updateTreeNodeIcon = (treeData, iconMap) => {
+  treeData.forEach((treeNode) => {
+    treeNode.icon = iconMap[treeNode.type];
+    if (treeNode.children) {
+      updateTreeNodeIcon(treeNode.children, iconMap);
+    }
+  });
+};
+module.exports = { generateTreeData, updateTreeNodeIcon };

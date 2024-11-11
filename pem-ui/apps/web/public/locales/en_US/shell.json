@@ -142,7 +142,8 @@
       "backToDetails": "Back to Details",
       "rollout": "Rollout",
       "success": "success",
-      "error": "error"
+      "error": "error",
+      "search": "search"
     },
     "errors": {
       "fileSizeLimit_title": "File size exceeds limit",
@@ -196,7 +197,7 @@
       "patterns_EMAIL": "This field should have valid Email",
       "patterns_PHONE": "This field should have valid Phone Number",
       "patterns_ZIPCODE": "This field should have valid Postal code",
-      "number":"This field should have number."
+      "number": "This field should have number."
     }
   },
   "modal": {

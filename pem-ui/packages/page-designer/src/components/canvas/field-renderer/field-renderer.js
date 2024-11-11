@@ -74,7 +74,7 @@ const FieldRenderer = ({
   );
   drag(ref);
   return !previewMode ? (
-    <div ref={ref} style={{ opacity }}>
+    <div ref={isNestedBlock ? ref : null} style={{ opacity }}>
       <div
         onClick={(e) => {
           setIsSelected([{ [path]: true }]);
@@ -83,13 +83,16 @@ const FieldRenderer = ({
       >
         <Grid className="custom-field-grid">
           {isNestedBlock && (
-            <Column lg={1} className='col-span-margin'>
+            <Column lg={1} className="col-span-margin">
               <span className="drag-icon">
                 <Draggable />
               </span>
             </Column>
           )}
-          <Column className={isNestedBlock && 'col-span-margin'} lg={NewcolSize <= 0 ? 16 : NewcolSize}> {formFieldData}</Column>
+          <Column className={isNestedBlock && 'col-span-margin'} lg={NewcolSize <= 0 ? 16 : NewcolSize}>
+            {' '}
+            {formFieldData}
+          </Column>
         </Grid>
         {isNestedBlock && (
           <>

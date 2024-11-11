@@ -5,7 +5,7 @@ import { Button } from '@carbon/react';
 import './preview-mode.scss';
 import { formValidation, updatePreviewChildToChildren } from '../../utils/helpers';
 
-const FormPreview = ({ layout, renderRow, componentMapper, onFieldDelete, openPreview, dataTestid, buttonView }) => {
+const FormPreview = ({ layout, renderRow, componentMapper, onFieldDelete, openPreview, dataTestid, buttonView, setOpenPreview }) => {
   const [formRenderSchema, setFormRenderSchema] = useState([]);
   useEffect(() => {
     setFormRenderSchema([...layout]);
@@ -26,7 +26,7 @@ const FormPreview = ({ layout, renderRow, componentMapper, onFieldDelete, openPr
     <div className="view-schema-container" data-testid={dataTestid}>
       <Form aria-label="form">
         <Canvas layout={formRenderSchema} renderRow={renderRow} componentMapper={componentMapper} previewMode onChangeHandle={onChangeHandle} />
-        {buttonView && <div className="preview-submit-btn">{formRenderSchema.length ? <Button onClick={(e) => handSubmit()}>Submit</Button> : ''}</div>}
+        {buttonView && <div>{formRenderSchema.length ? <Button className="preview-close-btn" onClick={(e) => setOpenPreview(false)}>Close</Button> : ''}</div>}
       </Form>
     </div>
   );

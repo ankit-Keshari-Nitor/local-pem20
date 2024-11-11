@@ -28,7 +28,7 @@ const Row = ({ data, handleDrop, path, componentMapper, onFieldSelect, renderRow
     return (
       <CarbonColumn
         // onClick={(e) => onFieldSelect(e, column, currentPath)}
-        lg={column.customsize ? Number(column.customsize) - 1 : Number(column.defaultsize) - 1}
+        lg={column.customsize ? Number(column.customsize) - 1 : !previewMode ? Number(column.defaultsize) - 1 : Number(column.defaultsize)}
         className={classNames(!previewMode && 'column-zone')}
       >
         <Column
@@ -51,7 +51,7 @@ const Row = ({ data, handleDrop, path, componentMapper, onFieldSelect, renderRow
     );
   };
   return (
-    <div ref={ref} style={{ opacity }} className="base row">
+    <div ref={null} style={{ opacity }} className="base row">
       <div className="columns">
         <Grid className="custom-grid">
           {data.children.map((column, index) => {

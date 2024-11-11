@@ -270,7 +270,7 @@ const taskStore = (set, get) => ({
           } = copyNode;
           dialogNodes?.map((dialogNodeData) => {
             if (dialogNodeData.id === dialogNode.id) {
-              dialogNodeData.data['form'] = formLayout;
+              dialogNodeData.data['form'] = JSON.stringify(formLayout);
             }
             return dialogNodeData;
           });

@@ -19,7 +19,10 @@ import {
   capitalizeFirstLetter,
   defaultProps,
   copyComponent,
-  collectPaletteEntries
+  collectPaletteEntries,
+  formInitializer,
+  elementId,
+  convertToApiSchema
 } from '../../utils/helpers';
 import {
   SIDEBAR_ITEM,
@@ -54,52 +57,8 @@ import FormPreview from '../preview-mode';
 import { FormPropsPanel } from '../props-panel';
 
 export default function Designer({ componentMapper, onClickPageDesignerBack, activityDefinitionData, saveFormDesignerData, formFields }) {
-  const initialLayout = [
-    {
-      type: 'FORM',
-      id: `pem_${uuid()
-        .replace(/[^0-9]/g, '')
-        .substring(0, 5)}`,
-      name: 'form-test',
-      width: '100px',
-      height: '100px',
-      defaultStyle: true,
-      defaultProps: {
-        fontFamily: 'IBM Plex Sans',
-        fontSize: '14px',
-        fontColor: '#161616',
-        formBackground: 'white',
-        labelStyle: '400',
-        labelFontSize: '14px',
-        labelColor: '#161616'
-      },
-      customProps: {
-        fontFamily: 'IBM Plex Sans',
-        fontSize: '14px',
-        fontColor: '#161616',
-        formBackground: 'white',
-        labelStyle: '400',
-        labelFontSize: '14px',
-        labelColor: '#161616'
-      }
-    },
-    {
-      type: 'row',
-      id: '85a143ba-6fa6-43e0-995d-b49a4d05972c',
-      maintype: 'group',
-      children: [
-        {
-          type: 'column',
-          id: '0a128e51-b971-4fd5-ad64-7d4b5693ed93',
-          defaultsize: '16',
-          children: []
-        }
-      ]
-    }
-  ];
   const initialComponents = INITIAL_DATA.components;
-  //const [layout, setLayout] = useState(getFormObject(formFields, []));
-  const [layout, setLayout] = useState(initialLayout);
+  const [layout, setLayout] = useState(formInitializer(formFields));
   const [components, setComponents] = useState(initialComponents);
   const [selectedFieldProps, setSelectedFiledProps] = useState();
   const [formFieldProps, setFormFieldProps] = useState();
@@ -133,9 +92,7 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
       if (item.type === SIDEBAR_ITEM) {
         // 1. Move sidebar item into page
         const newComponent = {
-          id: `pem_${uuid()
-            .replace(/[^0-9]/g, '')
-            .substring(0, 5)}`,
+          id: elementId(item.component.label.toUpperCase().replace(/\s+/g, '_')),
           ...item.component
         };
         setComponents({
@@ -266,9 +223,7 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
       const position = indexForChild(layout, componentPosition, 0);
       componentPosition.push(position);
       const newLayout = addChildToChildren(layout, componentPosition, {
-        id: `pem_${uuid()
-          .replace(/[^0-9]/g, '')
-          .substring(0, 5)}`,
+        id: elementId('SUB_TAB'),
         tabTitle: DEFAULTTITLE,
         type: SUBTAB,
         children: []
@@ -392,10 +347,30 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
     setIsRowDelete(true);
   };
 
-  const onRowDelete = ({ path, deletedElement }) => {
+  const onRowDelete = ({ path, deletedElement, actionCode }) => {
+    let updatedLayout = layout;
+    if (!actionCode) {
+      if (deletedElement[0].children.length > 0 && deletedElement[1].children.length) {
+        const newItem = {
+          id: elementId('ROW'),
+          type: 'row',
+          maintype: 'group',
+          children: [{ ...deletedElement[1], defaultsize: 16 }]
+        };
+        updatedLayout = addChildToChildren(layout, [Number(path) + 1], newItem);
+        deletedElement = deletedElement[1].id;
+        path = `${path}-1`;
+      } else if (deletedElement[1].children.length > 0) {
+        path = `${path}-0`;
+        deletedElement = deletedElement[0].id;
+      } else {
+        path = `${path}-1`;
+        deletedElement = deletedElement[1].id;
+      }
+    }
     setDeletedFieldPath(path);
     const splitDropZonePath = path.split('-');
-    setLayout(handleRemoveItemFromLayout(layout, splitDropZonePath));
+    setLayout(handleRemoveItemFromLayout(updatedLayout, splitDropZonePath, 'onRowDelete'));
     const newElements = componentsNames.filter((item) => item.id !== deletedElement);
     setComponentsNames(newElements);
     setSelectedFiledProps();
@@ -408,7 +383,7 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
     const newPath = Number(path) + 1;
     const newItem = {
       ...originalComponent,
-      id: `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`,
+      id: elementId('ROW'),
       children: []
     };
     newItem.children = copyComponent(originalComponent.children, newItem.children);
@@ -419,7 +394,7 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
   const onAddRow = (e, path) => {
     e.stopPropagation();
     const newPath = Number(path) + 1;
-    const newId = `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`;
+    const newId = elementId('ROW');
     const newItem = {
       id: newId,
       type: COMPONENT,
@@ -430,8 +405,8 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
   const onGroupChange = (e, componentGroup, path) => {
     e.stopPropagation();
     const newPath = path.split('-');
-    const newItemId = `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`;
     const newItem = collectPaletteEntries(componentMapper).filter((items) => items.component.type === componentGroup)[0];
+    const newItemId = elementId(newItem.component.label.toUpperCase().replace(/\s+/g, '_'));
     const newFormField = {
       id: newItemId,
       type: COMPONENT,
@@ -546,9 +521,9 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
                     <Button kind="secondary" className="cancelButton">
                       Cancel
                     </Button>
-                    {/* <Button kind="primary" className="saveButton" onClick={() => saveFormDesignerData(convertToSchema(layout))}>
+                    <Button kind="primary" className="saveButton" onClick={() => saveFormDesignerData(convertToApiSchema(layout))}>
                       Save
-                    </Button> */}
+                    </Button>
                   </Column>
                 </Grid>
               </div>

@@ -3,7 +3,6 @@ import React, { useRef } from 'react';
 import { FONT_FAMILY, FONT_SIZE, FONT_STYLE } from '../../constants/constants';
 
 export const FormPropsPanel = ({ formFieldProps, onFormPropsChange }) => {
-  console.log('formFieldProps>>>', formFieldProps);
   const formProps = useRef();
   formProps.current = formFieldProps[0];
   const { customProps, ...rest } = formProps.current;
@@ -31,6 +30,7 @@ export const FormPropsPanel = ({ formFieldProps, onFormPropsChange }) => {
             <Grid style={{ marginTop: '1rem', marginLeft: '1rem'  }}>
               <Column className="props-field" lg={8}>
                 <TextInput
+                  id={'form-name'}
                   labelText={'Form Name'}
                   value={formProps.current.name}
                   onChange={(e) =>
@@ -44,6 +44,7 @@ export const FormPropsPanel = ({ formFieldProps, onFormPropsChange }) => {
               </Column>
               <Column className="props-field" lg={8}>
                 <TextInput
+                  id={'form-id'}
                   labelText={'ID (required)'}
                   value={formProps.current.id}
                   onChange={(e) =>
@@ -57,6 +58,7 @@ export const FormPropsPanel = ({ formFieldProps, onFormPropsChange }) => {
               </Column>
               <Column className="props-field" lg={8}>
                 <TextInput
+                  id={'form-width'}
                   labelText={'Width in px (required)'}
                   value={formProps.current.width}
                   onChange={(e) =>
@@ -70,6 +72,7 @@ export const FormPropsPanel = ({ formFieldProps, onFormPropsChange }) => {
               </Column>
               <Column className="props-field" lg={8}>
                 <TextInput
+                  id={'form-height'}
                   labelText={'Height in px (required)'}
                   value={formProps.current.height}
                   onChange={(e) =>
@@ -87,6 +90,7 @@ export const FormPropsPanel = ({ formFieldProps, onFormPropsChange }) => {
             <Grid style={{ marginTop: '2rem', marginLeft: '1rem' }}>
               <Column lg={10}>
                 <RadioButtonGroup
+                  id={'form-style-opt'}
                   name={`radio-group-style`}
                   onChange={(e) =>
                     onFormPropsChange({
@@ -102,6 +106,7 @@ export const FormPropsPanel = ({ formFieldProps, onFormPropsChange }) => {
               </Column>
               <Column className="props-field" lg={8}>
                 <Select
+                  id={'form-font'}
                   labelText={'Font'}
                   onChange={(e) =>
                     onFormPropsChange({
@@ -123,6 +128,7 @@ export const FormPropsPanel = ({ formFieldProps, onFormPropsChange }) => {
               </Column>
               <Column className="props-field" lg={8}>
                 <Select
+                  id={'form-font-size'}
                   labelText={'Font Size'}
                   onChange={(e) =>
                     onFormPropsChange({
@@ -144,6 +150,7 @@ export const FormPropsPanel = ({ formFieldProps, onFormPropsChange }) => {
               </Column>
               <Column className="props-field" lg={8}>
                 <TextInput
+                  id={'form-color'}
                   labelText={'Font Color'}
                   value={formProps.current?.defaultStyle ? formProps.current?.defaultProps.fontColor : formProps.current?.customProps.fontColor}
                   onChange={(e) =>
@@ -160,6 +167,7 @@ export const FormPropsPanel = ({ formFieldProps, onFormPropsChange }) => {
               </Column>
               <Column className="props-field" lg={8}>
                 <TextInput
+                  id={'form-background'}
                   labelText={'Form Background'}
                   value={formProps.current?.defaultStyle ? formProps.current?.defaultProps.formBackground : formProps.current?.customProps.formBackground}
                   onChange={(e) =>
@@ -176,6 +184,7 @@ export const FormPropsPanel = ({ formFieldProps, onFormPropsChange }) => {
               </Column>
               <Column className="props-field" lg={8}>
                 <Select
+                  id={'form-label-style'}
                   labelText={'Label Style'}
                   onChange={(e) =>
                     onFormPropsChange({
@@ -197,6 +206,7 @@ export const FormPropsPanel = ({ formFieldProps, onFormPropsChange }) => {
               </Column>
               <Column className="props-field" lg={8}>
                 <Select
+                  id={'form-label-font-size'}
                   labelText={'Label Font Size'}
                   onChange={(e) =>
                     onFormPropsChange({
@@ -218,6 +228,7 @@ export const FormPropsPanel = ({ formFieldProps, onFormPropsChange }) => {
               </Column>
               <Column className="props-field" lg={8}>
                 <TextInput
+                  id={'form-label-color'}
                   labelText={'Label Color'}
                   value={formProps.current?.labelColor}
                   onChange={(e) =>

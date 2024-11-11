@@ -11,12 +11,16 @@
   "title_ContextData": "Context Data",
   "tabs": {
     "sponsorServerInfo": "Sponsor Server info",
-    "apiConfigList":"API Configuration List",
+    "apiConfigList": "API Configuration List",
     "createNew": "Create New",
     "availableFiles": "Available Files",
     "uploadFiles": "Upload Files",
     "titleOne": "Select File from table",
     "titleTwo": "Select Name from List"
+  },
+  "page": {
+    "viewAPIConfig": "View an API Configuration",
+    "viewDocument":"View a document information"
   },
   "form": {
     "name": "Name",

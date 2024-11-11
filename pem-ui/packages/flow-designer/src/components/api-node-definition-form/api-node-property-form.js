@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import {
   Modal,
@@ -50,8 +50,29 @@ export default function APINodePropertyForm({
   handleSelectAll,
   handleRemoveSelected,
   handleHeaderInputChange,
-  setOpenContextMappingModal
+  setOpenContextMappingModal,
+  OpenMappingDialog,
+  setApiConfigUrl
 }) {
+
+  const [apiConfig, setApiConfig] = useState('')
+
+  useEffect(() => {
+    if (formState.propertyForm.apiConfig) {
+      const currentApiConfig = formState.propertyForm.apiConfig;
+      const apiConfigExists = apiConfigData.some(
+        (item) => item.apiConfigurationKey === currentApiConfig
+      );
+      if (!apiConfigExists && apiConfigData.length > 0) {
+        setApiConfig(currentApiConfig);
+        setApiConfigUrl('${protocol}://${host}:${port}')
+      } else {
+        setApiConfig('')
+      }
+
+    }
+  }, [formState, apiConfigData]);
+
   return (
     <div>
       <Grid className="tab-panel-grid">
@@ -82,7 +103,7 @@ export default function APINodePropertyForm({
         <Column lg={2}>
           <Button
             onClick={() => {
-              setOpenContextMappingModal(true);
+              OpenMappingDialog('apiConfig')
             }}
             className="context-mapping-btn-api-node"
             kind="tertiary"
@@ -107,6 +128,10 @@ export default function APINodePropertyForm({
             />
           </div>
         </Column>
+        <Column lg={10} style={{ marginTop: '0.5rem', }}>
+          {apiConfig !== '' ? <span className='apiConfig-wrapper'>{apiConfig}</span> : null}
+        </Column>
+        <Column lg={6}></Column>
         {/* URL */}
         <Column lg={6}>
           <TextInput
@@ -136,7 +161,7 @@ export default function APINodePropertyForm({
         <Column lg={1}>
           <Button
             onClick={() => {
-              setOpenContextMappingModal(true);
+              OpenMappingDialog('url')
             }}
             className="context-mapping-btn-api-node"
             kind="tertiary"
@@ -239,24 +264,56 @@ export default function APINodePropertyForm({
                             />
                           )}
                           <TableCell>
-                            <TextInput
-                              disabled={readOnly}
-                              id={`header-name-${index}`}
-                              labelText=""
-                              value={header.name}
-                              onChange={(e) => handleHeaderInputChange(index, 'name', e.target.value)}
-                              placeholder="Enter Name"
-                            />
+                            <div style={{ display: 'flex', marginTop: '0.75rem' }}>
+                              <TextInput
+                                disabled={readOnly}
+                                id={`header-name-${index}`}
+                                labelText=""
+                                value={header.name}
+                                onChange={(e) => handleHeaderInputChange(index, 'name', e.target.value)}
+                                placeholder="Enter Name"
+                              />
+                              <Button
+                                onClick={() => {
+                                  OpenMappingDialog('name', index)
+                                }}
+                                className="context-mapping-btn-api-node"
+                                kind="tertiary"
+                                renderIcon={VectorIcon}
+                                size="sm"
+                                style={{ transform: 'translateY(-28.25px)' }}
+                                hasIconOnly
+                                iconDescription="Context Mapping"
+                                tooltipAlignment="center"
+                                disabled={readOnly}
+                              />
+                            </div>
                           </TableCell>
                           <TableCell>
-                            <TextInput
-                              disabled={readOnly}
-                              id={`header-value-${index}`}
-                              labelText=""
-                              value={header.value}
-                              onChange={(e) => handleHeaderInputChange(index, 'value', e.target.value)}
-                              placeholder="Enter Value"
-                            />
+                            <div style={{ display: 'flex', marginTop: '0.75rem' }}>
+                              <TextInput
+                                disabled={readOnly}
+                                id={`header-value-${index}`}
+                                labelText=""
+                                value={header.value}
+                                onChange={(e) => handleHeaderInputChange(index, 'value', e.target.value)}
+                                placeholder="Enter Value"
+                              />
+                              <Button
+                                onClick={() => {
+                                  OpenMappingDialog('value', index)
+                                }}
+                                className="context-mapping-btn-api-node"
+                                kind="tertiary"
+                                renderIcon={VectorIcon}
+                                size="sm"
+                                style={{ transform: 'translateY(-28.25px)' }}
+                                hasIconOnly
+                                iconDescription="Context Mapping"
+                                tooltipAlignment="center"
+                                disabled={readOnly}
+                              />
+                            </div>
                           </TableCell>
                         </TableRow>
                       ))

@@ -22,14 +22,14 @@ const generateContextDataMapping = (storeData) => {
   });
 };
 
-const transformDataToTree = (data, parentKey = '$') => {
+const transformDataToTree = (data, parentKey = '${') => {
   const transformDataChildren = (data, parentKey) => {
     return Object.entries(data).map(([key, value]) => {
-      const dataNodeId = `${parentKey}`;
+      const dataNodeId = `${parentKey}/text()}`;
       const titleValue = value !== undefined ? value : 'binding';
       const dataNode = {
         id: dataNodeId,
-        title: `${key} (${titleValue})`,
+        title: `${key}`,
         type: `${titleValue}`,
         children: []
       };
@@ -39,6 +39,7 @@ const transformDataToTree = (data, parentKey = '$') => {
       } else if (Array.isArray(value)) {
         dataNode.children = value.map((item, index) => {
           const arrayNodeId = `${dataNodeId}[${index}]${item.type}`;
+
           return {
             id: arrayNodeId,
             title: `[${index}]`,
@@ -55,9 +56,8 @@ const transformDataToTree = (data, parentKey = '$') => {
   return (
     data !== 'undefined' &&
     data?.map((item) => {
-      const nodeId = `${parentKey}.${item.name}`;
+      const nodeId = `${parentKey}/${item.name}`;
       const { items, data, ...itemProps } = item;
-
       const treeNode = {
         id: nodeId && nodeId,
         title: `${item.name}`,
@@ -70,7 +70,7 @@ const transformDataToTree = (data, parentKey = '$') => {
         treeNode.children = transformDataToTree(item.items, nodeId);
       }
 
-      if (item.data && typeof item.data === 'object') {
+      if (item.data && item.data.type !== 'TEXT' && item.data.type !== undefined && typeof item.data === 'object') {
         treeNode.children = treeNode.children.concat(transformDataChildren(item.data, nodeId));
       }
 
@@ -110,7 +110,7 @@ const generateTreeData = (definition, path = '$') => {
       if (value.pType) {
         return {
           id: currentPath,
-          label: key,
+          label: `${key} [${value.pType === 'TEXT' ? value.pValue : value.pType + ' : ' + (value.pValue || '')}]`,
           type: value.pType,
           value: {
             type: value.pType,
@@ -121,10 +121,10 @@ const generateTreeData = (definition, path = '$') => {
       } else {
         return {
           id: currentPath,
-          label: key,
-          type: 'OBJECT',
+          label: `${key} [${value.pValue || ''}]`,
+          type: 'TEXT',
           value: {
-            type: 'OBJECT',
+            type: 'TEXT',
             name: key,
             value: ''
           },
@@ -132,8 +132,10 @@ const generateTreeData = (definition, path = '$') => {
         };
       }
     }
-  });
+    return null;
+  }).filter(item => item !== null); // Remove nulls if necessary
 };
+
 
 const updateTreeNodeIcon = (treeData, iconMap) => {
   treeData.forEach((treeNode) => {

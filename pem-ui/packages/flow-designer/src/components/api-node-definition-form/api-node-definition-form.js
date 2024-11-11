@@ -393,6 +393,40 @@ export default function APINodeDefinitionForm({
     }
   };
 
+  const OpenMappingDialog = (fieldName, index) => {
+    try {
+      pageUtil
+        .showPageModal('CONTEXT_DATA_MAPPING.SELECT', {
+          data: JSON.parse(activityDefinitionData.definition?.contextData ? activityDefinitionData.definition.contextData : activityDefinitionData?.version?.contextData)
+        })
+        .then((modalData) => {
+          if (fieldName !== 'name' && fieldName !== 'value') {
+            const newData = modalData.data.data;
+            setFormState((prev) => ({
+              ...prev,
+              propertyForm: {
+                ...prev.propertyForm,
+                [fieldName]: fieldName === 'url'
+                  ? `${prev.propertyForm[fieldName] ? prev.propertyForm[fieldName] + ',' : ''}${newData}`
+                  : newData
+              }
+            }));
+          } else {
+            const newData = modalData.data.data;
+            const updatedHeaders = headers.map((header, i) => {
+              if (i === index) {
+                return { ...header, [fieldName]: newData };
+              }
+              return header;
+            });
+            setHeaders(updatedHeaders);
+          }
+        });
+    } catch (e) {
+      console.log('Error--', e);
+    }
+  };
+
   return (
     <div>
       <Tabs onChange={handleTabChange}>
@@ -465,6 +499,8 @@ export default function APINodeDefinitionForm({
                   openCancelDialog={openCancelDialog}
                   openContextMappingModal={openContextMappingModal}
                   handlePropertyFormChange={handlePropertyFormChange}
+                  OpenMappingDialog={OpenMappingDialog}
+                  setApiConfigUrl={setApiConfigUrl}
                 />
               </Layer>
             </Layer>

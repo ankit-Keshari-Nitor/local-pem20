@@ -61,8 +61,8 @@
 
 .pem--cdm-tree-container {
     height: 100%;
-    margin: 0rem 1rem;
-    border-right: 1px solid #c6c6c6;
+    /*   margin: 0rem 1rem; */
+    border-right: 0.05rem solid #c6c6c6;
     overflow-y: auto;
 }
 
@@ -154,6 +154,12 @@
 
 .cds--tree-node {
     background-color: transparent !important;
+    width: max-content;
+}
+
+.right-pane {
+    position: absolute;
+    width: -webkit-fill-available;
 }
 
 .sfg--tree-view .cds--label {
@@ -163,6 +169,13 @@
 .errorMessage {
     padding-left: 1.5rem;
     color: var(--cds-support-error, #da1e28);
+}
+
+.no-connector-container {
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+    margin-left: 10rem;
+    padding: 24px 0px 0px 0px;
 }
 
 .successMessage {
@@ -284,4 +297,50 @@
 
 .apiConfiguration-form {
     overflow-y: auto;
+}
+
+.unmap-header {
+    border-bottom: 1px solid #c6c6c6;
+    margin-top: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.pem-unmap-button-wrapper {
+    float: right;
+    display: flex;
+    bottom: 0.5rem;
+    height: max-content;
+}
+
+.pem-unmap-table-title {
+    font-family: IBM Plex Sans;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 40px;
+    letter-spacing: 0.1599999964px;
+    text-align: left;
+}
+
+.unmap-wrapper .unmap-col-wrapper {
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
+}
+
+.cds--radio-button__label {
+    width: max-content;
+}
+
+.vertical {
+    margin-bottom: 0.15rem;
+    margin-top: 0.15rem;
+    margin-left: 2rem;
+}
+
+.cds--radio-button__label-text {
+    color: var(--cds-text-primary, #161616);
+}
+
+.cds--modal-md .cds--modal-container {
+    height: 70% !important;
+    width: 55% !important;
 }

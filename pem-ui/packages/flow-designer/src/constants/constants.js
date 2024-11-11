@@ -567,20 +567,20 @@ export const DEFAULT_OPERATORS = [
   { name: 'greaterThanEquals', label: 'Greater than or equal (>=)' },
   { name: 'lessThan', label: 'Less than (<)' },
   { name: 'lessThanEquals', label: 'Less than or equal (<=)' },
-  { name: 'contains', label: '[EAP?] contains' },
-  { name: 'startsWith', label: '[EAP?] begins with' },
-  { name: 'endsWith', label: '[EAP?] ends with' },
-  { name: 'notContains', label: '[EAP?] does not contain' },
-  { name: 'notStartsWith', label: '[EAP?] does not begin with' },
-  { name: 'notEndsWith', label: '[EAP?] does not end with' },
-  { name: 'isNull', label: '[EAP?] is null' },
-  { name: 'isNotNull', label: '[EAP?] is not null' },
-  { name: 'in', label: '[EAP?] in' },
-  { name: 'notIn', label: '[EAP?] not in' },
-  { name: 'between', label: '[EAP?] between' },
-  { name: 'notBetween', label: '[EAP?] not between' },
-  { name: 'after', label: '[EAP?] After' },
-  { name: 'before', label: '[EAP?] Before' }
+  { name: 'contains', label: 'contains' },
+  { name: 'startsWith', label: 'begins with' },
+  { name: 'endsWith', label: 'ends with' },
+  { name: 'notContains', label: 'does not contain' },
+  { name: 'notStartsWith', label: 'does not begin with' },
+  { name: 'notEndsWith', label: 'does not end with' },
+  { name: 'isNull', label: 'is null' },
+  { name: 'isNotNull', label: 'is not null' },
+  { name: 'in', label: 'in' },
+  { name: 'notIn', label: 'not in' },
+  { name: 'between', label: 'between' },
+  { name: 'notBetween', label: 'not between' },
+  { name: 'after', label: 'After' },
+  { name: 'before', label: 'Before' }
 ];
 
 export const QUERY_FIELDS = [
@@ -596,16 +596,16 @@ export const QUERY_FIELDS = [
         // 'Greater than or equal (>=)',
         // 'Less than (<)',
         // 'Less than or equal (<=)',
-        '[EAP?] contains',
-        '[EAP?] begins with',
-        '[EAP?] ends with',
-        '[EAP?] does not contain',
-        '[EAP?] does not begin with',
-        '[EAP?] does not end with',
-        '[EAP?] is null',
-        '[EAP?] is not null'
-        // '[EAP?] in',
-        // '[EAP?] not in'
+        'contains',
+        'begins with',
+        'ends with',
+        'does not contain',
+        'does not begin with',
+        'does not end with',
+        'is null',
+        'is not null'
+        // 'in',
+        // 'not in'
       ].includes(op.label)
     )
   },
@@ -621,12 +621,12 @@ export const QUERY_FIELDS = [
         'Greater than or equal (>=)',
         'Less than (<)',
         'Less than or equal (<=)',
-        // '[EAP?] in',
-        // '[EAP?] not in',
-        // '[EAP?] between',
-        // '[EAP?] not between'
-        '[EAP?] is null',
-        '[EAP?] is not null'
+        // 'in',
+        // 'not in',
+        // 'between',
+        // 'not between'
+        'is null',
+        'is not null'
       ].includes(op.label)
     )
   },
@@ -643,16 +643,16 @@ export const QUERY_FIELDS = [
         'Select',
         'Equals (=)',
         'Not Equals (!=)',
-        '[EAP?] After',
-        '[EAP?] Before'
+        'After',
+        'Before'
         // 'Greater than (>)',
         // 'Greater than or equal (>=)',
         // 'Less than (<)',
         // 'Less than or equal (<=)',
-        // '[EAP?] is null',
-        // '[EAP?] is not null',
-        // '[EAP?] between',
-        // '[EAP?] not between'
+        // 'is null',
+        // 'is not null',
+        // 'between',
+        // 'not between'
       ].includes(op.label)
     )
   }

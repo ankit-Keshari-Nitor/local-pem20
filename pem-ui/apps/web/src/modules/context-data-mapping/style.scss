@@ -10,13 +10,26 @@
 
 .pem--cdm-tree-container {
   height: 100%;
-  margin: 0rem 1rem;
+  /*   margin: 0rem 1rem; */
   border-right: 1px solid #c6c6c6;
   background-color: white;
+  overflow-y: auto;
 }
 
 .pem--table-header {
   margin-top: 1rem;
+}
+
+.checkbox-wrapper {
+  padding-left: 1rem;
+}
+
+.cds--text-input__invalid-icon {
+  position: absolute;
+  fill: var(--cds-support-error, #da1e28);
+  inset-block-start: 50%;
+  inset-inline-end: 1rem;
+  transform: translateY(-50%);
 }
 
 .pem--table-title {
@@ -38,7 +51,7 @@
 }
 
 .sfg--page-details-container {
-  height: ((3+7) * $spacing-09) + $spacing-01 !important;
+  height: ((3+8) * $spacing-09) + $spacing-01 !important;
 }
 
 .cds--modal-content {
@@ -73,6 +86,11 @@
   inline-size: 62% !important;
 }
 
+.right-pane {
+  position: absolute;
+  width: -webkit-fill-available;
+}
+
 .right-panel {
   position: fixed;
   top: 0;
@@ -92,7 +110,6 @@
 }
 
 .apiConfiguration-form {
-  height: 38rem;
   overflow-y: auto;
 }
 
@@ -114,4 +131,57 @@
   min-height: 0;
   margin-bottom: 1rem;
   margin-top: 1rem;
+}
+
+.unmap-header {
+  border-bottom: 1px solid #c6c6c6;
+  margin-top: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.pem-unmap-button-wrapper {
+  float: right;
+  display: flex;
+  bottom: 0.5rem;
+  height: max-content;
+}
+
+.pem-unmap-table-title {
+  font-family: IBM Plex Sans;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 40px;
+  letter-spacing: 0.1599999964px;
+  text-align: left;
+}
+
+.unmap-wrapper .unmap-col-wrapper {
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+
+.cds--modal-md .cds--modal-container {
+  height: 70% !important;
+}
+
+.cds--form .sfg--grid--form .cds--form-item:not(.cds--checkbox-wrapper, .cds--toggle-wrapper) {
+  margin-bottom: .5rem;
+  margin-top: .5rem;
+  min-height: 0rem !important;
+  margin-right: 2rem;
+}
+
+.cds--form .sfg--grid--form .cds--list-box__wrapper {
+  margin-top: .75rem;
+  margin-bottom: .5rem;
+  min-height: 0rem !important;
+  margin-right: 2rem;
+}
+
+.no-connector-container {
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+  margin-left: 10rem;
+  padding: 6rem 0rem 0rem 6rem;
+  display: block;
 }

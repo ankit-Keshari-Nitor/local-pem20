@@ -56,6 +56,7 @@ const Row = ({ data, handleDrop, path, componentMapper, onFieldSelect, renderRow
         <Grid className="custom-grid">
           {data.children.map((column, index) => {
             const currentPath = `${path}-${index}`;
+
             return <React.Fragment key={column.id}>{renderColumn(column, currentPath, renderRow)}</React.Fragment>;
           })}
         </Grid>

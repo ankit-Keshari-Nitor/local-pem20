@@ -1,7 +1,9 @@
 import React from 'react';
-import { Column, Grid, Layer, Tooltip, Button } from '@carbon/react';
+import { Button, Column, Grid, Layer, Tooltip } from '@carbon/react';
 import { Information } from '@carbon/icons-react';
 import Shell, { CDS } from '@b2bi/shell';
+
+import './style.scss'
 
 const CreateApiConfiguration = ({ mode, cdmPage }) => {
   const pageUtil = Shell.PageUtil();
@@ -40,13 +42,10 @@ const CreateApiConfiguration = ({ mode, cdmPage }) => {
           }
         },
         init: function () {
-          cdmPage.setUI('successStateApiForm', undefined);
-          cdmPage.setUI('errorStateApiForm', undefined);
+          this.form.apiConfiguration.reset(pageUtil.getSubsetJson(this.form.apiConfiguration.attributes));
         },
         uiSave: function () {
           const apiConfigurationInput = pageUtil.removeEmptyAttributes(this.form.apiConfiguration.getValues());
-          cdmPage.setUI('successStateApiForm', undefined);
-          cdmPage.setUI('errorStateApiForm', undefined);
 
           let handler;
           if (page.ui.mode === 'CREATE') {
@@ -57,10 +56,11 @@ const CreateApiConfiguration = ({ mode, cdmPage }) => {
           handler
             .then((response) => {
               this.form.apiConfiguration.reset(pageUtil.getSubsetJson(this.form.apiConfiguration.attributes));
-              cdmPage.setUI('successStateApiForm', pageUtil.t('mod-sponsor-server:message.success'));
+              cdmPage.uiOnMap('API_CONFIG', response.data.apiConfigurationKey, cdmPage.ui.selectedNode);
+              pageUtil.showNotificationMessage('toast', pageUtil.t('shell:common.actions.success'), pageUtil.t('mod-sponsor-server:message.success'));
             })
             .catch((error) => {
-              cdmPage.setUI('errorStateApiForm', error.response?.data?.errorDescription);
+              pageUtil.showNotificationMessage('toast', pageUtil.t('shell:common.actions.error'), error.response?.data?.errorDescription);
             });
         },
         uiOnAuthenticalTypeChange: function (event) {
@@ -89,6 +89,20 @@ const CreateApiConfiguration = ({ mode, cdmPage }) => {
             default:
               break;
           }
+        },
+        uiValidation: function (val, fieldName) {
+          if (fieldName === 'host') {
+            const ValidIpAddressRegex = /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/;
+            const ValidHostnameRegex = /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9]*[A-Za-z0-9])$/;
+
+            if (ValidIpAddressRegex.test(val) || ValidHostnameRegex.test(val)) {
+              return true;
+            }
+          } else if (fieldName === 'port') {
+            if (val >= 0 && val < 99999) {
+              return true;
+            }
+          }
         }
       };
     })(pageArgs, pageUtil)
@@ -99,12 +113,9 @@ const CreateApiConfiguration = ({ mode, cdmPage }) => {
       <Shell.Page type="API_CONFIG" className={`sfg--page--api-configuration-add`}>
         <Shell.PageBody>
           <CDS.Form name="apiConfiguration" context={page.form.apiConfiguration} className="apiConfiguration-form">
-            <Layer level={0} className="sfg--page-details-container" style={{ margin: '1rem 0rem' }}>
+            <Layer level={1} className="sfg--page-details-container" style={{ margin: '1rem 0rem' }}>
               <Grid className="sfg--grid-container sfg--grid--form">
-                <Column lg={12}> {cdmPage.ui.errorStateApiForm !== undefined && <span className="errorMessage">{cdmPage.ui.errorStateApiForm}</span>}</Column>
-                <Column lg={12}> {cdmPage.ui.successStateApiForm !== undefined && <span className="successMessage">{cdmPage.ui.successStateApiForm}</span>}</Column>
-
-                <Column lg={6} md={6}>
+                <Column lg={8} md={8}>
                   <CDS.TextInput
                     labelText={
                       <span className="pem--name-label">
@@ -119,7 +130,7 @@ const CreateApiConfiguration = ({ mode, cdmPage }) => {
                     rules={{ required: true, minLength: 1, maxLength: 30 }}
                   />
                 </Column>
-                <Column lg={6} md={6}>
+                <Column lg={8} md={8}>
                   <CDS.ComboBox
                     name="protocol"
                     rules={{ required: true, onChange: page.uiOnProtocolChange }}
@@ -131,13 +142,28 @@ const CreateApiConfiguration = ({ mode, cdmPage }) => {
                     itemToString={(item) => (item ? item.label : '')}
                   ></CDS.ComboBox>
                 </Column>
-                <Column lg={6} md={6}>
-                  <CDS.TextInput labelText={pageUtil.t('mod-sponsor-server:field.host')} name="host" rules={{ required: true, minLength: 1, maxLenght: 100 }} />
+                <Column lg={8} md={8}>
+                  <CDS.TextInput labelText={pageUtil.t('mod-sponsor-server:field.host')} name="host" rules={{
+                    required: true, minLength: 1, maxLenght: 100, validate: (value) => {
+                      const isInvalidData = page.uiValidation(value, 'host');
+                      if (!isInvalidData) {
+                        return 'Invalid host format';
+                      }
+                    }
+                  }} />
                 </Column>
-                <Column lg={6} md={6}>
-                  <CDS.NumberInput label={pageUtil.t('mod-sponsor-server:field.port')} hideSteppers name="port" rules={{ required: true }} min={0} max={99999} />
+                <Column lg={8} md={8}>
+                  <CDS.TextInput labelText={pageUtil.t('mod-sponsor-server:field.port')} name="port"
+                    rules={{
+                      required: true, validate: (value) => {
+                        const isInvalidData = page.uiValidation(value, 'port');
+                        if (!isInvalidData) {
+                          return 'Invalid port';
+                        }
+                      }
+                    }} />
                 </Column>
-                <Column lg={6} md={6}>
+                <Column lg={8} md={8}>
                   <CDS.ComboBox
                     name="sslProtocol"
                     rules={{ required: page.form.apiConfiguration.watch('protocol') === 'https' }}
@@ -150,7 +176,7 @@ const CreateApiConfiguration = ({ mode, cdmPage }) => {
                     disabled={page.form.apiConfiguration.watch('protocol') !== 'https'}
                   ></CDS.ComboBox>
                 </Column>
-                <Column lg={6} md={6} className="authentication-wrapper">
+                <Column lg={8} md={8} className='authentication-wrapper'>
                   <CDS.Checkbox
                     labelText={
                       <span className="pem--name-label">
@@ -163,7 +189,7 @@ const CreateApiConfiguration = ({ mode, cdmPage }) => {
                     name="preemptiveAuth"
                   ></CDS.Checkbox>
                 </Column>
-                <Column lg={12} md={12}>
+                <Column lg={16} md={16}>
                   <CDS.RadioButtonGroup
                     legendText={pageUtil.t('mod-sponsor-server:field.authenticateWith')}
                     name="authenticationType"
@@ -187,14 +213,14 @@ const CreateApiConfiguration = ({ mode, cdmPage }) => {
                 </Column>
                 {page.form.apiConfiguration.watch('authenticationType') === 'USERNAME_PASSWORD' && (
                   <>
-                    <Column lg={6} md={6}>
+                    <Column lg={8} md={8}>
                       <CDS.TextInput
                         labelText={pageUtil.t('mod-sponsor-server:field.userName')}
                         name="userName"
                         rules={{ required: page.form.apiConfiguration.watch('authenticationType') === 'USERNAME_PASSWORD', minLength: 1, maxLenght: 100 }}
                       />
                     </Column>
-                    <Column lg={6} md={6}>
+                    <Column lg={8} md={8}>
                       <CDS.PasswordInput
                         labelText={pageUtil.t('mod-sponsor-server:field.password')}
                         name="password"
@@ -205,7 +231,7 @@ const CreateApiConfiguration = ({ mode, cdmPage }) => {
                 )}
                 {page.form.apiConfiguration.watch('protocol') === 'https' && (
                   <>
-                    <Column lg={12} md={12}>
+                    <Column lg={16} md={16}>
                       <CDS.Checkbox
                         labelText={
                           <span className="pem--name-label">
@@ -220,16 +246,9 @@ const CreateApiConfiguration = ({ mode, cdmPage }) => {
                     </Column>
                   </>
                 )}
-                <Column lg={7}></Column>
-                <Column lg={5} className="btn-wrapper">
-                  <Button
-                    kind="tertiary"
-                    onClick={() => {
-                      page.form.apiConfiguration.handleSubmit(page.uiSave)();
-                    }}
-                  >
-                    Create
-                  </Button>
+                <Column lg={11}></Column>
+                <Column lg={5} className='btn-wrapper'>
+                  <Button kind="tertiary" onClick={() => { page.form.apiConfiguration.handleSubmit(page.uiSave)() }}>Create</Button>
                 </Column>
               </Grid>
             </Layer>

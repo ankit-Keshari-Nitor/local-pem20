@@ -523,7 +523,6 @@ export const nestedLayoutView = (childLayout, childSchema) => {
         break;
       }
       default: {
-        console.log("item.component",item.component);
         const { icon, label, group, type, id, ...others } = item.component;
         childSchema.push({
           id: id,

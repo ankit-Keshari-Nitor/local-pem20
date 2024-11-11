@@ -14,7 +14,7 @@ import RadioButtonGroup from './radio-group';
 import Tooltip from './tooltip';
 import Password from './password';
 import NumberInput from './number';
-import DataTable from './data-table';
+// import DataTable from './data-table';
 import FileDownload from './file-download';
 import HelpText from './help-text';
 import Image from './image';
@@ -38,7 +38,7 @@ export const formFields = [
   FileUploader,
   FileDownload,
   DatePicker,
-  DataTable
+  // DataTable
   //Accordion,
   //Tab
 ];

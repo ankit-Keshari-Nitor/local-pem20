@@ -568,7 +568,10 @@ const WorkFlowDesigner = forwardRef(
           }
           return copyNode;
         });
-        const formData = node.data?.form?.length ? JSON.parse(node.data.form)[0].children : []; // old schema code
+        const formData = {
+          form: node.data?.form?.cType ? node.data.form : [],
+          formId: node.data.editableProps?.name ? node.data.editableProps?.name : node.data.id
+        };
         setDialogNodes([...copyNodes]);
         setSelectedDialogNode(node);
         setFormFields(formData);

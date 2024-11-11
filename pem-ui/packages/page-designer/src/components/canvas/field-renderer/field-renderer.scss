@@ -32,6 +32,8 @@
 
 .icon-pointer {
   cursor: pointer;
+  width: 24px;
+  height: 5rem;
 }
 
 .delete-icon {
@@ -78,7 +80,7 @@
   margin: 0px;
 }
 
-.form-fields-Selected{
+.form-fields-Selected {
   border: 1px solid hsl(205, 100%, 50%);
 }
 

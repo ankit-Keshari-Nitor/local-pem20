@@ -2,30 +2,56 @@
 /* eslint-disable array-callback-return */
 
 const generateContextDataMapping = (storeData) => {
-  return Object.keys(storeData).map((task) => {
-    const value = storeData[task];
+  const generateContextDataMappingChildern = (value) => {
+    // If the value is an object with nested data, recurse to map its properties
+    if (typeof value === 'object' && value !== null) {
+      return Object.keys(value).map((key) => {
+        const item = value[key];
 
-    if (value.pType) {
-      return {
-        name: task,
-        type: value.pType,
-        data: { type: value.pType }
-      };
-    } else {
-      return {
-        name: task,
-        type: '',
-        data: { type: value.pType },
-        items: generateContextDataMapping(value)
-      };
+        if (item.pType) {
+          // If pType exists, return a simple object with its type and data
+          return {
+            name: key,
+            type: item.pType,
+            data: { type: item.pType, value: item.pValue }
+          };
+        } else {
+          // If pType is not defined, treat it as a category and recurse
+          return {
+            name: key,
+            type: '',
+            data: { type: 'CATEGORY' },
+            items: generateContextDataMappingChildern(item) // Recursively map child items
+          };
+        }
+      });
     }
-  });
+    return [];
+  };
+
+  return [{
+    name: "Parameters",
+    type: '',
+    data: { type: "CATEGORY" },
+    items: [{
+      name: "ActivityContext",
+      type: '',
+      data: { type: "CATEGORY" },
+      items: [{
+        name: "ContextData",
+        type: '',
+        data: { type: "CATEGORY" },
+        items: generateContextDataMappingChildern(storeData) // Use storeData for mapping
+      }]
+    }]
+  }];
 };
+
 
 const transformDataToTree = (data, parentKey = '${') => {
   const transformDataChildren = (data, parentKey) => {
     return Object.entries(data).map(([key, value]) => {
-      const dataNodeId = `${parentKey}/text()}`;
+      const dataNodeId = `${parentKey}`;
       const titleValue = value !== undefined ? value : 'binding';
       const dataNode = {
         id: dataNodeId,
@@ -70,7 +96,7 @@ const transformDataToTree = (data, parentKey = '${') => {
         treeNode.children = transformDataToTree(item.items, nodeId);
       }
 
-      if (item.data && item.data.type !== 'TEXT' && item.data.type !== undefined && typeof item.data === 'object') {
+      if (item.data && item.data.type !== 'TEXT' && item.data.type !== 'API_CONFIG' && item.data.type !== 'LOGO_FILE' && item.data.type !== 'ACTIVITY_FILE' && item.data.type !== 'CATEGORY' && item.data.type !== undefined && typeof item.data === 'object') {
         treeNode.children = treeNode.children.concat(transformDataChildren(item.data, nodeId));
       }
 

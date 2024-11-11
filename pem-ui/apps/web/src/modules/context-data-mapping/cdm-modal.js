@@ -193,12 +193,12 @@ const ContextDataModal = ({ mode, context }) => {
           if (context === 'PROPERTY') {
             modalConfig.onAction('submit', { data: this.model.originalData });
           } else {
-            modalConfig.onAction('submit', { data: this.ui.selectedJPath });
+            modalConfig.onAction('submit', { data: `${this.ui.selectedJPath}/text()}` });
           }
 
         },
         uiOnSelectJPath: function (event, selectedNode) {
-          this.setUI('selectedJPath', selectedNode.activeNodeId);
+          this.setUI('selectedJPath', selectedNode.id);
         },
         uiOnSelectNode: function (event, selectedNode) {
           this.setUI('selectedNode', selectedNode);
@@ -647,7 +647,7 @@ const ContextDataModal = ({ mode, context }) => {
           title={mode === 'CONTEXT_DATA' ? pageUtil.t('mod-context-properties:title_ContextData') : pageUtil.t('mod-context-properties:title')}
           buttonOnClick={page.uiOnRequestClose}
         />
-        <Shell.PageBody>
+        <Shell.PageBody className={context !== 'PROPERTY' ? 'treeview-wrapper' : ''}>
           {context !== 'PROPERTY' && (
             <Column lg={context === 'PROPERTY' ? 6 : 16} md={context === 'PROPERTY' ? 6 : 16}>
               <CDMTreeView data={page.model.data} onSelect={page.uiOnSelectJPath} selected={page.ui.selectedNodes} />

@@ -91,6 +91,12 @@
   width: -webkit-fill-available;
 }
 
+.cdm-treeView-wrapper,
+.treeview-wrapper {
+  background-color: #FFFFFF;
+  overflow-y: auto !important
+}
+
 .right-panel {
   position: fixed;
   top: 0;

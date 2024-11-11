@@ -441,6 +441,7 @@ export const componentNames = {
   ['File Download']: 'FILEDOWNLOAD',
   ['Label']: 'LABEL',
   ['Radio Button Group']: 'RADIOGROUP',
+  ['Image'] : 'IMAGE'
 };
 
 export const componentReNames = {
@@ -467,6 +468,7 @@ export const componentReNames = {
   ['FILEDOWNLOAD']: 'File Download',
   ['LABEL']: 'Label',
   ['RADIOGROUP']: 'Radio Button Group',
+  ['IMAGE'] : 'Image'
 };
 
 export const nestedLayoutView = (childLayout, childSchema) => {

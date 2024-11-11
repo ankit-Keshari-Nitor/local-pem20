@@ -409,7 +409,8 @@ export const componentNames = {
   ['switch']: 'SWITCH',
   ['data-table']: 'DATATABLE',
   ['File Download']: 'FILEDOWNLOAD',
-  ['Label']: 'LABEL'
+  ['Label']: 'LABEL',
+  ['Radio Button Group']: 'RADIOGROUP',
 };
 
 export const componentReNames = {
@@ -434,7 +435,8 @@ export const componentReNames = {
   ['SWITCH']: 'switch',
   ['DATATABLE']: 'data-table',
   ['FILEDOWNLOAD']: 'File Download',
-  ['LABEL']: 'Label'
+  ['LABEL']: 'Label',
+  ['RADIOGROUP']: 'Radio Button Group',
 };
 
 export const nestedLayoutView = (childLayout, childSchema) => {

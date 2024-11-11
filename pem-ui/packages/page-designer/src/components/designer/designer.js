@@ -112,8 +112,11 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
   const rowDataForDelete = useRef();
   const handleDrop = useCallback(
     (dropZone, item) => {
-      const splitDropZonePath = dropZone.path.split('-');
+      let splitDropZonePath = dropZone.path.split('-');
       const pathToDropZone = splitDropZonePath.slice(0, -1).join('-');
+      if (Number(item.path) < Number(dropZone.path)) {
+        splitDropZonePath = String(Number(dropZone.path) - 1).split('-');
+      }
       let newItem = { id: item.id, type: item.type, component: item.component };
       if (item.maintype) {
         newItem = { id: item.id, type: item.type, maintype: item.maintype, children: item.children };
@@ -122,9 +125,9 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
         newItem.children = item.children;
       }
 
-      if (item.component.type === DATATABLE) {
-        item = { id: item.id, type: item.type, component: { ...item.component, [TABLE_COLUMNS]: TABLE_HEADER } };
-      }
+      // if (item.component.type === DATATABLE) {
+      //   item = { id: item.id, type: item.type, component: { ...item.component, [TABLE_COLUMNS]: TABLE_HEADER } };
+      // }
 
       // sidebar into
       if (item.type === SIDEBAR_ITEM) {
@@ -442,7 +445,7 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
     e.stopPropagation();
     setDeletedFieldPath(path);
     defaultProps(newItem);
-    const newItemId = `pem_${uuid().replace(/[^0-9]/g, '').substring(0, 5)}`;
+    const newItemId = elementId(newItem.component.label.toUpperCase().replace(/\s+/g, '_'));
     const splitDropZonePath = path.split('-');
     const oldLayout = handleRemoveItemFromLayout(layout, splitDropZonePath);
     const newFormField = {
@@ -621,6 +624,7 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
           openPreview={openPreview}
           dataTestid={'form-preview-id'}
           buttonView={true}
+          setOpenPreview={setOpenPreview}
         />
       </Modal>
     </>

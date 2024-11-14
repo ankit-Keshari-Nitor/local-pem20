@@ -1,13 +1,13 @@
 export const FORM_FIELD_TYPE = {
+  TEXT: 'Label',
   TEXT_INPUT: 'Single line input',
   TEXT_AREA: 'Textarea',
-  PASSWORD: 'Password',
+  SELECT: 'Drop-down',
   RADIOGROUP: 'Radio Button Group',
   CHECKBOXGROUP: 'Checkbox',
-  SELECT: 'Drop-down',
+  PASSWORD: 'Password',
   TOGGLE: 'Toggle',
   LINK: 'Hyperlink',
-  TEXT: 'Label',
   FILE_UPLOADER: 'File Upload',
   DATEPICKER: 'Date',
   INFO: 'Information',
@@ -35,7 +35,7 @@ export const FORM_FIELD_LABEL = {
   TOGGLE: 'Toggle',
   LINK: 'Hyperlink',
   TEXT: 'Label',
-  FILE_UPLOADER: 'File Upload',
+  FILE_UPLOADER: 'File Uploader',
   DATEPICKER: 'Date',
   INFO: 'Information',
   HELP: 'Helper Text',
@@ -49,7 +49,7 @@ export const FORM_FIELD_LABEL = {
   CHECKBOX: 'Checkbox',
   RADIO: 'Radio',
   DATATABLE: 'Data Table',
-  FILE_DOWNLOADER: 'File Download'
+  FILE_DOWNLOADER: 'File Downloader'
 };
 
 export const FORM_FIELD_GROUPS = {

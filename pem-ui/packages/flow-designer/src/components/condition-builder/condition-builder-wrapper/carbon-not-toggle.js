@@ -17,5 +17,13 @@ export const CarbonNotToggle = ({
   ruleGroup: _ruleGroup,
   ...extraProps
 }) => (
-  <Checkbox labelText={label} className={className} onChange={handleOnChange} checked={!!checked} disabled={disabled} {...extraProps} />
+  <Checkbox
+    id="conditional-builder-checkbox"
+    labelText={label}
+    className={className}
+    onChange={(_, { checked }) => handleOnChange(checked)}
+    checked={!!checked}
+    disabled={disabled}
+    {...extraProps}
+  />
 );

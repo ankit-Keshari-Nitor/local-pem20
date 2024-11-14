@@ -18,6 +18,7 @@ export default function BranchConditionalBuilder({ readOnly = { readOnly }, quer
             combinators={QUERY_COMBINATOR}
             controlClassnames={{ queryBuilder: 'queryBuilder-branches', body: 'inline-indycomb-left' }}
             disabled={readOnly}
+            showNotToggle
           />
         </CarbonWrapper>
       </Column>

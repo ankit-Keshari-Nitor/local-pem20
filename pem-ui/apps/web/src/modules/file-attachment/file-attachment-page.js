@@ -87,7 +87,20 @@ const FileAttachment = ({ mode }) => {
             }
           }
         },
-        init: function () { },
+        init: function () {
+          if (modalConfig.data?.key) {
+            let key = {};
+            let handler;
+            key.id = modalConfig?.data?.key;
+            handler = this.ds.viewDocumentList(key);
+            handler &&
+              handler
+                .then((response) => {
+                  modalConfig.onAction('cancel', { data: response.data });
+                })
+                .catch((err) => { });
+          }
+        },
         uiOnRequestClose: function () {
           modalConfig.onAction('cancel', {});
         },
@@ -164,7 +177,7 @@ const FileAttachment = ({ mode }) => {
               }, params: params
             }).then((response) => {
               this.setUI('selectedFile', undefined);
-              modalConfig.onAction('submit', { data: this.form.file.getValues() })
+              modalConfig.onAction('submit', { data: this.form.file.getValues(), key: response.data?.response })
               this.form.file.reset(pageUtil.getSubsetJson(this.form.file.attributes));
               pageUtil.showNotificationMessage('toast', pageUtil.t('shell:common.actions.success'), pageUtil.t('mod-sponsor-server:field.uploadField.success'));
             }).catch((error) => {

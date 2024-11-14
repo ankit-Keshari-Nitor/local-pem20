@@ -40,7 +40,6 @@ export default function APINodePropertyForm({
   file,
   onOpenFiles,
   onDeleteFile,
-  handleSaveForm,
   openCancelDialog,
   openContextMappingModal,
   selectedHeaders,
@@ -52,10 +51,11 @@ export default function APINodePropertyForm({
   handleHeaderInputChange,
   setOpenContextMappingModal,
   OpenMappingDialog,
-  setApiConfigUrl
+  setApiConfigUrl,
+  fileMap
 }) {
 
-  const [apiConfig, setApiConfig] = useState('')
+  const [apiConfig, setApiConfig] = useState('');
 
   useEffect(() => {
     if (formState.propertyForm.apiConfig) {
@@ -70,62 +70,66 @@ export default function APINodePropertyForm({
         setApiConfig('')
       }
 
+    } else {
+      setApiConfig('');
+      setApiConfigUrl('')
     }
+
   }, [formState, apiConfigData]);
 
   return (
     <div>
       <Grid className="tab-panel-grid">
-        {/* API Configuration */}
-        <Column lg={8}>
+
+        <Column lg={16}>
           {/* TODO: Auto complete form field*/}
-          <Select
-            disabled={readOnly}
-            id="apiConfig"
-            name="apiConfig"
-            labelText="API Configuration (required)"
-            defaultValue={formState.propertyForm.apiConfig}
-            invalid={!!errors.propertyForm.apiConfig}
-            invalidText={errors.propertyForm.apiConfig}
-            onChange={handlePropertyFormChange}
-          >
-            <SelectItem value="" text="--Select--" />
-            {apiConfigData?.map((method) => (
-              <SelectItem
-                key={method.apiConfigurationKey} // Always add a unique key when mapping
-                value={method.apiConfigurationKey}
-                text={method.name}
-                selected={formState.propertyForm.apiConfig === method.apiConfigurationKey}
-              />
-            ))}
-          </Select>
-        </Column>
-        <Column lg={2}>
-          <Button
-            onClick={() => {
-              OpenMappingDialog('apiConfig')
-            }}
-            className="context-mapping-btn-api-node"
-            kind="tertiary"
-            renderIcon={VectorIcon}
-            size="sm"
-            hasIconOnly
-            disabled={readOnly}
-            iconDescription="Context Mapping"
-            tooltipAlignment="center"
-          />
-        </Column>
-        {/* Host Prefix */}
-        <Column lg={6}>
-          <div className="tab-panel-checkbox">
-            <Checkbox
+          <div style={{ display: 'flex' }}>
+            {/* API Configuration */}
+            <Select
+              className='apiConfig-wrapper'
               disabled={readOnly}
-              id="hostPrefix"
-              name="hostPrefix"
-              labelText="Host Prefix"
-              checked={formState.propertyForm.hostPrefix}
+              id="apiConfig"
+              name="apiConfig"
+              labelText="API Configuration (required)"
+              defaultValue={formState.propertyForm.apiConfig}
+              invalid={!!errors.propertyForm.apiConfig}
+              invalidText={errors.propertyForm.apiConfig}
               onChange={handlePropertyFormChange}
+            >
+              <SelectItem value="" text="--Select--" />
+              {apiConfigData?.map((method) => (
+                <SelectItem
+                  key={method.apiConfigurationKey} // Always add a unique key when mapping
+                  value={method.apiConfigurationKey}
+                  text={method.name}
+                  selected={formState.propertyForm.apiConfig === method.apiConfigurationKey}
+                />
+              ))}
+            </Select>
+            <Button
+              onClick={() => {
+                OpenMappingDialog('apiConfig')
+              }}
+              className="context-mapping-btn-api-node"
+              kind="tertiary"
+              renderIcon={VectorIcon}
+              size="sm"
+              hasIconOnly
+              disabled={readOnly}
+              iconDescription="Context Mapping"
+              tooltipAlignment="center"
             />
+            {/* Host Prefix */}
+            <div className="tab-panel-checkbox">
+              <Checkbox
+                disabled={readOnly}
+                id="hostPrefix"
+                name="hostPrefix"
+                labelText="Host Prefix"
+                checked={formState.propertyForm.hostPrefix}
+                onChange={handlePropertyFormChange}
+              />
+            </div>
           </div>
         </Column>
         <Column lg={10} style={{ marginTop: '0.5rem', }}>
@@ -146,32 +150,33 @@ export default function APINodePropertyForm({
             labelText="URL (required)"
           />
         </Column>
-        <Column lg={9}>
-          <TextInput
-            style={{ marginTop: '2.45rem', borderLeft: '1px solid black', borderBottom: '1px solid black' }}
-            disabled={readOnly}
-            invalid={!!errors.propertyForm.url}
-            value={formState.propertyForm.url}
-            name="url"
-            onChange={handlePropertyFormChange}
-            id="url"
-            labelText=""
-          />
-        </Column>
-        <Column lg={1}>
-          <Button
-            onClick={() => {
-              OpenMappingDialog('url')
-            }}
-            className="context-mapping-btn-api-node"
-            kind="tertiary"
-            renderIcon={VectorIcon}
-            size="sm"
-            disabled={readOnly}
-            hasIconOnly
-            iconDescription="Context Mapping"
-            tooltipAlignment="center"
-          />
+        <Column lg={10}>
+          <div style={{ display: 'flex' }}>
+            <TextInput
+              style={{ marginTop: '2.45rem', borderLeft: '1px solid black', borderBottom: '1px solid black' }}
+              disabled={readOnly}
+              invalid={!!errors.propertyForm.url}
+              value={formState.propertyForm.url}
+              name="url"
+              onChange={handlePropertyFormChange}
+              id="url"
+              labelText=""
+            />
+
+            <Button
+              onClick={() => {
+                OpenMappingDialog('url')
+              }}
+              className="context-mapping-btn-api-node"
+              kind="tertiary"
+              renderIcon={VectorIcon}
+              size="sm"
+              disabled={readOnly}
+              hasIconOnly
+              iconDescription="Context Mapping"
+              tooltipAlignment="center"
+            />
+          </div>
         </Column>
         {errors.propertyForm.url && (
           <Column lg={16}>
@@ -281,7 +286,7 @@ export default function APINodePropertyForm({
                                 kind="tertiary"
                                 renderIcon={VectorIcon}
                                 size="sm"
-                                style={{ transform: 'translateY(-28.25px)' }}
+                                style={{ transform: 'translateY(-28.25px)', marginTop: '1.2rem' }}
                                 hasIconOnly
                                 iconDescription="Context Mapping"
                                 tooltipAlignment="center"
@@ -307,7 +312,7 @@ export default function APINodePropertyForm({
                                 kind="tertiary"
                                 renderIcon={VectorIcon}
                                 size="sm"
-                                style={{ transform: 'translateY(-28.25px)' }}
+                                style={{ transform: 'translateY(-28.25px)', marginTop: '1.2rem' }}
                                 hasIconOnly
                                 iconDescription="Context Mapping"
                                 tooltipAlignment="center"
@@ -355,38 +360,37 @@ export default function APINodePropertyForm({
           </div>
         </Column>
         {/* Request */}
-        <Column lg={15}>
-          <div>
-            <TextArea
-              labelText="Request"
-              rows={3}
-              className="request-wrapper"
-              id="request"
-              name="request"
+        <Column lg={16}>
+          <div style={{ display: 'flex' }}>
+            <div style={{ inlineSize: '100%' }}>
+              <TextArea
+                labelText="Request"
+                rows={3}
+                className="request-wrapper"
+                id="request"
+                name="request"
+                disabled={readOnly}
+                value={formState.propertyForm.request}
+                onChange={handlePropertyFormChange}
+                style={{ maxHeight: '200px', overflowY: `${showCode ? 'hidden' : 'auto'}` }}
+              />
+              <Button size="sm" kind="ghost" disabled={readOnly} onClick={showCodeHandle} className="btn-show-code">
+                {showCode ? 'Show Code' : 'Hide Code'}
+              </Button>
+            </div>
+            <Button
+              onClick={() => {
+                setOpenContextMappingModal(true);
+              }}
+              className="context-mapping-btn-api-node"
+              kind="tertiary"
+              renderIcon={VectorIcon}
+              size="sm"
+              hasIconOnly
+              iconDescription="Context Mapping"
+              tooltipAlignment="center"
               disabled={readOnly}
-              value={formState.propertyForm.request}
-              onChange={handlePropertyFormChange}
-              style={{ maxHeight: '200px', overflowY: `${showCode ? 'hidden' : 'auto'}` }}
-            />
-            <Button size="sm" kind="ghost" disabled={readOnly} onClick={showCodeHandle} className="btn-show-code">
-              {showCode ? 'Show Code' : 'Hide Code'}
-            </Button>
-          </div>
-        </Column>
-        <Column lg={1} className="context-mapping-btn-api-node-wrapper">
-          <Button
-            onClick={() => {
-              setOpenContextMappingModal(true);
-            }}
-            className="context-mapping-btn-api-node"
-            kind="tertiary"
-            renderIcon={VectorIcon}
-            size="sm"
-            hasIconOnly
-            iconDescription="Context Mapping"
-            tooltipAlignment="center"
-            disabled={readOnly}
-          />
+            /></div>
         </Column>
         {/*  File Attachment*/}
         <Column lg={16} className="file-attachment-wrapper">
@@ -395,7 +399,7 @@ export default function APINodePropertyForm({
             <Column lg={2}>
               <Button
                 onClick={() => {
-                  setOpenContextMappingModal(true);
+                  OpenMappingDialog('file')
                 }}
                 className="context-mapping-btn-api-node attachment-mapping-btn"
                 kind="tertiary"
@@ -405,6 +409,7 @@ export default function APINodePropertyForm({
                 disabled={readOnly}
                 iconDescription="Context Mapping"
                 tooltipAlignment="center"
+                style={{ marginTop: '1rem' }}
               />
             </Column>
             <Column lg={14}>
@@ -425,6 +430,9 @@ export default function APINodePropertyForm({
                   disabled={readOnly}
                 />
               )}
+            </Column>
+            <Column lg={16} style={{ marginTop: '0.5rem' }}>
+              {fileMap !== '' ? <span className='fileMapping-wrapper'>{fileMap}</span> : null}
             </Column>
           </Grid>
         </Column>

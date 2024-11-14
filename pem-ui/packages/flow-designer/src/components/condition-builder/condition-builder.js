@@ -25,6 +25,7 @@ export default function ConditionalBuilder({ queryValidator, readOnly = { readOn
             disabled={readOnly}
             validator={validator}
             context={activityDefinitionData}
+            showNotToggle
           />
           {/* </QueryBuilderDnD> */}
         </CarbonWrapper>

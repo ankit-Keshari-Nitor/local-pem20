@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Column, TextInput, Tabs, Tab, TabList, TabPanels, TabPanel, Layer, Button, RadioButton } from '@carbon/react';
+import { Grid, Column, TextInput, Tabs, Tab, TabList, TabPanels, TabPanel, Layer, Button } from '@carbon/react';
 import Shell, { CDS } from '@b2bi/shell';
 import { JSONPath } from 'jsonpath-plus';
 import '@b2bi/styles/pages/list-page.scss';
@@ -7,8 +7,8 @@ import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 
 import CDMTreeView from './cdm-tree-view';
 import { CONTEXT_MAPPING_TYPES, CONTEXT_TYPES } from './constant';
-import { transformDataToTree, generateContextDataMapping, generateTreeData, updateTreeNodeIcon } from './cdm-utils';
-import { StringText, Api_1, Image, Schematics, Table, TreeViewAlt, ProgressBar, DataVolume, ListBoxes } from '@carbon/icons-react';
+import { transformDataToTree, generateContextDataMapping, generateTreeData } from './cdm-utils';
+import { ListBoxes } from '@carbon/icons-react';
 
 import './style.scss';
 
@@ -16,7 +16,7 @@ import CreateApiConfiguration from './create-api-configuration';
 import CreateUploadForm from './create-upload-form';
 
 
-const iconMapping = {
+/* const iconMapping = {
   TEXT: StringText,
   API_CONFIG: Api_1,
   LOGO_FILE: Image,
@@ -26,7 +26,7 @@ const iconMapping = {
   ARRAY_ITEM: ProgressBar,
   DEFAULT: DataVolume
 };
-
+ */
 const ContextDataModal = ({ mode, context }) => {
   const pageUtil = Shell.PageUtil();
   const pageArgs = pageUtil.pageParams;
@@ -61,6 +61,7 @@ const ContextDataModal = ({ mode, context }) => {
           headerLogoListData: {},
           activityFileListData: {}
         },
+
         datasources: {
           getSponsorServerList: {
             dataloader: 'API_CONFIGURATION.LIST',
@@ -96,6 +97,7 @@ const ContextDataModal = ({ mode, context }) => {
             dataloader: 'FILE.USERLIST'
           }
         },
+
         ui: {
           selectedJPath: '',
           selectedNode: '',
@@ -107,6 +109,7 @@ const ContextDataModal = ({ mode, context }) => {
           tableEmptyState: undefined,
           view: 'table',
         },
+
         form: {
           property: {
             textProperty: '',
@@ -116,6 +119,7 @@ const ContextDataModal = ({ mode, context }) => {
             logoFileProperty: '',
           }
         },
+
         datatable: {
           apiConfigList: {
             getListData: function (listInput) {
@@ -137,6 +141,7 @@ const ContextDataModal = ({ mode, context }) => {
             }
           }
         },
+
         init: function () {
           if (context === 'PROPERTY') {
             this._processProperty();
@@ -144,6 +149,7 @@ const ContextDataModal = ({ mode, context }) => {
             this._processActivity();
           }
         },
+
         _updateEmptyState_SponsorList: function (data) {
           if (data.data.length === 0) {
             if (this.datatable.apiConfigList.filter.current || this.datatable.apiConfigList.searchText.current) {
@@ -155,6 +161,7 @@ const ContextDataModal = ({ mode, context }) => {
             this.setUI('tableEmptyState', undefined);
           }
         },
+
         _updateEmptyState_HeaderList: function (data) {
           if (data.data.length === 0) {
             if (this.datatable.headerLogoList.filter.current || this.datatable.headerLogoList.searchText.current) {
@@ -166,6 +173,7 @@ const ContextDataModal = ({ mode, context }) => {
             this.setUI('tableEmptyState', undefined);
           }
         },
+
         _updateEmptyState_ActivityList: function (data) {
           if (data.data.length === 0) {
             if (this.datatable.activityFileList.filter.current || this.datatable.activityFileList.searchText.current) {
@@ -177,33 +185,39 @@ const ContextDataModal = ({ mode, context }) => {
             this.setUI('tableEmptyState', undefined);
           }
         },
+
         _processProperty: function () {
           const transformedData = generateTreeData(modalConfig.data.data);
-          updateTreeNodeIcon(transformedData, iconMapping);
+          /*   updateTreeNodeIcon(transformedData, iconMapping); */
           this.setModel('data', transformedData);
           this.setModel('originalData', modalConfig.data.data);
         },
+
         _processActivity: function () {
           const contextDataMapping = generateContextDataMapping(modalConfig.data.data);
           const transformedData = transformDataToTree(contextDataMapping);
           this.setModel('data', transformedData);
           this.setModel('originalData', { items: modalConfig?.data?.data });
         },
+
         uiOnRequestSubmit: function () {
           if (context === 'PROPERTY') {
             modalConfig.onAction('submit', { data: this.model.originalData });
           } else {
-            modalConfig.onAction('submit', { data: `${this.ui.selectedJPath}/text()}` });
+            modalConfig.onAction('submit', { data: `${this.ui.selectedJPath}` });
           }
 
         },
+
         uiOnSelectJPath: function (event, selectedNode) {
           this.setUI('selectedJPath', selectedNode.id);
         },
+
         uiOnSelectNode: function (event, selectedNode) {
           this.setUI('selectedNode', selectedNode);
           this.setUI('selectedNodes', [selectedNode.id]);
           this.form.property.reset();
+          this.uiOnMap(selectedNode.value.type, selectedNode.value.value, selectedNode)
           switch (selectedNode.value.type) {
             case 'TEXT':
               this.form.property.setValue('textProperty', selectedNode.value.value);
@@ -213,28 +227,27 @@ const ContextDataModal = ({ mode, context }) => {
               break;
             case 'API_CONFIG':
               this.form.property.setValue('apiConfigProperty', selectedNode.value.value);
-              this.uiOnMap(selectedNode.value.type, selectedNode.value.value, selectedNode)
               break;
             case 'ACTIVITY_FILE':
               this.form.property.setValue('activityFileProperty', selectedNode.value.value);
-              this.uiOnMap(selectedNode.value.type, selectedNode.value.value, selectedNode)
               break;
             case 'LOGO_FILE':
               this.form.property.setValue('logoFileProperty', selectedNode.value.value);
-              this.uiOnMap(selectedNode.value.type, selectedNode.value.value, selectedNode)
               break;
             default:
               break;
           }
         },
+
         uiOnPropertyChange: function (event, value) {
           const propertyRef = JSONPath({ path: `${this.ui.selectedNode.activeNodeId}`, json: this.model.originalData, wrap: false });
           this.ui.selectedNode.value.value = event.target.value;
           propertyRef.pValue = event.target.value;
           const transformedData = generateTreeData(this.model.originalData);
-          updateTreeNodeIcon(transformedData, iconMapping);
+          /*   updateTreeNodeIcon(transformedData, iconMapping); */
           this.setModel('data', transformedData);
         },
+
         uiTabChange: function (...args) {
           if (args[0].selectedIndex === 0) {
             if (args[1] === CONTEXT_TYPES.API_CONFIG) {
@@ -248,6 +261,7 @@ const ContextDataModal = ({ mode, context }) => {
             }
           }
         },
+
         uiOnRequestClose: function () {
           if (context === 'PROPERTY') {
             modalConfig.onAction('cancel', {
@@ -259,7 +273,7 @@ const ContextDataModal = ({ mode, context }) => {
           });
         },
 
-        uiOnUnmapBtn: function (event, type, selectedNode) {
+        uiOnUnmapBtn: function (type, selectedNode) {
           switch (type) {
             case 'API_CONFIG':
               this.setModel('apiConfigListData', {});
@@ -280,12 +294,14 @@ const ContextDataModal = ({ mode, context }) => {
           selectedNode.value.value = ''
           propertyRef.pValue = '';
           const transformedData = generateTreeData(page.model.originalData);
-          updateTreeNodeIcon(transformedData, iconMapping);
+          /*     updateTreeNodeIcon(transformedData, iconMapping); */
           this.setModel('data', transformedData);
         },
+
         uiOnMap: function (type, val, selectedNode = undefined) {
           let handler;
           let key = {}
+
           switch (type) {
             case 'API_CONFIG':
               if (val) {
@@ -324,7 +340,7 @@ const ContextDataModal = ({ mode, context }) => {
           selectedNode.value.value = val
           propertyRef.pValue = val;
           const transformedData = generateTreeData(page.model.originalData);
-          updateTreeNodeIcon(transformedData, iconMapping);
+          /*       updateTreeNodeIcon(transformedData, iconMapping); */
           this.setModel('data', transformedData);
         }
       };
@@ -407,6 +423,7 @@ const ContextDataModal = ({ mode, context }) => {
             const propertyRef = JSONPath({ path: `${page.ui.selectedNode.activeNodeId}`, json: page.model.originalData, wrap: false });
             page.ui.selectedNode.value.value = args[0].join('')
             propertyRef.pValue = args[0].join('');
+            page.uiOnMap(propertyRef.pType, args[0].join(''), page.ui.selectedNode)
           }
         }
       },
@@ -492,6 +509,7 @@ const ContextDataModal = ({ mode, context }) => {
             const propertyRef = JSONPath({ path: `${page.ui.selectedNode.activeNodeId}`, json: page.model.originalData, wrap: false });
             page.ui.selectedNode.value.value = args[0].join('')
             propertyRef.pValue = args[0].join('');
+            page.uiOnMap(propertyRef.pType, args[0].join(''), page.ui.selectedNode)
           }
         }
       },
@@ -570,6 +588,7 @@ const ContextDataModal = ({ mode, context }) => {
             const propertyRef = JSONPath({ path: `${page.ui.selectedNode.activeNodeId}`, json: page.model.originalData, wrap: false });
             page.ui.selectedNode.value.value = args[0].join('')
             propertyRef.pValue = args[0].join('');
+            page.uiOnMap(propertyRef.pType, args[0].join(''), page.ui.selectedNode)
           }
         }
       },
@@ -666,11 +685,11 @@ const ContextDataModal = ({ mode, context }) => {
                 <Panel minSize={40} defaultSize={70} maxSize={80}>
                   <div class="right-pane">
                     <Column lg={12} md={12} style={{ margin: '0rem 1rem' }}>
-                      {!page.ui.selectedNode && (
+                      {(!page.ui.selectedNode || page.ui?.selectedNode?.value?.type === 'OBJECT') && (
                         <>
                           <div className="no-connector-container">
-                            <div><ListBoxes /> </div>
-                            <div>No Node Selected </div>
+                            <div><ListBoxes className='listbox-svg' /> </div>
+                            <div> <span className='no-connector-container-text'>No Node Selected </span></div>
                             <div>Please select Node from left panel</div>
                           </div>
                         </>
@@ -704,7 +723,7 @@ const ContextDataModal = ({ mode, context }) => {
                                   <>
                                     <div className="unmap-header">
                                       <span className="pem-unmap-table-title">{pageUtil.t('mod-context-properties:page.viewAPIConfig')}</span>
-                                      <Button className='pem-unmap-button-wrapper' onClick={(e) => page.uiOnUnmapBtn(e, page.ui.selectedNode.value.type, page.ui.selectedNode)}>Unmap</Button>
+                                      <Button className='pem-unmap-button-wrapper' onClick={() => page.uiOnUnmapBtn(page.ui.selectedNode.value.type, page.ui.selectedNode)}>Unmap</Button>
                                     </div>
                                     <Grid className='unmap-wrapper'>
                                       {/* Name */}
@@ -727,16 +746,8 @@ const ContextDataModal = ({ mode, context }) => {
                                       <Column className='unmap-col-wrapper' lg={6}>{page.model.apiConfigListData?.preemptiveAuth?.code === "TRUE" ? 'Yes' : 'No'}</Column>
                                       {/* authenticationType */}
                                       <Column className='unmap-col-wrapper' lg={6}>{pageUtil.t('mod-context-properties:form.authenticationType')}</Column>
-                                      <Column className='unmap-col-wrapper' lg={6}>
-
-                                        <RadioButton labelText="User Name and Password" value="usernameandpassword" id="1" disabled checked={page.model.apiConfigListData?.userName && page.model.apiConfigListData?.password} />
-                                        <div>
-                                          <div class="vertical">{page.model.apiConfigListData?.userName}</div>
-                                          <div class="vertical">{page.model.apiConfigListData?.password}</div>
-                                        </div>
-                                        <RadioButton labelText="Internally generated token" value="internallygeneratedtoken" id="2" disabled checked={page.model.apiConfigListData?.isInternalAuth?.code === "TRUE"} />
-                                        <RadioButton labelText="None" value="none" id="3" disabled checked={(!page.model.apiConfigListData?.userName && !page.model.apiConfigListData?.password) && page.model.apiConfigListData?.isInternalAuth?.code === "FALSE"} />
-
+                                      <Column className='unmap-col-wrapper' lg={6}>                           
+                                        <span>{(!page.model.apiConfigListData?.userName && !page.model.apiConfigListData?.password) && page.model.apiConfigListData?.isInternalAuth?.code === "FALSE" ? 'None' : page.model.apiConfigListData?.isInternalAuth?.code === "TRUE" ? 'Internally generated token' : page.model.apiConfigListData?.userName && page.model.apiConfigListData?.password ? 'User Name and Password' : ''}</span>
                                       </Column>
                                       {/* Verify host*/}
                                       <Column className='unmap-col-wrapper' lg={6}>{pageUtil.t('mod-context-properties:form.verifyHost')}</Column>
@@ -786,7 +797,7 @@ const ContextDataModal = ({ mode, context }) => {
                                   <>
                                     <div className="unmap-header">
                                       <span className="pem-unmap-table-title">{pageUtil.t('mod-context-properties:page.viewDocument')}</span>
-                                      <Button className='pem-unmap-button-wrapper' onClick={(e) => page.uiOnUnmapBtn(e, page.ui.selectedNode.value.type, page.ui.selectedNode)}>Unmap</Button>
+                                      <Button className='pem-unmap-button-wrapper' onClick={() => page.uiOnUnmapBtn(page.ui.selectedNode.value.type, page.ui.selectedNode)}>Unmap</Button>
                                     </div>
                                     <Grid className='unmap-wrapper'>
                                       {/* Name */}
@@ -869,7 +880,7 @@ const ContextDataModal = ({ mode, context }) => {
                                   <>
                                     <div className="unmap-header">
                                       <span className="pem-unmap-table-title">{pageUtil.t('mod-context-properties:page.viewDocument')}</span>
-                                      <Button className='pem-unmap-button-wrapper' onClick={(e) => page.uiOnUnmapBtn(e, page.ui.selectedNode.value.type, page.ui.selectedNode)}>Unmap</Button>
+                                      <Button className='pem-unmap-button-wrapper' onClick={() => page.uiOnUnmapBtn(page.ui.selectedNode.value.type, page.ui.selectedNode)}>Unmap</Button>
                                     </div>
                                     <Grid className='unmap-wrapper'>
                                       {/* Name */}

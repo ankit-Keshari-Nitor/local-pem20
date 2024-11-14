@@ -26,22 +26,22 @@ export const FORM_FIELD_TYPE = {
 };
 
 export const FORM_FIELD_LABEL = {
-  IMAGE:'Image',
-  TEXT_INPUT: 'Text Input',
+  TEXT_INPUT: 'Single line input',
   TEXT_AREA: 'Text Area',
-  PASSWORD: 'Password Input',
-  CHECKBOXGROUP: 'Check Box Group',
   RADIOGROUP: 'Radio Button Group',
-  SELECT: 'Drop down',
+  CHECKBOXGROUP: 'Checkbox',
+  PASSWORD: 'Password',
+  SELECT: 'Dropdown',
   TOGGLE: 'Toggle',
-  SWITCH: 'Switch',
   LINK: 'Hyperlink',
   TEXT: 'Label',
   FILE_UPLOADER: 'File Upload',
-  DATEPICKER: 'Date Time',
-  INFO: 'Information icon',
-  HELP: 'Help Text icon',
+  DATEPICKER: 'Date',
+  INFO: 'Information',
+  HELP: 'Helper Text',
   GROUP: 'Group',
+  IMAGE:'Image',
+  SWITCH: 'Switch',
   TAB: 'Tab',
   ACCORDION: 'Accordion',
   NUMBER: 'Number',
@@ -49,7 +49,7 @@ export const FORM_FIELD_LABEL = {
   CHECKBOX: 'Checkbox',
   RADIO: 'Radio',
   DATATABLE: 'Data Table',
-  FILE_DOWNLOADER: 'File Downloader'
+  FILE_DOWNLOADER: 'File Download'
 };
 
 export const FORM_FIELD_GROUPS = {

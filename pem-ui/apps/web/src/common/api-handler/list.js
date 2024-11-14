@@ -42,7 +42,7 @@ class ListAPIHandlerNew {
       const paginationData = {
         totalItems: response.data?.pageContent?.totalElements || response.data?.page?.totalElements,
         pageSize: response.data?.pageContent?.size || response.data?.page?.size,
-        pageNumber: response.data?.pageContent?.number || response.data?.page?.number
+        pageNumber: response.data?.pageContent ? response.data?.pageContent?.number + 1 : response.data?.page?.number
       };
       response.data.content !== null && response.data.content.forEach((item) => {
         item.id = item[itemKey];

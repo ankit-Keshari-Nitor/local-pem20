@@ -418,57 +418,53 @@ export const getFormFieldDetails = (path, layout) => {
 };
 
 export const componentNames = {
-  ['Single line input']: 'TEXTINPUT',
+  ['Label']: 'LABEL',
+  ['Single line input']: 'TEXT_INPUT',
   ['Textarea']: 'TEXTAREA',
-  ['Password']: 'PASSWORD',
-  ['Checkbox']: 'CHECKBOX',
   ['Drop-down']: 'DROPDOWN',
+  ['radio']: 'RADIO_GROUP',
+  ['Checkbox']: 'CHECKBOX',
+  ['Password']: 'PASSWORD',
+  ['Image']: 'IMAGE',
   ['Toggle']: 'TOGGLE',
+  ['Number']: 'NUMBER',
   ['Hyperlink']: 'HYPERLINK',
-  ['File Upload']: 'FILEUPLOAD',
-  ['Date']: 'DATE',
   ['Information']: 'INFORMATION',
   ['Help']: 'HELP',
+  ['File Upload']: 'FILE_UPLOADER',
+  ['File Download']: 'FILE_DOWNLOADER',
+  ['Date']: 'DATE_PICKER',
   ['group']: 'GROUP',
   ['accordion']: 'ACCORDION',
   ['tab']: 'TAB',
   ['button']: 'BUTTON',
-  ['checkbox']: 'CHECKBOX',
-  ['radio']: 'RADIO',
-  ['Number']: 'NUMBER',
   ['switch']: 'SWITCH',
-  ['data-table']: 'DATATABLE',
-  ['File Download']: 'FILEDOWNLOAD',
-  ['Label']: 'LABEL',
-  ['Radio Button Group']: 'RADIOGROUP',
-  ['Image'] : 'IMAGE'
+  ['data-table']: 'DATA_TABLE'
 };
 
 export const componentReNames = {
-  ['TEXTINPUT']: 'Single line input',
+  ['LABEL']: 'Label',
+  ['TEXT_INPUT']: 'Single line input',
   ['TEXTAREA']: 'Textarea',
-  ['PASSWORD']: 'Password',
+  ['DROPDOWN']: 'Dropdown',
+  ['RADIO_GROUP']: 'Radio',
   ['CHECKBOX']: 'Checkbox',
-  ['DROPDOWN']: 'Drop-down',
+  ['PASSWORD']: 'Password',
+  ['Image']: 'Image',
   ['TOGGLE']: 'Toggle',
+  ['NUMBER']: 'Number',
   ['HYPERLINK']: 'Hyperlink',
-  ['FILEUPLOAD']: 'File Upload',
-  ['DATE']: 'Date',
   ['INFORMATION']: 'Information',
-  ['HELP']: 'Help',
+  ['HELP']: 'Help Text',
+  ['FILE_UPLOADER']: 'File Uploader',
+  ['FILE_DOWNLOADER']: 'File Download',
+  ['DATE_PICKER']: 'Date Picker',
   ['GROUP']: 'group',
   ['ACCORDION']: 'accordion',
   ['TAB']: 'tab',
   ['BUTTON']: 'button',
-  ['CHECKBOX']: 'checkbox',
-  ['RADIO']: 'radio',
-  ['NUMBER']: 'Number',
   ['SWITCH']: 'switch',
-  ['DATATABLE']: 'data-table',
-  ['FILEDOWNLOAD']: 'File Download',
-  ['LABEL']: 'Label',
-  ['RADIOGROUP']: 'Radio Button Group',
-  ['IMAGE'] : 'Image'
+  ['DATA_TABLE']: 'data-table'
 };
 
 export const nestedLayoutView = (childLayout, childSchema) => {
@@ -637,7 +633,7 @@ export const getFormObject = (schema, formObj, colSize = 16) => {
           maintype: GROUP,
           children: []
         });
-        getFormObject(schema[index]?.children, formObj[index+1].children, size);
+        getFormObject(schema[index]?.children, formObj[index + 1].children, size);
         break;
       }
       case COLUMN: {

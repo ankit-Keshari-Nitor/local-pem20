@@ -120,9 +120,9 @@
 }
 
 .context-mapping-btn-api-node {
-  margin-top: 1rem;
+  margin-top: 1.9rem;
   background-color: #ffffff;
-  top: 0.68rem;
+  top: 0.50rem;
   height: 2.6rem;
   width: 2.6rem;
   padding-top: 0.7rem;
@@ -131,6 +131,7 @@
 .attachment-mapping-btn {
   top: 0;
 }
+
 
 .cds--table-column-checkbox {
   max-width: 100px !important;
@@ -163,7 +164,13 @@
 }
 
 .tab-panel-checkbox {
-  padding-top: 2rem;
+  padding-top: 3rem;
+  margin-left: 2rem;
+}
+
+.apiConfig-wrapper {
+  max-width: 50%;
+  width: 40%;
 }
 
 .tab-panel-dropdown {
@@ -211,7 +218,7 @@
   z-index: 1;
   cursor: pointer;
   color: #161616;
-  border: 1px solid #C6C6C6; 
+  border: 1px solid #C6C6C6;
 }
 
 .context-btn-request {
@@ -247,6 +254,7 @@
   fill: var(--cds-text-inverse, #ffffff);
   /* Replace with your desired hover color */
 }
+
 
 .error-message {
   color: var(--cds-text-error, #da1e28);
@@ -313,7 +321,8 @@
   transform: translateY(-50%);
 }
 
-.apiConfig-wrapper {
+.apiConfig-wrapper,
+.fileMapping-wrapper {
   font-size: var(--cds-label-01-font-size, 0.75rem);
   font-weight: var(--cds-label-01-font-weight, 400);
   line-height: var(--cds-label-01-line-height, 1.33333);

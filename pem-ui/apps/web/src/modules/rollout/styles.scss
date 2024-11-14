@@ -173,9 +173,20 @@
 
 .no-connector-container {
     margin-bottom: 1rem;
-    margin-top: 1rem;
-    margin-left: 10rem;
-    padding: 24px 0px 0px 0px;
+    margin-top: 3rem;
+    margin-left: 3rem;
+    display: block;
+}
+
+.listbox-svg {
+    height: 44px;
+    width: 44px;
+}
+
+.no-connector-container-text {
+    font-size: 16px;
+    font-weight: 400;
+    color: #161616;
 }
 
 .successMessage {

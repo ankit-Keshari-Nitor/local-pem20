@@ -439,10 +439,22 @@ $rqb-branch-style: $rqb-border-style !default;
   width: 100%;
 }
 
-.rule-fields>.cds--select>.cds--label {
+.rule-fields > .cds--select > .cds--label {
   margin-top: 0.5rem !important;
 }
 
-.rule-operators>.cds--select>.cds--label {
+.rule-operators > .cds--select > .cds--label {
   margin-top: 0.5rem !important;
+}
+
+.ruleGroup-header .cds--form-item {
+  display: flex;
+  flex: 0 0 auto;
+}
+
+.ruleGroup-header .ruleGroup-notToggle{
+  display: flex;
+  position: relative;
+  top: 16px;
+  flex: 1 1 auto;
 }

@@ -30,25 +30,21 @@ const generateContextDataMapping = (storeData) => {
   };
 
   return [{
-    name: "Parameters",
+    name: "ProcessData",
     type: '',
     data: { type: "CATEGORY" },
     items: [{
-      name: "ActivityContext",
+      name: "ContextData",
       type: '',
       data: { type: "CATEGORY" },
-      items: [{
-        name: "ContextData",
-        type: '',
-        data: { type: "CATEGORY" },
-        items: generateContextDataMappingChildern(storeData) // Use storeData for mapping
-      }]
+      items: generateContextDataMappingChildern(storeData) // Use storeData for mapping
     }]
+
   }];
 };
 
 
-const transformDataToTree = (data, parentKey = '${') => {
+const transformDataToTree = (data, parentKey = '$') => {
   const transformDataChildren = (data, parentKey) => {
     return Object.entries(data).map(([key, value]) => {
       const dataNodeId = `${parentKey}`;
@@ -82,7 +78,7 @@ const transformDataToTree = (data, parentKey = '${') => {
   return (
     data !== 'undefined' &&
     data?.map((item) => {
-      const nodeId = `${parentKey}/${item.name}`;
+      const nodeId = `${parentKey}.${item.name}`;
       const { items, data, ...itemProps } = item;
       const treeNode = {
         id: nodeId && nodeId,
@@ -104,6 +100,34 @@ const transformDataToTree = (data, parentKey = '${') => {
     })
   );
 };
+
+const transformDataToTreeBasedOnType = (data, type, parentKey = '$') => {
+  return data.map((item) => {
+    const nodeId = `${parentKey}.${item.name}`;
+
+    if (item.type === type || item.data?.type === "CATEGORY") {
+      const treeNode = {
+        id: nodeId,
+        title: item.name,
+        type: item.type || item.data.type,
+        children: []
+      };
+
+      // Process 'items' array if it exists
+      if (item.items && Array.isArray(item.items)) {
+        treeNode.children = item.items.map(child => {
+
+          return transformDataToTreeBasedOnType([child], type, nodeId)[0];
+        }).filter(Boolean);
+      }
+
+      return treeNode;
+    }
+
+    return null;
+  }).filter(Boolean); // Filter out null entries from the top level
+};
+
 
 const generateTreeData = (definition, path = '$') => {
   return Object.keys(definition).map((key) => {
@@ -136,21 +160,21 @@ const generateTreeData = (definition, path = '$') => {
       if (value.pType) {
         return {
           id: currentPath,
-          label: `${key} [${value.pType === 'TEXT' ? value.pValue : value.pType + ' : ' + (value.pValue || '')}]`,
+          label: `${key} [${value.pType === 'TEXT' ? value.pValue : value.pType + (value.pValue ? ' : ' + value.pValue : '')}]`,
           type: value.pType,
           value: {
             type: value.pType,
             name: key,
-            value: value.pValue || ''
+            value: value.pType === 'OBJECT' ? '' : (value.pValue || '')
           }
         };
       } else {
         return {
           id: currentPath,
-          label: `${key} [${value.pValue || ''}]`,
-          type: 'TEXT',
+          label: `${key}`,
+          type: 'OBJECT',
           value: {
-            type: 'TEXT',
+            type: 'OBJECT',
             name: key,
             value: ''
           },
@@ -172,4 +196,4 @@ const updateTreeNodeIcon = (treeData, iconMap) => {
   });
 };
 
-module.exports = { generateContextDataMapping, transformDataToTree, generateTreeData, updateTreeNodeIcon };
+module.exports = { generateContextDataMapping, transformDataToTree, generateTreeData, updateTreeNodeIcon, transformDataToTreeBasedOnType };

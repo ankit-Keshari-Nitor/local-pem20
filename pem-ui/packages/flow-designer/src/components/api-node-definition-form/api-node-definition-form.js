@@ -56,6 +56,9 @@ export default function APINodeDefinitionForm({
   const [selectedHeaders, setSelectedHeaders] = useState([]);
   const [headerError, setHeaderError] = useState('');
   const [file, setFile] = useState();
+  const [fileKey, setFileKey] = useState('');
+  const [fileMap, setFileMap] = useState('');
+
   const [showCode, setShowCode] = useState(true);
   const [openContextMappingModal, setOpenContextMappingModal] = useState(false);
 
@@ -100,10 +103,29 @@ export default function APINodeDefinitionForm({
     } else {
       setHeaders([]);
     }
-    if (selectedNode.data?.api?.file && selectedNode.data?.api?.file !== 'null' && selectedNode.data?.api?.file !== '') {
-      setFile(JSON.parse(selectedNode.data?.api?.file));
+
+    if (selectedNode.data?.api?.file !== '' && selectedNode.data?.api?.file) {
+      setFileKey(selectedNode.data?.api?.file);
+      if (!(/\./.test(selectedNode.data?.api?.file))) {
+        pageUtil.showPageModal('FILE_ATTACHMENT.ACTIVITY', {
+          key: selectedNode.data?.api?.file
+        }).then((modalData) => {
+          setFile({
+            status: 'edit',
+            iconDescription: 'Delete Icon',
+            invalid: true,
+            errorSubject: 'InValid ',
+            name: modalData?.data?.data?.documentName,
+            filesize: modalData?.data?.data?.contentLength
+          });
+        });
+      } else {
+        setFileMap(selectedNode.data?.api?.file)
+      }
     } else {
+      setFileKey('');
       setFile();
+      setFileMap('')
     }
   }, [selectedNode]);
 
@@ -319,8 +341,12 @@ export default function APINodeDefinitionForm({
           name: modalData?.data?.data?.documentName,
           filesize: modalData?.data?.data?.contentLength || modalData?.data?.data?.uploadFile?.addedFiles[0]?.size
         });
+        setFileKey(modalData?.data?.data?.documentKey || modalData?.data?.key?.response);
+        setFileMap('');
       } else {
         setFile();
+        setFileKey('');
+        setFileMap('');
       }
     });
   };
@@ -363,7 +389,8 @@ export default function APINodeDefinitionForm({
       requestContentType: propertyFormData.inputOutputFormats,
       responseContentType: propertyFormData.inputOutputFormats,
       method: propertyFormData.requestMethod,
-      file: file ? JSON.stringify(file) : '',
+      //file: file ? JSON.stringify(file) : '',
+      file: fileKey,
       requestHeaders: headers.length > 0 ? JSON.stringify(headers.map((header) => ({ [header.name]: header.value }))) : JSON.stringify([]),
       request: propertyFormData.request,
       sampleResponse: propertyFormData.response
@@ -394,36 +421,73 @@ export default function APINodeDefinitionForm({
   };
 
   const OpenMappingDialog = (fieldName, index) => {
-    try {
-      pageUtil
-        .showPageModal('CONTEXT_DATA_MAPPING.SELECT', {
-          data: JSON.parse(activityDefinitionData.definition?.contextData ? activityDefinitionData.definition.contextData : activityDefinitionData?.version?.contextData)
-        })
-        .then((modalData) => {
-          if (fieldName !== 'name' && fieldName !== 'value') {
+    if (fieldName === "apiConfig") {
+      try {
+        pageUtil
+          .showPageModal('CONTEXT_DATA_MAPPING.APICONFIG', {
+            data: JSON.parse(activityDefinitionData.definition?.contextData ? activityDefinitionData.definition.contextData : activityDefinitionData?.version?.contextData)
+          })
+          .then((modalData) => {
             const newData = modalData.data.data;
             setFormState((prev) => ({
               ...prev,
               propertyForm: {
                 ...prev.propertyForm,
-                [fieldName]: fieldName === 'url'
-                  ? `${prev.propertyForm[fieldName] ? prev.propertyForm[fieldName] + ',' : ''}${newData}`
-                  : newData
+                [fieldName]: newData
               }
             }));
-          } else {
-            const newData = modalData.data.data;
-            const updatedHeaders = headers.map((header, i) => {
-              if (i === index) {
-                return { ...header, [fieldName]: newData };
-              }
-              return header;
-            });
-            setHeaders(updatedHeaders);
-          }
-        });
-    } catch (e) {
-      console.log('Error--', e);
+
+          });
+      } catch (e) {
+        console.log('Error-', e);
+      }
+    }
+    else if (fieldName === "file") {
+      try {
+        pageUtil
+          .showPageModal('CONTEXT_DATA_MAPPING.ACTIVITYFILE', {
+            data: JSON.parse(activityDefinitionData.definition?.contextData ? activityDefinitionData.definition.contextData : activityDefinitionData?.version?.contextData)
+          })
+          .then((modalData) => {
+            setFileMap(modalData.data.data);
+            setFile();
+            setFileKey(modalData.data.data)
+          });
+      } catch (e) {
+        console.log('Error-', e);
+      }
+    } else {
+      try {
+        pageUtil
+          .showPageModal('CONTEXT_DATA_MAPPING.SELECT', {
+            data: JSON.parse(activityDefinitionData.definition?.contextData ? activityDefinitionData.definition.contextData : activityDefinitionData?.version?.contextData)
+          })
+          .then((modalData) => {
+            if (fieldName !== 'name' && fieldName !== 'value') {
+              const newData = modalData.data.data;
+              setFormState((prev) => ({
+                ...prev,
+                propertyForm: {
+                  ...prev.propertyForm,
+                  [fieldName]: fieldName === 'url'
+                    ? `${prev.propertyForm[fieldName] ? prev.propertyForm[fieldName] + ',' : ''}${newData}`
+                    : newData
+                }
+              }));
+            } else {
+              const newData = modalData.data.data;
+              const updatedHeaders = headers.map((header, i) => {
+                if (i === index) {
+                  return { ...header, [fieldName]: newData };
+                }
+                return header;
+              });
+              setHeaders(updatedHeaders);
+            }
+          });
+      } catch (e) {
+        console.log('Error-', e);
+      }
     }
   };
 
@@ -494,13 +558,13 @@ export default function APINodeDefinitionForm({
                   handleSelectAll={handleSelectAll}
                   handleRemoveSelected={handleRemoveSelected}
                   handleHeaderInputChange={handleHeaderInputChange}
-                  handleSaveForm={handleSaveForm}
                   setOpenContextMappingModal={setOpenContextMappingModal}
                   openCancelDialog={openCancelDialog}
                   openContextMappingModal={openContextMappingModal}
                   handlePropertyFormChange={handlePropertyFormChange}
                   OpenMappingDialog={OpenMappingDialog}
                   setApiConfigUrl={setApiConfigUrl}
+                  fileMap={fileMap}
                 />
               </Layer>
             </Layer>

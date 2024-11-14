@@ -1,21 +1,21 @@
 import React from 'react';
-import { Grid, Column, TextInput, Tabs, Tab, TabList, TabPanels, TabPanel, Layer, Button, RadioButton } from '@carbon/react';
+import { Grid, Column, TextInput, Tabs, Tab, TabList, TabPanels, TabPanel, Layer, Button } from '@carbon/react';
 import Shell, { CDS } from '@b2bi/shell';
 import { JSONPath } from 'jsonpath-plus';
 import '@b2bi/styles/pages/list-page.scss';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 
 import { CONTEXT_MAPPING_TYPES, CONTEXT_TYPES } from './constant';
-import { generateTreeData, updateTreeNodeIcon } from './CDM-utils';
+import { generateTreeData } from './CDM-utils';
 
 import '../styles.scss';
 
-import { StringText, Api_1, Image, Schematics, Table, TreeViewAlt, ProgressBar, DataVolume, ListBoxes } from '@carbon/icons-react';
+import { ListBoxes } from '@carbon/icons-react';
 
 import CreateApiConfiguration from './create-api-configuration';
 import CreateUploadForm from './create-upload-form';
 
-const iconMapping = {
+/* const iconMapping = {
     TEXT: StringText,
     API_CONFIG: Api_1,
     LOGO_FILE: Image,
@@ -24,7 +24,7 @@ const iconMapping = {
     ARRAY: Table,
     ARRAY_ITEM: ProgressBar,
     DEFAULT: DataVolume
-};
+}; */
 
 const ContextDataModal = ({ contextData, contextPage }) => {
     const pageUtil = Shell.PageUtil();
@@ -174,7 +174,7 @@ const ContextDataModal = ({ contextData, contextPage }) => {
                 },
                 _processProperty: function () {
                     const transformedData = generateTreeData(contextData);
-                    updateTreeNodeIcon(transformedData, iconMapping)
+                    /*   updateTreeNodeIcon(transformedData, iconMapping) */
                     this.setModel('data', transformedData);
                     contextPage.page.setModel('originalData', contextData);
                 },
@@ -182,6 +182,8 @@ const ContextDataModal = ({ contextData, contextPage }) => {
                     this.setUI('selectedNode', selectedNode);
                     this.setUI('selectedNodes', [selectedNode.id]);
                     this.form.property.reset();
+                    this.uiOnMap(selectedNode.value.type, selectedNode.value.value, selectedNode)
+
                     switch (selectedNode.value.type) {
                         case 'TEXT':
                             this.form.property.setValue('textProperty', selectedNode.value.value);
@@ -191,15 +193,12 @@ const ContextDataModal = ({ contextData, contextPage }) => {
                             break;
                         case 'API_CONFIG':
                             this.form.property.setValue('apiConfigProperty', selectedNode.value.value);
-                            this.uiOnMap(selectedNode.value.type, selectedNode.value.value, selectedNode)
                             break;
                         case 'ACTIVITY_FILE':
                             this.form.property.setValue('activityFileProperty', selectedNode.value.value);
-                            this.uiOnMap(selectedNode.value.type, selectedNode.value.value, selectedNode)
                             break;
                         case 'LOGO_FILE':
                             this.form.property.setValue('logoFileProperty', selectedNode.value.value);
-                            this.uiOnMap(selectedNode.value.type, selectedNode.value.value, selectedNode)
                             break;
                         default:
                             break;
@@ -210,7 +209,7 @@ const ContextDataModal = ({ contextData, contextPage }) => {
                     this.ui.selectedNode.value.value = event.target.value;
                     propertyRef.pValue = event.target.value;
                     const transformedData = generateTreeData(contextPage.page.model.originalData);
-                    updateTreeNodeIcon(transformedData, iconMapping)
+                    /*   updateTreeNodeIcon(transformedData, iconMapping) */
                     this.setModel('data', transformedData);
                 },
                 uiTabChange: function (...args) {
@@ -226,7 +225,7 @@ const ContextDataModal = ({ contextData, contextPage }) => {
                         }
                     }
                 },
-                uiOnUnmapBtn: function (event, type, selectedNode) {
+                uiOnUnmapBtn: function (type, selectedNode) {
                     switch (type) {
                         case 'API_CONFIG':
                             this.setModel('apiConfigListData', {});
@@ -247,7 +246,7 @@ const ContextDataModal = ({ contextData, contextPage }) => {
                     selectedNode.value.value = ''
                     propertyRef.pValue = '';
                     const transformedData = generateTreeData(contextPage.page.model.originalData);
-                    updateTreeNodeIcon(transformedData, iconMapping)
+                    /*  updateTreeNodeIcon(transformedData, iconMapping) */
                     this.setModel('data', transformedData);
                 },
                 uiOnMap: function (type, val, selectedNode = undefined) {
@@ -291,7 +290,7 @@ const ContextDataModal = ({ contextData, contextPage }) => {
                     selectedNode.value.value = val
                     propertyRef.pValue = val;
                     const transformedData = generateTreeData(contextPage.page.model.originalData);
-                    updateTreeNodeIcon(transformedData, iconMapping)
+                    /*  updateTreeNodeIcon(transformedData, iconMapping) */
                     this.setModel('data', transformedData);
                 }
             };
@@ -327,6 +326,7 @@ const ContextDataModal = ({ contextData, contextPage }) => {
                         const propertyRef = JSONPath({ path: `${page.ui.selectedNode.activeNodeId}`, json: contextPage.page.model.originalData, wrap: false });
                         page.ui.selectedNode.value.value = args[0].join('')
                         propertyRef.pValue = args[0].join('');
+                        page.uiOnMap(propertyRef.pType, args[0].join(''), page.ui.selectedNode)
                     }
                 }
             },
@@ -412,6 +412,7 @@ const ContextDataModal = ({ contextData, contextPage }) => {
                         const propertyRef = JSONPath({ path: `${page.ui.selectedNode.activeNodeId}`, json: contextPage.page.model.originalData, wrap: false });
                         page.ui.selectedNode.value.value = args[0].join('')
                         propertyRef.pValue = args[0].join('');
+                        page.uiOnMap(propertyRef.pType, args[0].join(''), page.ui.selectedNode)
                     }
                 }
             },
@@ -490,6 +491,7 @@ const ContextDataModal = ({ contextData, contextPage }) => {
                         const propertyRef = JSONPath({ path: `${page.ui.selectedNode.activeNodeId}`, json: contextPage.page.model.originalData, wrap: false });
                         page.ui.selectedNode.value.value = args[0].join('')
                         propertyRef.pValue = args[0].join('');
+                        page.uiOnMap(propertyRef.pType, args[0].join(''), page.ui.selectedNode)
                     }
                 }
             },
@@ -574,11 +576,11 @@ const ContextDataModal = ({ contextData, contextPage }) => {
                 <Panel minSize={40} defaultSize={70} maxSize={80}>
                     <div class="right-pane">
                         <Column lg={12} md={12} style={{ margin: '0rem 1rem' }}>
-                            {!page.ui.selectedNode && (
+                            {(!page.ui.selectedNode || page.ui?.selectedNode?.value?.type === 'OBJECT') && (
                                 <>
                                     <div className="no-connector-container">
-                                        <div><ListBoxes /> </div>
-                                        <div>No Node Selected </div>
+                                        <div><ListBoxes className='listbox-svg' /> </div>
+                                        <div> <span className='no-connector-container-text'>No Node Selected </span></div>
                                         <div>Please select Node from left panel</div>
                                     </div>
                                 </>
@@ -612,7 +614,7 @@ const ContextDataModal = ({ contextData, contextPage }) => {
                                                     <>
                                                         <div className="unmap-header">
                                                             <span className="pem-unmap-table-title">{pageUtil.t('mod-context-properties:page.viewAPIConfig')}</span>
-                                                            <Button className='pem-unmap-button-wrapper' onClick={(e) => page.uiOnUnmapBtn(e, page.ui.selectedNode.value.type, page.ui.selectedNode)}>Unmap</Button>
+                                                            <Button className='pem-unmap-button-wrapper' onClick={() => page.uiOnUnmapBtn(page.ui.selectedNode.value.type, page.ui.selectedNode)}>Unmap</Button>
                                                         </div>
                                                         <Grid className='unmap-wrapper'>
                                                             {/* Name */}
@@ -636,15 +638,7 @@ const ContextDataModal = ({ contextData, contextPage }) => {
                                                             {/* authenticationType */}
                                                             <Column className='unmap-col-wrapper' lg={6}>{pageUtil.t('mod-context-properties:form.authenticationType')}</Column>
                                                             <Column className='unmap-col-wrapper' lg={6}>
-
-                                                                <RadioButton labelText="User Name and Password" value="usernameandpassword" id="1" disabled checked={page.model.apiConfigListData?.userName && page.model.apiConfigListData?.password} />
-                                                                <div>
-                                                                    <div class="vertical">{page.model.apiConfigListData?.userName}</div>
-                                                                    <div class="vertical">{page.model.apiConfigListData?.password}</div>
-                                                                </div>
-                                                                <RadioButton labelText="Internally generated token" value="internallygeneratedtoken" id="2" disabled checked={page.model.apiConfigListData?.isInternalAuth?.code === "TRUE"} />
-                                                                <RadioButton labelText="None" value="none" id="3" disabled checked={(!page.model.apiConfigListData?.userName && !page.model.apiConfigListData?.password) && page.model.apiConfigListData?.isInternalAuth?.code === "FALSE"} />
-
+                                                                <span>{(!page.model.apiConfigListData?.userName && !page.model.apiConfigListData?.password) && page.model.apiConfigListData?.isInternalAuth?.code === "FALSE" ? 'None' : page.model.apiConfigListData?.isInternalAuth?.code === "TRUE" ? 'Internally generated token' : page.model.apiConfigListData?.userName && page.model.apiConfigListData?.password ? 'User Name and Password' : ''}</span>
                                                             </Column>
                                                             {/* Verify host*/}
                                                             <Column className='unmap-col-wrapper' lg={6}>{pageUtil.t('mod-context-properties:form.verifyHost')}</Column>
@@ -694,7 +688,7 @@ const ContextDataModal = ({ contextData, contextPage }) => {
                                                     <>
                                                         <div className="unmap-header">
                                                             <span className="pem-unmap-table-title">{pageUtil.t('mod-context-properties:page.viewDocument')}</span>
-                                                            <Button className='pem-unmap-button-wrapper' onClick={(e) => page.uiOnUnmapBtn(e, page.ui.selectedNode.value.type, page.ui.selectedNode)}>Unmap</Button>
+                                                            <Button className='pem-unmap-button-wrapper' onClick={() => page.uiOnUnmapBtn(page.ui.selectedNode.value.type, page.ui.selectedNode)}>Unmap</Button>
                                                         </div>
                                                         <Grid className='unmap-wrapper'>
                                                             {/* Name */}
@@ -777,7 +771,7 @@ const ContextDataModal = ({ contextData, contextPage }) => {
                                                     <>
                                                         <div className="unmap-header">
                                                             <span className="pem-unmap-table-title">{pageUtil.t('mod-context-properties:page.viewDocument')}</span>
-                                                            <Button className='pem-unmap-button-wrapper' onClick={(e) => page.uiOnUnmapBtn(e, page.ui.selectedNode.value.type, page.ui.selectedNode)}>Unmap</Button>
+                                                            <Button className='pem-unmap-button-wrapper' onClick={() => page.uiOnUnmapBtn(page.ui.selectedNode.value.type, page.ui.selectedNode)}>Unmap</Button>
                                                         </div>
                                                         <Grid className='unmap-wrapper'>
                                                             {/* Name */}

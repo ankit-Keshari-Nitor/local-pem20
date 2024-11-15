@@ -461,9 +461,18 @@ const WorkFlowDesigner = forwardRef(
         store.addTaskNodes(initialNodeData.nodes);
         store.addTaskEdges(initialNodeData.edges);
       } else {
-        setTaskNodes(activityDefinitionData.schema.nodes);
+        const nodeWithContextMenuClick = activityDefinitionData.schema.nodes.map(({ data, ...restNode }) => {
+          return {
+            ...restNode,
+            data: {
+              ...data,
+              onContextMenuClick: onNodeContextOptionClick
+            }
+          };
+        });
+        setTaskNodes(nodeWithContextMenuClick);
         setTaskEdges(activityDefinitionData.schema.edges);
-        store.addTaskNodes(activityDefinitionData.schema.nodes);
+        store.addTaskNodes(nodeWithContextMenuClick);
         store.addTaskEdges(activityDefinitionData.schema.edges);
       }
     }, [activityDefinitionData]);

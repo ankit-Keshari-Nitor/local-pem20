@@ -854,6 +854,13 @@ const WorkFlowDesigner = forwardRef(
                   isDialogFlowActive={isDialogFlowActive}
                   getApiConfiguration={getApiConfiguration}
                   activityDefinitionData={activityDefinitionData}
+                  showActivityDefineDrawer={showActivityDefineDrawer}
+                  setShowActivityDefineDrawer={setShowActivityDefineDrawer}
+                  updateActivityDetails={updateActivityDetails}
+                  activityOperation={activityOperation}
+                  versionData={versionData}
+                  selectedVersion={selectedVersion}
+                  onVersionSelection={onVersionSelection}
                 />
               ) : (
                 activityDefinitionData && (

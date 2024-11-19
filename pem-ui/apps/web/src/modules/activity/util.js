@@ -26,12 +26,16 @@ const getNodeSpecificDataObj = (node) => {
         description: node.data.editableProps?.description,
         xslt: {
           input:
+            node.data?.xslt?.input ||
             '<?xml version="1.0" encoding="UTF-8"?>\n<catalog>\n  <cd>\n    <title>Empire Burlesque</title>\n    <artist>Bob Dylan</artist>\n    <country>USA</country>\n    <company>Columbia</company>\n    <price>10.90</price>\n    <year>1985</year>\n  </cd>\n</catalog>',
-          xslt: '<?xml version="1.0"?>\n\n<xsl:stylesheet version="1.0"\nxmlns:xsl="http://www.w3.org/1999/XSL/Transform">\n\n<xsl:template match="/">\n  <html>\n  <body>\n    <h2>My CD Collection</h2>\n    <table border="1">\n      <tr bgcolor="#9acd32">\n        <th>Title</th>\n        <th>Artist</th>\n      </tr>\n      <xsl:for-each select="catalog/cd">\n        <tr>\n          <td><xsl:value-of select="title"/></td>\n          <td><xsl:value-of select="artist"/></td>\n        </tr>\n      </xsl:for-each>\n    </table>\n  </body>\n  </html>\n</xsl:template>\n\n</xsl:stylesheet>',
+          xslt:
+            node.data?.xslt?.xslt ||
+            '<?xml version="1.0"?>\n\n<xsl:stylesheet version="1.0"\nxmlns:xsl="http://www.w3.org/1999/XSL/Transform">\n\n<xsl:template match="/">\n  <html>\n  <body>\n    <h2>My CD Collection</h2>\n    <table border="1">\n      <tr bgcolor="#9acd32">\n        <th>Title</th>\n        <th>Artist</th>\n      </tr>\n      <xsl:for-each select="catalog/cd">\n        <tr>\n          <td><xsl:value-of select="title"/></td>\n          <td><xsl:value-of select="artist"/></td>\n        </tr>\n      </xsl:for-each>\n    </table>\n  </body>\n  </html>\n</xsl:template>\n\n</xsl:stylesheet>',
           sampleOutput:
+            node.data?.xslt?.sampleOutput ||
             '<?xml version="1.0"?><xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"><xsl:output method="text"/><xsl:template match="/">Article - <xsl:value-of select="/Article/Title"/>Authors: <xsl:apply-templates select="/Article/Authors/Author"/></xsl:template><xsl:template match="Author">- <xsl:value-of select="." /></xsl:template></xsl:stylesheet>',
-          output: 'output object',
-          escapeInput: 'false'
+          output: node.data?.xslt?.output || 'output object',
+          escapeInput: node.data?.xslt?.escapeInput || 'false'
         }
       };
     case 'PARTNER':
@@ -302,7 +306,7 @@ export const generateNodeEdgesForApi = (nodes, edges) => {
           id: edge.id,
           source: edge.source,
           target: edge.target,
-          condition: JSON.stringify(condition)
+          condition: condition
         };
       } else {
         return {

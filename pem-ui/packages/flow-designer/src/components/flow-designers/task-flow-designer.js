@@ -110,6 +110,7 @@ const TaskFlowDesigner = ({
             </ReactFlowProvider>
           </div>
         </Panel>
+        {/* Properties Block  */}
         {openTaskPropertiesBlock && (
           <>
             <PanelResizeHandle />

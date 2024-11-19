@@ -5,6 +5,7 @@ import './activity-definition.scss';
 import useActivityStore from '../../store';
 import { getActivityDetails, saveActivityData, getAPIConfiguration, getRoles } from '../../services/activity-service';
 import { updateActivityVersion } from '../../services/actvity-version-service';
+import * as ActivityService from '../../services/activity-service.js';
 import { OPERATIONS } from '../../constants';
 import {
   Breadcrumb,
@@ -18,10 +19,11 @@ import {
   HeaderGlobalBar,
   HeaderGlobalAction,
   Theme,
-  IconButton
+  IconButton,
+  Modal
 } from '@carbon/react';
 import { saveAs } from 'file-saver';
-import { PageNumber, Play, TrashCan, Copy, RecentlyViewed, ChevronLeft, CircleSolid, SettingsEdit } from '@carbon/icons-react';
+import { PageNumber, Play, TrashCan, Copy, RecentlyViewed, ChevronLeft, CircleSolid } from '@carbon/icons-react';
 import Notification from '../../helpers/wrapper-notification-toast';
 import Shell from '@b2bi/shell';
 import { generateNodeEdgesForApi, generateActivitySchema } from '../../util';
@@ -49,12 +51,13 @@ export default function ActivityDefinition() {
   const [activityBreadcrumbs, setActivityBreadcrumbs] = useState([]);
   const [activityDesignerStack, setActivityDesignerStack] = useState([]);
 
-
   const [isDialogFlowActive, setIsDialogFlowActive] = useState(false);
   const [isPageDesignerActive, setIsPageDesignerActive] = useState(false);
 
   const [openTaskPropertiesBlock, setOpenTaskPropertiesBlock] = useState();
   const [openDialogPropertiesBlock, setOpenDialogPropertiesBlock] = useState(false);
+
+  const [openDeleteActivityModal, setOpenDeleteActivityModal] = useState(false);
   // -------------------------------- Node Deletion -------------------------------------------
   const nodeDataRefActivity = useRef();
 
@@ -113,7 +116,7 @@ export default function ActivityDefinition() {
         ];
       });
     }
-  }, [activityObj.definition.name])
+  }, [activityObj.definition.name]);
 
   useEffect(() => {
     setActivityBreadcrumbs(
@@ -141,7 +144,6 @@ export default function ActivityDefinition() {
 
   const activityDetailsSave = (activity) => {
     updateActivityDetails(activity);
-
     const newActivity = {
       schema: activityObj.schema,
       definition: activity.definition,
@@ -206,17 +208,19 @@ export default function ActivityDefinition() {
   };
 
   const getNodeTypesCount = (nodes) => {
-    const counts = nodes !== undefined && nodes.reduce(
-      (acc, node) => {
-        acc[node.type] = (acc[node.type] || 0) + 1;
-        return acc;
-      },
-      {
-        FORM: 0,
-        API: 0,
-        XSLT: 0
-      }
-    );
+    const counts =
+      nodes !== undefined &&
+      nodes.reduce(
+        (acc, node) => {
+          acc[node.type] = (acc[node.type] || 0) + 1;
+          return acc;
+        },
+        {
+          FORM: 0,
+          API: 0,
+          XSLT: 0
+        }
+      );
 
     const labels = {
       FORM: 'Form',
@@ -284,14 +288,13 @@ export default function ActivityDefinition() {
   const getRoleList = async () => {
     try {
       const roleList = await getRoles();
-      return roleList
+      return roleList;
     } catch (error) {
       console.error('Error fetching Role list:', error);
-
     }
-  }
+  };
 
-  const handleClick = (event) => {
+  const handleBreadcrumbClick = (event) => {
     if (event.currentTarget.getAttribute('id') === '1' && activityDesignerStack.length > 2) {
       setIsDialogFlowActive(true);
       setIsPageDesignerActive(false);
@@ -307,16 +310,39 @@ export default function ActivityDefinition() {
           return prevValue.slice(0, -2);
         });
       } else if (activityDesignerStack.length === 1) {
-        setOpenTaskPropertiesBlock(false);
-        setShowActivityDefineDrawer(true);
-      }
-      else {
+        // setOpenTaskPropertiesBlock(false);
+        // setShowActivityDefineDrawer(true);
+      } else {
         setActivityDesignerStack((prevValue) => {
           return prevValue.slice(0, -1);
         });
       }
     }
-  }
+  };
+
+  const handleActivityDetailClick = () => {
+    setOpenTaskPropertiesBlock(false);
+    setOpenDialogPropertiesBlock(false);
+    setShowActivityDefineDrawer(true);
+  };
+
+  // Handler for actual delete API call
+  const handleDeleteActivity = async (id) => {
+    const response = await ActivityService.deleteActivity(id);
+    if (response) {
+      store.reset();
+      setTimeout(() => {
+        pageUtil.navigate('/activities/definitions', {});
+      }, 2000);
+    }
+    setNotificationProps({
+      open: true,
+      title: response ? 'Success - ' : 'Error - ',
+      subtitle: response ? 'Action completed successfully!' : 'Action not completed successfully!',
+      kind: response ? 'success' : 'error',
+      onCloseButtonClick: () => setNotificationProps(null)
+    });
+  };
 
   return (
     <>
@@ -341,7 +367,7 @@ export default function ActivityDefinition() {
             <Breadcrumb noTrailingSlash data-testid="breadcrumb">
               {activityBreadcrumbs.map(({ breadcrumbLabel, pathname }, index, items) => {
                 return (
-                  <BreadcrumbItem id={index} key={pathname} isCurrentPage={index === items.length - 1} onClick={handleClick}>
+                  <BreadcrumbItem id={index} key={pathname} isCurrentPage={index === items.length - 1} onClick={handleBreadcrumbClick}>
                     <Link to={pathname}>{breadcrumbLabel}</Link>
                   </BreadcrumbItem>
                 );
@@ -350,24 +376,24 @@ export default function ActivityDefinition() {
           </HeaderName>
           <div className="activity-task-section">{activityStatistics}</div>
           <HeaderGlobalBar>
-            <HeaderGlobalAction aria-label="Clone">
-              <SettingsEdit size={16} />
-            </HeaderGlobalAction>
-            <HeaderGlobalAction aria-label="Clone">
+            <HeaderGlobalAction aria-label="Activity Details" onClick={handleActivityDetailClick}>
               <PageNumber size={16} />
             </HeaderGlobalAction>
-            <HeaderGlobalAction aria-label="Play">
+            <HeaderGlobalAction aria-label="Preview" disabled>
               <Play size={16} />
             </HeaderGlobalAction>
-            <HeaderGlobalAction aria-label="Delete">
-              <TrashCan size={16} />
-            </HeaderGlobalAction>
-            <HeaderGlobalAction aria-label="Copy">
+            {store.selectedActivity.activityDefKey != '' && (
+              <HeaderGlobalAction aria-label="Delete" onClick={() => setOpenDeleteActivityModal(true)}>
+                <TrashCan size={16} />
+              </HeaderGlobalAction>
+            )}
+
+            <HeaderGlobalAction aria-label="Clone" disabled>
               <IconButton label="Copy" size="md" kind="ghost" align="bottom-right">
                 <Copy size={16} />
               </IconButton>
             </HeaderGlobalAction>
-            <HeaderGlobalAction aria-label="Version History">
+            <HeaderGlobalAction aria-label="History" disabled>
               <RecentlyViewed size={16} />
             </HeaderGlobalAction>
             <HeaderGlobalAction className="user-profile">
@@ -383,33 +409,52 @@ export default function ActivityDefinition() {
       {loading
         ? 'Loading...'
         : activityDefinitionData && (
-          <Designer.WorkFlowDesigner
-            showActivityDefineDrawer={showActivityDefineDrawer}
-            setShowActivityDefineDrawer={setShowActivityDefineDrawer}
-            setActivityDesignerStack={setActivityDesignerStack}
-            updateActivityDetails={activityDetailsSave}
-            updateActivitySchema={updateActivitySchema}
-            activityDefinitionData={activityDefinitionData}
-            activityOperation={store.selectedActivity ? store.selectedActivity.operation : 'New'}
-            readOnly={readOnly}
-            onVersionSelection={(selectedVersion) => onVersionSelection(selectedVersion)}
-            versionData={activityVersions} //todo -- this data will be based on version api response
-            selectedVersion={store.selectedActivity ? store.selectedActivity.version : 1} //todo - pass current version id being loaded
-            setNotificationProps={setNotificationProps} // to show the success notification
-            getApiConfiguration={getApiConfiguration}//to call the API Configuration
-            getRoleList={getRoleList} // to call Role List
-            isDialogFlowActive={isDialogFlowActive}
-            setIsDialogFlowActive={setIsDialogFlowActive}
-            isPageDesignerActive={isPageDesignerActive}
-            setIsPageDesignerActive={setIsPageDesignerActive}
-            openTaskPropertiesBlock={openTaskPropertiesBlock}
-            setOpenTaskPropertiesBlock={setOpenTaskPropertiesBlock}
-            openDialogPropertiesBlock={openDialogPropertiesBlock}
-            setOpenDialogPropertiesBlock={setOpenDialogPropertiesBlock}
-            nodeDataRefActivity={nodeDataRefActivity}
-          />
-        )}
+            <Designer.WorkFlowDesigner
+              showActivityDefineDrawer={showActivityDefineDrawer}
+              setShowActivityDefineDrawer={setShowActivityDefineDrawer}
+              setActivityDesignerStack={setActivityDesignerStack}
+              updateActivityDetails={activityDetailsSave}
+              updateActivitySchema={updateActivitySchema}
+              activityDefinitionData={activityDefinitionData}
+              activityOperation={store.selectedActivity ? store.selectedActivity.operation : 'New'}
+              readOnly={readOnly}
+              onVersionSelection={(selectedVersion) => onVersionSelection(selectedVersion)}
+              versionData={activityVersions} //todo -- this data will be based on version api response
+              selectedVersion={store.selectedActivity ? store.selectedActivity.version : 1} //todo - pass current version id being loaded
+              setNotificationProps={setNotificationProps} // to show the success notification
+              getApiConfiguration={getApiConfiguration} //to call the API Configuration
+              getRoleList={getRoleList} // to call Role List
+              isDialogFlowActive={isDialogFlowActive}
+              setIsDialogFlowActive={setIsDialogFlowActive}
+              isPageDesignerActive={isPageDesignerActive}
+              setIsPageDesignerActive={setIsPageDesignerActive}
+              openTaskPropertiesBlock={openTaskPropertiesBlock}
+              setOpenTaskPropertiesBlock={setOpenTaskPropertiesBlock}
+              openDialogPropertiesBlock={openDialogPropertiesBlock}
+              setOpenDialogPropertiesBlock={setOpenDialogPropertiesBlock}
+              nodeDataRefActivity={nodeDataRefActivity}
+            />
+          )}
       {notificationProps && notificationProps.open && <Notification {...notificationProps} />}
+      <Modal
+        open={openDeleteActivityModal}
+        onRequestClose={() => setOpenDeleteActivityModal(false)}
+        onRequestSubmit={() => {
+          handleDeleteActivity(store.selectedActivity.activityDefKey);
+        }}
+        isFullWidth
+        modalHeading="Confirmation"
+        primaryButtonText={'Delete'}
+        secondaryButtonText="Cancel"
+      >
+        <p
+          style={{
+            padding: '0px 0px 1rem 1rem'
+          }}
+        >
+          {'Are you sure you want to delete? The Activity status will be changed to Deleted.'}
+        </p>
+      </Modal>
     </>
   );
 }

@@ -10,6 +10,7 @@ import BlocksTray from '../blocks-tray';
 import { CATEGORYS } from '../../constants';
 import BlockPropertiesTray from '../block-properties-tray';
 import { ComboBox } from '@carbon/react';
+import ActivityDefinitionForm from '../activity-definition-form';
 
 const DialogFlowDesigner = ({
   connectionLineStyle,
@@ -37,11 +38,19 @@ const DialogFlowDesigner = ({
   setNotificationProps, //toast message config
   deleteBranchNodeConnector,
   getApiConfiguration, //API Call API configuration
-  activityDefinitionData
+  activityDefinitionData,
+  showActivityDefineDrawer,
+  setShowActivityDefineDrawer,
+  updateActivityDetails,
+  activityOperation,
+  versionData,
+  selectedVersion,
+  onVersionSelection
 }) => {
+  const [reactFlowInstance, setReactFlowInstance] = useState(null);
+  const activityDefPanelRef = useRef();
   const dialogPropPanelRef = useRef();
   const [tasks, setTasks] = useState([]);
-  const [reactFlowInstance, setReactFlowInstance] = useState(null);
 
   const handleExpansion = (expand, ref) => {
     expand ? ref.current?.resize(180) : ref.current?.resize(34);
@@ -120,6 +129,30 @@ const DialogFlowDesigner = ({
                     isDialogFlowActive={isDialogFlowActive}
                     getApiConfiguration={getApiConfiguration}
                     activityDefinitionData={activityDefinitionData}
+                  />
+                </div>
+              </div>
+            </Panel>
+          </>
+        )}
+        {showActivityDefineDrawer && !openDialogPropertiesBlock && (
+          <>
+            <PanelResizeHandle />
+            <Panel ref={activityDefPanelRef} defaultSize={50} minSize={40}>
+              <div className="dnd-flow">
+                <div className="task-properties-container">
+                  <ActivityDefinitionForm
+                    //selectedNode={selectedTaskNode}
+                    setShowActivityDefineDrawer={setShowActivityDefineDrawer}
+                    onActivityDetailsSave={updateActivityDetails}
+                    activityOperation={activityOperation}
+                    activityDefinitionData={activityDefinitionData}
+                    readOnly={readOnly}
+                    versionData={versionData}
+                    selectedVersion={selectedVersion}
+                    onVersionSelection={onVersionSelection}
+                    onExpand={(isExpanded) => handleExpansion(isExpanded, activityDefPanelRef)}
+                    setNotificationProps={setNotificationProps}
                   />
                 </div>
               </div>

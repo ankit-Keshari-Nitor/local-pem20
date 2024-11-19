@@ -309,7 +309,7 @@ export const NODE_TYPES = {
       { label: 'Copy', action: 'copy' },
       { label: 'Save as Template', action: 'savetemplate' }
     ],
-    form: '',
+    form: {},
     nodeIcon: <FormBlockIcon />,
     category: CATEGORYS.DIALOG,
     active: true

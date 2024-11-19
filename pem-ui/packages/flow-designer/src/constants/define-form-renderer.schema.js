@@ -23,7 +23,7 @@ export const API_FORM_SCHEMA = {
         {
           type: validatorTypes.MAX_LENGTH,
           threshold: 30,
-          message: 'Name must be no longer then 50 characters'
+          message: 'Name must be no longer then 30 characters'
         }
       ]
     },
@@ -74,7 +74,7 @@ export const APPROVAL_FORM_SCHEMA = {
         {
           type: validatorTypes.MAX_LENGTH,
           threshold: 30,
-          message: 'Name must be no longer then 50 characters'
+          message: 'Name must be no longer then 30 characters'
         }
       ]
     },
@@ -168,7 +168,7 @@ export const ATTRIBUTE_FORM_SCHEMA = {
         {
           type: validatorTypes.MAX_LENGTH,
           threshold: 30,
-          message: 'Name must be no longer then 50 characters'
+          message: 'Name must be no longer then 30 characters'
         }
       ]
     },
@@ -257,7 +257,7 @@ export const CUSTOM_FORM_SCHEMA = {
         {
           type: validatorTypes.MAX_LENGTH,
           threshold: 30,
-          message: 'Name must be no longer then 50 characters'
+          message: 'Name must be no longer then 30 characters'
         }
       ]
     },
@@ -308,7 +308,7 @@ export const DIALOG_FORM_SCHEMA = {
         {
           type: validatorTypes.MAX_LENGTH,
           threshold: 30,
-          message: 'Name must be no longer then 50 characters'
+          message: 'Name must be no longer then 30 characters'
         }
       ]
     },
@@ -359,7 +359,7 @@ export const PARTNER_FORM_SCHEMA = {
         {
           type: validatorTypes.MAX_LENGTH,
           threshold: 30,
-          message: 'Name must be no longer then 50 characters'
+          message: 'Name must be no longer then 30 characters'
         }
       ]
     },
@@ -428,7 +428,7 @@ export const SPONSOR_FORM_SCHEMA = {
         {
           type: validatorTypes.MAX_LENGTH,
           threshold: 30,
-          message: 'Name must be no longer then 50 characters'
+          message: 'Name must be no longer then 30 characters'
         }
       ]
     },
@@ -502,7 +502,7 @@ export const SYSTEM_FORM_SCHEMA = {
         {
           type: validatorTypes.MAX_LENGTH,
           threshold: 30,
-          message: 'Name must be no longer then 50 characters'
+          message: 'Name must be no longer then 30 characters'
         }
       ]
     },
@@ -553,7 +553,7 @@ export const XSLT_FROM_SCHEMA = {
         {
           type: validatorTypes.MAX_LENGTH,
           threshold: 30,
-          message: 'Name must be no longer then 50 characters'
+          message: 'Name must be no longer then 30 characters'
         }
       ]
     },
@@ -604,7 +604,7 @@ export const ACTIVITY_TASK_SCHEMA = {
         {
           type: validatorTypes.MAX_LENGTH,
           threshold: 30,
-          message: 'Name must be no longer then 50 characters'
+          message: 'Name must be no longer then 30 characters'
         }
       ]
     },

@@ -64,7 +64,7 @@ export const updateActivityVersion = async (activityData, activityDefnKey, versi
   );
 
   if (activityUpdateResponse.success) {
-    const file = new Blob([JSON.stringify(activityData)], { type: 'text/json' });
+    const file = new Blob([JSON.stringify(activityData)], { type: 'application/json' });
     const config = {
       url: `/sponsors/cashbank/v2/activityDefinitions/${activityDefnKey}/versions/${versionkey}`,
       data: {

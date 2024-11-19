@@ -70,7 +70,6 @@ export default function ActivityDefinition() {
           const { nodes, edges } = generateActivitySchema(response.activityData.schema.nodes, response.activityData.schema.edges, readOnly);
           response.activityData.schema.nodes = nodes;
           response.activityData.schema.edges = edges;
-
           setActivityDefinitionData(response.activityData);
           updateActivityData(response.activityData);
           setActivityVersions(response.versions);
@@ -167,7 +166,6 @@ export default function ActivityDefinition() {
     }
 
     const nodeEdgesData = generateNodeEdgesForApi(activityObj.schema.nodes, activityObj.schema.edges);
-
     // Final New Activity Data
     const finalNewActivityData = {
       name: activityObj.definition.name,
@@ -176,10 +174,10 @@ export default function ActivityDefinition() {
       process: {
         nodes: nodeEdgesData.nodes,
         connectors: nodeEdgesData.edges, // connector for task flow designer
-        contextData: activityObj.definition.contextData
+        contextData: activityObj.definition.contextData ? activityObj.definition.contextData : activityObj.version.contextData
       }
     };
-    const file = new Blob([JSON.stringify(finalNewActivityData)], { type: 'text/json' });
+    const file = new Blob([JSON.stringify(finalNewActivityData)], { type: 'application/json' });
     saveAs(file, `${finalNewActivityData.name}.json`);
 
     const saveResponse =

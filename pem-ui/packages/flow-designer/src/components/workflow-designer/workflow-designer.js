@@ -22,7 +22,7 @@ import {
 import { useEffect } from 'react';
 import useTaskStore from '../../store';
 import { v4 as uuid } from 'uuid';
-import { getInitialNodeEdges } from '../../utils/workflow-element-utils';
+import { getContextMenuClick, getInitialNodeEdges } from '../../utils/workflow-element-utils';
 import { Modal } from '@carbon/react';
 
 let dialogBranchId = 1;
@@ -461,9 +461,10 @@ const WorkFlowDesigner = forwardRef(
         store.addTaskNodes(initialNodeData.nodes);
         store.addTaskEdges(initialNodeData.edges);
       } else {
-        setTaskNodes(activityDefinitionData.schema.nodes);
+        const nodeWithContextMenuClick = getContextMenuClick(activityDefinitionData.schema.nodes, onNodeContextOptionClick);
+        setTaskNodes(nodeWithContextMenuClick);
         setTaskEdges(activityDefinitionData.schema.edges);
-        store.addTaskNodes(activityDefinitionData.schema.nodes);
+        store.addTaskNodes(nodeWithContextMenuClick);
         store.addTaskEdges(activityDefinitionData.schema.edges);
       }
     }, [activityDefinitionData]);
@@ -568,7 +569,7 @@ const WorkFlowDesigner = forwardRef(
           }
           return copyNode;
         });
-        const parseFormData = node.data?.form?.length > 0 ? JSON.parse(node.data?.form) : '';
+        const parseFormData = node.data?.form?.length > 0 ? node.data?.form : '';
         const formData = {
           form: parseFormData?.cType ? parseFormData : [],
           formId: node.data.editableProps?.name ? node.data.editableProps?.name : node.data.id

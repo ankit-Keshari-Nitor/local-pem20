@@ -294,6 +294,7 @@ export const generateNodeEdgesForApi = (nodes, edges) => {
     const node = nodes.find((e) => e.id === edge.source);
     if (edge.sourceHandle.includes('start')) {
       return {
+        id: edge.id,
         source: edge.source,
         target: edge.target
       };
@@ -302,12 +303,14 @@ export const generateNodeEdgesForApi = (nodes, edges) => {
 
       if (condition.group && condition.group.rules && condition.group.rules.length > 0) {
         return {
+          id: edge.id,
           source: edge.source,
           target: edge.target,
           condition: condition
         };
       } else {
         return {
+          id: edge.id,
           source: edge.source,
           target: edge.target
         };
@@ -376,7 +379,7 @@ const generateActivitySchemaForSubProcess = (taskNode, readOnly) => {
       if (nodeIndex > -1) {
         newChildNodes[nodeIndex].type === 'BRANCH_START'
           ? (newChildNodes[nodeIndex].data.branchCondition = branchConditionObject(edge, newChildNodes[nodeIndex].data?.branchCondition))
-          : (newChildNodes[nodeIndex].data.exitValidationQuery = exitConditionObject(JSON.parse(edge.condition)));
+          : (newChildNodes[nodeIndex].data.exitValidationQuery = exitConditionObject(edge.condition));
 
         //newChildNodes[nodeIndex].data.exitValidationQuery = exitConditionObject(JSON.parse(edge.condition));
       }
@@ -402,12 +405,12 @@ export const generateActivitySchema = (nodes, edges, readOnly) => {
     return nodeSpecificData;
   });
   const newEdges = edges.map((edge) => {
-    if (edge.condition && edge.condition.length > 0) {
+    if (edge?.condition) {
       let nodeIndex = newNodes.findIndex((n) => n.id === edge.source);
       if (nodeIndex > -1) {
         newNodes[nodeIndex].type === 'BRANCH_START'
           ? (newNodes[nodeIndex].data.branchCondition = branchConditionObject(edge, newNodes[nodeIndex].data?.branchCondition))
-          : (newNodes[nodeIndex].data.exitValidationQuery = exitConditionObject(JSON.parse(edge.condition)));
+          : (newNodes[nodeIndex].data.exitValidationQuery = exitConditionObject(edge.condition));
       }
     }
     return getEdge(edge, readOnly, nodes, 'task');

@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import _ from 'lodash';
-import { NODE_TYPES, NODE_TYPE } from '../constants';
+import { NODE_TYPES, NODE_TYPE, TASK_NODE_TYPES, DIALOG_NODE_TYPES } from '../constants';
 
 const getNewTaskId = () => `Task_Name_${uuidv4()}`;
 
@@ -145,4 +145,30 @@ const getEdgesConnect = (edgeId, edgesData, newNode) => {
   return [...remainEdges, ...newEdges];
 };
 
-export { getUpdatedElementsAfterNodeAddition, testElements, getInitialNodeEdges, getEdgesConnect };
+const getContextMenuClick = (nodes, onNodeContextOptionClick, selectedTaskNodeId) => {
+  nodes.map(({ data, ...restNodeData }, index) => {
+    if (Object.keys(TASK_NODE_TYPES).includes(restNodeData.type)) {
+      nodes[index] = {
+        ...restNodeData,
+        data: {
+          ...data,
+          onContextMenuClick: (id, menu) => onNodeContextOptionClick(id, menu, false)
+        }
+      };
+      if (nodes[index]?.data?.dialogNodes) {
+        getContextMenuClick(nodes[index]?.data?.dialogNodes, onNodeContextOptionClick, nodes[index].id);
+      }
+    } else if (Object.keys(DIALOG_NODE_TYPES).includes(restNodeData.type)) {
+      nodes[index] = {
+        ...restNodeData,
+        data: {
+          ...data,
+          onContextMenuClick: (id, menu) => onNodeContextOptionClick(id, menu, true, selectedTaskNodeId)
+        }
+      };
+    }
+  });
+  return nodes;
+};
+
+export { getUpdatedElementsAfterNodeAddition, testElements, getInitialNodeEdges, getEdgesConnect, getContextMenuClick };

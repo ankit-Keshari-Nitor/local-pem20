@@ -568,7 +568,7 @@ const WorkFlowDesigner = forwardRef(
           }
           return copyNode;
         });
-        const parseFormData = node.data?.form.length > 0 ? JSON.parse(node.data?.form) : '';
+        const parseFormData = node.data?.form?.length > 0 ? JSON.parse(node.data?.form) : '';
         const formData = {
           form: parseFormData?.cType ? parseFormData : [],
           formId: node.data.editableProps?.name ? node.data.editableProps?.name : node.data.id
@@ -853,6 +853,13 @@ const WorkFlowDesigner = forwardRef(
                   isDialogFlowActive={isDialogFlowActive}
                   getApiConfiguration={getApiConfiguration}
                   activityDefinitionData={activityDefinitionData}
+                  showActivityDefineDrawer={showActivityDefineDrawer}
+                  setShowActivityDefineDrawer={setShowActivityDefineDrawer}
+                  updateActivityDetails={updateActivityDetails}
+                  activityOperation={activityOperation}
+                  versionData={versionData}
+                  selectedVersion={selectedVersion}
+                  onVersionSelection={onVersionSelection}
                 />
               ) : (
                 activityDefinitionData && (

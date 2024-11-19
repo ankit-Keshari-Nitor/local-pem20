@@ -74,7 +74,7 @@ export const NODE_TYPES = {
     contextMenu: [
       { label: 'Delete', action: 'delete' },
       { label: 'Copy', action: 'copy' },
-      { label: 'Save as Template', action: 'savetemplate' }
+      // { label: 'Save as Template', action: 'savetemplate' }
     ],
     nodeIcon: <PartnerBlockIcon />,
     category: CATEGORYS.TASK,
@@ -107,7 +107,7 @@ export const NODE_TYPES = {
     contextMenu: [
       { label: 'Delete', action: 'delete' },
       { label: 'Copy', action: 'copy' },
-      { label: 'Save as Template', action: 'savetemplate' }
+      // { label: 'Save as Template', action: 'savetemplate' }
     ],
     nodeIcon: <ApprovalBlockIcon />,
     category: CATEGORYS.TASK,
@@ -140,7 +140,7 @@ export const NODE_TYPES = {
     contextMenu: [
       { label: 'Delete', action: 'delete' },
       { label: 'Copy', action: 'copy' },
-      { label: 'Save as Template', action: 'savetemplate' }
+      // { label: 'Save as Template', action: 'savetemplate' }
     ],
     nodeIcon: <AttributeBlockIcon />,
     category: CATEGORYS.TASK,
@@ -173,7 +173,7 @@ export const NODE_TYPES = {
     contextMenu: [
       { label: 'Delete', action: 'delete' },
       { label: 'Copy', action: 'copy' },
-      { label: 'Save as Template', action: 'savetemplate' }
+      // { label: 'Save as Template', action: 'savetemplate' }
     ],
     nodeIcon: <SponsorBlockIcon />,
     category: CATEGORYS.TASK,
@@ -206,7 +206,7 @@ export const NODE_TYPES = {
     contextMenu: [
       { label: 'Delete', action: 'delete' },
       { label: 'Copy', action: 'copy' },
-      { label: 'Save as Template', action: 'savetemplate' }
+      // { label: 'Save as Template', action: 'savetemplate' }
     ],
     nodeIcon: <CustomBlockIcon />,
     category: CATEGORYS.TASK,
@@ -239,11 +239,11 @@ export const NODE_TYPES = {
     contextMenu: [
       { label: 'Delete', action: 'delete' },
       { label: 'Copy', action: 'copy' },
-      { label: 'Save as Template', action: 'savetemplate' }
+      // { label: 'Save as Template', action: 'savetemplate' }
     ],
     nodeIcon: <SystemBlockIcon />,
     category: CATEGORYS.TASK,
-    active: false
+    active: true
   },
   [NODE_TYPE.TASK_GATEWAY]: {
     type: NODE_TYPE.TASK_GATEWAY,
@@ -274,7 +274,7 @@ export const NODE_TYPES = {
     contextMenu: [
       { label: 'Delete', action: 'delete' },
       { label: 'Copy', action: 'copy' },
-      { label: 'Save as Template', action: 'savetemplate' }
+      // { label: 'Save as Template', action: 'savetemplate' }
     ],
     nodeIcon: <GatewayBlockIcon />,
     category: CATEGORYS.TASK,
@@ -307,7 +307,7 @@ export const NODE_TYPES = {
     contextMenu: [
       { label: 'Delete', action: 'delete' },
       { label: 'Copy', action: 'copy' },
-      { label: 'Save as Template', action: 'savetemplate' }
+      // { label: 'Save as Template', action: 'savetemplate' }
     ],
     form: '',
     nodeIcon: <FormBlockIcon />,
@@ -341,7 +341,7 @@ export const NODE_TYPES = {
     contextMenu: [
       { label: 'Delete', action: 'delete' },
       { label: 'Copy', action: 'copy' },
-      { label: 'Save as Template', action: 'savetemplate' }
+      // { label: 'Save as Template', action: 'savetemplate' }
     ],
     nodeIcon: <ApiBlockIcon />,
     category: CATEGORYS.DIALOG,
@@ -374,7 +374,7 @@ export const NODE_TYPES = {
     contextMenu: [
       { label: 'Delete', action: 'delete' },
       { label: 'Copy', action: 'copy' },
-      { label: 'Save as Template', action: 'savetemplate' }
+      // { label: 'Save as Template', action: 'savetemplate' }
     ],
     nodeIcon: <XsltBlockIcon />,
     category: CATEGORYS.DIALOG,
@@ -409,7 +409,7 @@ export const NODE_TYPES = {
     contextMenu: [
       { label: 'Delete', action: 'delete' },
       { label: 'Copy', action: 'copy' },
-      { label: 'Save as Template', action: 'savetemplate' }
+      // { label: 'Save as Template', action: 'savetemplate' }
     ],
     nodeIcon: <GatewayBlockIcon />,
     category: CATEGORYS.DIALOG,
@@ -690,6 +690,12 @@ export const requestMethods = [
 ];
 
 export const inputOutputFormats = [
+  { id: 'select', label: 'Choose an option', value: '' },
+  { id: 'xml', label: 'XML', value: 'application/xml' },
+  { id: 'json', label: 'JSON', value: 'application/json' }
+];
+
+export const outputFormats = [
   { id: 'select', label: 'Choose an option', value: '' },
   { id: 'xml', label: 'XML', value: 'application/xml' },
   { id: 'json', label: 'JSON', value: 'application/json' }

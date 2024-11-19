@@ -17,6 +17,7 @@ import {
 } from './../../constants/define-form-renderer.schema';
 
 import './block-properties-tray.scss';
+import XsltNodeDefinitionForm from '../xslt-node-definition-form';
 
 export default function BlockPropertiesTray(props) {
   const {
@@ -122,7 +123,7 @@ export default function BlockPropertiesTray(props) {
       case NODE_TYPE.DIALOG:
         return <BlockDefinitionForm id={'dialog-define-form'} schema={DIALOG_FORM_SCHEMA} {...props} />;
       case NODE_TYPE.XSLT:
-        return <BlockDefinitionForm id={'xslt-define-form'} schema={XSLT_FROM_SCHEMA} {...props} />;
+        return <XsltNodeDefinitionForm id={'xslt-define-form'} schema={XSLT_FROM_SCHEMA} {...props} />;
       case NODE_TYPE.API:
         return <APINodeDefinitionForm id={'api-define-form'} schema={API_FORM_SCHEMA} {...props} />;
       case NODE_TYPE.BRANCH_START:

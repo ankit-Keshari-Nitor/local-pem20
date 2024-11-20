@@ -9,6 +9,7 @@
   },
   "title": "Context Data Mapping",
   "title_ContextData": "Context Data",
+  "request":"Request Data Mapping",
   "tabs": {
     "sponsorServerInfo": "Sponsor Server info",
     "apiConfigList": "API Configuration List",

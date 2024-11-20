@@ -8,12 +8,18 @@ const generateContextDataMapping = (storeData) => {
       return Object.keys(value).map((key) => {
         const item = value[key];
 
+        // If pType exists, return a simple object with its type and data
         if (item.pType) {
-          // If pType exists, return a simple object with its type and data
+          // If pValue is empty, bind value to an empty string, otherwise use the actual pValue
+          const data = {
+            type: item.pType,
+            value: item.pValue !== undefined ? item.pValue : ""
+          };
+
           return {
             name: key,
             type: item.pType,
-            data: { type: item.pType, value: item.pValue }
+            data: data
           };
         } else {
           // If pType is not defined, treat it as a category and recurse
@@ -29,6 +35,7 @@ const generateContextDataMapping = (storeData) => {
     return [];
   };
 
+  // Start by processing the entire storeData object, which could have multiple top-level keys like "application"
   return [{
     name: "ProcessData",
     type: '',
@@ -37,14 +44,12 @@ const generateContextDataMapping = (storeData) => {
       name: "ContextData",
       type: '',
       data: { type: "CATEGORY" },
-      items: generateContextDataMappingChildern(storeData) // Use storeData for mapping
+      items: generateContextDataMappingChildern(storeData) // Pass storeData directly for mapping
     }]
-
   }];
 };
 
-
-const transformDataToTree = (data, parentKey = '$') => {
+const transformDataToTree = (data, parentKey = '') => {
   const transformDataChildren = (data, parentKey) => {
     return Object.entries(data).map(([key, value]) => {
       const dataNodeId = `${parentKey}`;
@@ -78,7 +83,8 @@ const transformDataToTree = (data, parentKey = '$') => {
   return (
     data !== 'undefined' &&
     data?.map((item) => {
-      const nodeId = `${parentKey}.${item.name}`;
+      const nodeId = parentKey !== "" ? `${parentKey}.${item.name}` : `${item.name}`;
+
       const { items, data, ...itemProps } = item;
       const treeNode = {
         id: nodeId && nodeId,
@@ -101,9 +107,9 @@ const transformDataToTree = (data, parentKey = '$') => {
   );
 };
 
-const transformDataToTreeBasedOnType = (data, type, parentKey = '$') => {
+const transformDataToTreeBasedOnType = (data, type, parentKey = '') => {
   return data.map((item) => {
-    const nodeId = `${parentKey}.${item.name}`;
+    const nodeId = parentKey !== "" ? `${parentKey}.${item.name}` : `${item.name}`;
 
     if (item.type === type || item.data?.type === "CATEGORY") {
       const treeNode = {
@@ -186,6 +192,36 @@ const generateTreeData = (definition, path = '$') => {
   }).filter(item => item !== null); // Remove nulls if necessary
 };
 
+const generateMappingTreeData = (definition, path = '$') => {
+  return Object.keys(definition).map((key) => {
+    const value = definition[key];
+    const currentPath = `${path}.${key}`;
+
+    if (typeof value === 'object' && value !== null) {
+      if (value) {
+        return {
+          id: currentPath,
+          label: key,
+          type: "OBJECT",
+          value: {
+            name: key,
+            value: value || ''
+          },
+          children: generateMappingTreeData(value, currentPath)
+        };
+      }
+    } else {
+      return {
+        id: currentPath,
+        label: `${key} ${value !== "" ? '[ ' + value + ' ]' : ''}`,
+        value: {
+          name: key,
+          value: value || ''
+        }
+      };
+    }
+  });
+};
 
 const updateTreeNodeIcon = (treeData, iconMap) => {
   treeData.forEach((treeNode) => {
@@ -196,4 +232,4 @@ const updateTreeNodeIcon = (treeData, iconMap) => {
   });
 };
 
-module.exports = { generateContextDataMapping, transformDataToTree, generateTreeData, updateTreeNodeIcon, transformDataToTreeBasedOnType };
+module.exports = { generateContextDataMapping, generateMappingTreeData, transformDataToTree, generateTreeData, updateTreeNodeIcon, transformDataToTreeBasedOnType };

@@ -284,6 +284,16 @@ export default function ActivityDefinition() {
     }
   };
 
+  //Activity List Call
+  const getActivityFileList = async (key) => {
+    try {
+      const activityList = await ActivityService.getActivityFile(key); // Ensure this is awaited if it's a promise
+      return activityList;
+    } catch (error) {
+      console.error('Error fetching API configuration:', error);
+    }
+  };
+
   //Roles List Call
   const getRoleList = async () => {
     try {
@@ -382,7 +392,7 @@ export default function ActivityDefinition() {
             <HeaderGlobalAction aria-label="Preview" disabled>
               <Play size={16} />
             </HeaderGlobalAction>
-            {store.selectedActivity.activityDefKey != '' && (
+            {store.selectedActivity.activityDefKey !== '' && (
               <HeaderGlobalAction aria-label="Delete" onClick={() => setOpenDeleteActivityModal(true)}>
                 <TrashCan size={16} />
               </HeaderGlobalAction>
@@ -409,32 +419,33 @@ export default function ActivityDefinition() {
       {loading
         ? 'Loading...'
         : activityDefinitionData && (
-            <Designer.WorkFlowDesigner
-              showActivityDefineDrawer={showActivityDefineDrawer}
-              setShowActivityDefineDrawer={setShowActivityDefineDrawer}
-              setActivityDesignerStack={setActivityDesignerStack}
-              updateActivityDetails={activityDetailsSave}
-              updateActivitySchema={updateActivitySchema}
-              activityDefinitionData={activityDefinitionData}
-              activityOperation={store.selectedActivity ? store.selectedActivity.operation : 'New'}
-              readOnly={readOnly}
-              onVersionSelection={(selectedVersion) => onVersionSelection(selectedVersion)}
-              versionData={activityVersions} //todo -- this data will be based on version api response
-              selectedVersion={store.selectedActivity ? store.selectedActivity.version : 1} //todo - pass current version id being loaded
-              setNotificationProps={setNotificationProps} // to show the success notification
-              getApiConfiguration={getApiConfiguration} //to call the API Configuration
-              getRoleList={getRoleList} // to call Role List
-              isDialogFlowActive={isDialogFlowActive}
-              setIsDialogFlowActive={setIsDialogFlowActive}
-              isPageDesignerActive={isPageDesignerActive}
-              setIsPageDesignerActive={setIsPageDesignerActive}
-              openTaskPropertiesBlock={openTaskPropertiesBlock}
-              setOpenTaskPropertiesBlock={setOpenTaskPropertiesBlock}
-              openDialogPropertiesBlock={openDialogPropertiesBlock}
-              setOpenDialogPropertiesBlock={setOpenDialogPropertiesBlock}
-              nodeDataRefActivity={nodeDataRefActivity}
-            />
-          )}
+          <Designer.WorkFlowDesigner
+            showActivityDefineDrawer={showActivityDefineDrawer}
+            setShowActivityDefineDrawer={setShowActivityDefineDrawer}
+            setActivityDesignerStack={setActivityDesignerStack}
+            updateActivityDetails={activityDetailsSave}
+            updateActivitySchema={updateActivitySchema}
+            activityDefinitionData={activityDefinitionData}
+            activityOperation={store.selectedActivity ? store.selectedActivity.operation : 'New'}
+            readOnly={readOnly}
+            onVersionSelection={(selectedVersion) => onVersionSelection(selectedVersion)}
+            versionData={activityVersions} //todo -- this data will be based on version api response
+            selectedVersion={store.selectedActivity ? store.selectedActivity.version : 1} //todo - pass current version id being loaded
+            setNotificationProps={setNotificationProps} // to show the success notification
+            getApiConfiguration={getApiConfiguration} //to call the API Configuration
+            getActivityFileList={getActivityFileList} //to call the Activity List 
+            getRoleList={getRoleList} // to call Role List
+            isDialogFlowActive={isDialogFlowActive}
+            setIsDialogFlowActive={setIsDialogFlowActive}
+            isPageDesignerActive={isPageDesignerActive}
+            setIsPageDesignerActive={setIsPageDesignerActive}
+            openTaskPropertiesBlock={openTaskPropertiesBlock}
+            setOpenTaskPropertiesBlock={setOpenTaskPropertiesBlock}
+            openDialogPropertiesBlock={openDialogPropertiesBlock}
+            setOpenDialogPropertiesBlock={setOpenDialogPropertiesBlock}
+            nodeDataRefActivity={nodeDataRefActivity}
+          />
+        )}
       {notificationProps && notificationProps.open && <Notification {...notificationProps} />}
       <Modal
         open={openDeleteActivityModal}

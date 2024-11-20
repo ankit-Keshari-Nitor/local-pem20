@@ -18,6 +18,7 @@ export default function APINodeDefinitionForm({
   setOpenPropertiesBlock,
   setNotificationProps,
   getApiConfiguration,
+  getActivityFileList,
   activityDefinitionData
 }) {
   const pageUtil = Shell.PageUtil();
@@ -104,29 +105,35 @@ export default function APINodeDefinitionForm({
       setHeaders([]);
     }
 
-    if (selectedNode.data?.api?.file !== '' && selectedNode.data?.api?.file) {
-      setFileKey(selectedNode.data?.api?.file);
-      if (!(/\./.test(selectedNode.data?.api?.file))) {
-        pageUtil.showPageModal('FILE_ATTACHMENT.ACTIVITY', {
-          key: selectedNode.data?.api?.file
-        }).then((modalData) => {
-          setFile({
-            status: 'edit',
-            iconDescription: 'Delete Icon',
-            invalid: true,
-            errorSubject: 'InValid ',
-            name: modalData?.data?.data?.documentName,
-            filesize: modalData?.data?.data?.contentLength
-          });
-        });
+    const fetchFileData = async () => {
+      if (selectedNode.data?.api?.file !== '' && selectedNode.data?.api?.file) {
+        setFileKey(selectedNode.data?.api?.file);
+        if (!(/\./.test(selectedNode.data?.api?.file))) {
+          try {
+            let file = await getActivityFileList(selectedNode.data?.api?.file);
+            setFile({
+              status: 'edit',
+              iconDescription: 'Delete Icon',
+              invalid: true,
+              errorSubject: 'InValid ',
+              name: file.documentName,
+              filesize: file.contentLength
+            });
+
+          } catch (error) {
+            console.error("Error fetching file list:", error);
+          }
+        } else {
+          setFileMap(selectedNode.data?.api?.file);
+        }
       } else {
-        setFileMap(selectedNode.data?.api?.file)
+        setFileKey('');
+        setFile();
+        setFileMap('');
       }
-    } else {
-      setFileKey('');
-      setFile();
-      setFileMap('')
-    }
+    };
+
+    fetchFileData();  // Call the inner async function
   }, [selectedNode]);
 
   // Handle Define Form changes
@@ -421,6 +428,9 @@ export default function APINodeDefinitionForm({
   };
 
   const OpenMappingDialog = (fieldName, index) => {
+    if (activityDefinitionData?.definition?.contextData === undefined) {
+      return;
+    }
     if (fieldName === "apiConfig") {
       try {
         pageUtil
@@ -455,6 +465,61 @@ export default function APINodeDefinitionForm({
           });
       } catch (e) {
         console.log('Error-', e);
+      }
+    } else if (fieldName === "request") {
+      if (formState.propertyForm.inputOutputFormats === "application/json") {
+        if (formState.propertyForm.request !== "") {
+          try {
+            // Attempt to parse the request and context data
+            const requestData = JSON.parse(formState.propertyForm.request);
+            const contextData = JSON.parse(activityDefinitionData?.definition?.contextData);
+
+            // Check if the parsed request is not an empty object
+            if (Object.keys(requestData).length === 0) {
+              setErrors({
+                propertyForm: {
+                  request: 'Invalid JSON',
+                }
+              })
+              return;
+            }
+
+            pageUtil
+              .showPageModal('CONTEXT_DATA_MAPPING.MAPPING', {
+                data: requestData,
+                contextData: contextData
+              })
+              .then((modalData) => {
+                const newData = JSON.stringify(modalData.data.data);
+                setFormState((prev) => ({
+                  ...prev,
+                  propertyForm: {
+                    ...prev.propertyForm,
+                    [fieldName]: newData
+                  }
+                }));
+              });
+          } catch (e) {
+            console.log('Error-', e);
+            setErrors({
+              propertyForm: {
+                request: e.message === 'Empty JSON' ? 'Request cannot be an empty JSON' : 'Invalid JSON',
+              }
+            });
+          }
+        } else {
+          setErrors({
+            propertyForm: {
+              request: 'Request cannot be empty',
+            }
+          });
+        }
+      } else {
+        setErrors({
+          propertyForm: {
+            inputOutputFormats: 'Input Output Format is required',
+          }
+        });
       }
     } else {
       try {
@@ -514,8 +579,8 @@ export default function APINodeDefinitionForm({
                       value={formState.defineForm.name}
                       onChange={handleDefineFormChange}
                       labelText="Name (required)"
-                      invalid={!!errors.defineForm.name}
-                      invalidText={errors.defineForm.name}
+                      invalid={!!errors?.defineForm?.name}
+                      invalidText={errors?.defineForm?.name}
                     ></TextInput>
                   </Column>
                   {/* Description */}

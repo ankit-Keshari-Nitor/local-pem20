@@ -358,11 +358,14 @@ const VersionListPage = () => {
             rowActions.markAsDefault.isVisible = false;
           }
           if (selectedRow.status !== 'DRAFT') {
-            rowActions.edit.isVisible = false
+            rowActions.edit.isVisible = false;
+          }
+          if (selectedRow.status === 'DRAFT') {
+            rowActions.cloneVersion.isVisible = false;
           }
           if (selectedRow.status === 'DELETE') {
             rowActions.delete.isVisible = false;
-            rowActions.shareUnshared.isVisible = false
+            rowActions.shareUnshared.isVisible = false;
           }
         },
       };

@@ -86,6 +86,13 @@
   inline-size: 62% !important;
 }
 
+.heading-wrapper {
+  margin: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .right-pane {
   position: absolute;
   width: -webkit-fill-available;
@@ -93,7 +100,7 @@
 
 .cdm-treeView-wrapper,
 .treeview-wrapper {
-  background-color: #FFFFFF;
+  background-color: transparent;
   overflow-y: auto !important
 }
 
@@ -201,4 +208,8 @@
   font-weight: 400;
   color: #161616;
 
+}
+
+.cds--tree-node {
+  background: transparent;
 }

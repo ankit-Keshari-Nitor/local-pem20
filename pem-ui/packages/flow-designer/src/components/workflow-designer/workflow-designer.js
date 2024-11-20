@@ -52,6 +52,7 @@ const WorkFlowDesigner = forwardRef(
     selectedVersion, //current selected version,
     setNotificationProps, //toast message config
     getApiConfiguration, //to call API Config
+    getActivityFileList,// to call Activity File 
     getRoleList, // to call the role List
     isDialogFlowActive,
     setIsDialogFlowActive,
@@ -853,6 +854,7 @@ const WorkFlowDesigner = forwardRef(
                   deleteBranchNodeConnector={deleteBranchNodeConnector}
                   isDialogFlowActive={isDialogFlowActive}
                   getApiConfiguration={getApiConfiguration}
+                  getActivityFileList={getActivityFileList}
                   activityDefinitionData={activityDefinitionData}
                   showActivityDefineDrawer={showActivityDefineDrawer}
                   setShowActivityDefineDrawer={setShowActivityDefineDrawer}

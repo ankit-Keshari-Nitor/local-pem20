@@ -12,6 +12,7 @@
     }
   },
   "treeHeading": "Context Data Properties",
+  "request":"Request Data Properties",
   "actions": {
     "search": "Search for property"
   }

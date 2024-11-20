@@ -34,10 +34,15 @@ const ContextDataModalRequest = ({ mode, context }) => {
                     this.setModel('originalData', { items: modalConfig?.data?.data });
                 },
                 uiOnRequestSubmit: function () {
-                    modalConfig.onAction('submit', { data: `${this.ui.selectedJPath}` });
+                    modalConfig.onAction('submit', { data: `\${${this.ui.selectedJPath}\}` });
                 },
                 uiOnSelectJPath: function (event, selectedNode) {
-                    this.setUI('selectedJPath', selectedNode.id);
+                    if (selectedNode === "CATEGORY") {
+                        this.setUI('selectedJPath', '');
+                    } else {
+                        this.setUI('selectedJPath', selectedNode.id);
+                    }
+
                 },
                 uiOnRequestClose: function () {
                     modalConfig.onAction('cancel', {

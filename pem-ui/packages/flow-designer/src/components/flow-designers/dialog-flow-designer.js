@@ -38,6 +38,7 @@ const DialogFlowDesigner = ({
   setNotificationProps, //toast message config
   deleteBranchNodeConnector,
   getApiConfiguration, //API Call API configuration
+  getActivityFileList, // Activity File List
   activityDefinitionData,
   showActivityDefineDrawer,
   setShowActivityDefineDrawer,
@@ -128,6 +129,7 @@ const DialogFlowDesigner = ({
                     deleteBranchNodeConnector={deleteBranchNodeConnector}
                     isDialogFlowActive={isDialogFlowActive}
                     getApiConfiguration={getApiConfiguration}
+                    getActivityFileList={getActivityFileList}
                     activityDefinitionData={activityDefinitionData}
                   />
                 </div>

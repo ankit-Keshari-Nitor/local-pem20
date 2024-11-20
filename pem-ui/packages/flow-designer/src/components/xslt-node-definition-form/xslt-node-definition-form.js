@@ -15,7 +15,6 @@ export default function XsltNodeDefinitionForm({
   readOnly,
   setOpenPropertiesBlock,
   setNotificationProps,
-  getApiConfiguration,
   activityDefinitionData
 }) {
   const pageUtil = Shell.PageUtil();
@@ -42,7 +41,6 @@ export default function XsltNodeDefinitionForm({
 
   // New state for validation errors
   const [errors, setErrors] = useState({ defineForm: {}, propertyForm: {} });
-
   const [openContextMappingModal, setOpenContextMappingModal] = useState(false);
 
   useEffect(() => {

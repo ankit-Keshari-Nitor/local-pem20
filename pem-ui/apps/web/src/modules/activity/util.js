@@ -163,6 +163,7 @@ const nodeObjects = (node, readOnly) => {
       break;
     case 'XSLT':
       data.editableProps = { name: rest?.name, description: rest?.description };
+      data.xslt = rest?.xslt;
       break;
     case 'DIALOG':
       data.editableProps = {

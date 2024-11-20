@@ -155,9 +155,18 @@ export const getAPIConfiguration = async () => {
   return response.status === 200 ? response?.data : [];
 }
 
+// Function to get the Activity File List
+export const getActivityFile = async (key) => {
+  let url = `${API_END_POINTS.ACTIVITY_FILE}${key}/`;
+  let dataLoaderConfig = { url, method: API_METHODS.GET };
+
+  const response = await new Shell.RestApiService().call(dataLoaderConfig, null, generateOptions());
+  return response.status === 200 ? response?.data : [];
+}
+
 //Function to fetch the list of roles
 export const getRoles = async () => {
-  
+
   let url = `${API_END_POINTS.ROLES}`;
   let dataLoaderConfig = { url, method: API_METHODS.GET };
 

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
 import {
-  Modal,
   TextInput,
   Checkbox,
   Button,
@@ -40,8 +39,6 @@ export default function APINodePropertyForm({
   file,
   onOpenFiles,
   onDeleteFile,
-  openCancelDialog,
-  openContextMappingModal,
   selectedHeaders,
   handleAddHeader,
   headers,
@@ -92,8 +89,8 @@ export default function APINodePropertyForm({
               name="apiConfig"
               labelText="API Configuration (required)"
               defaultValue={formState.propertyForm.apiConfig}
-              invalid={!!errors.propertyForm.apiConfig}
-              invalidText={errors.propertyForm.apiConfig}
+              invalid={!!errors?.propertyForm?.apiConfig}
+              invalidText={errors?.propertyForm?.apiConfig}
               onChange={handlePropertyFormChange}
             >
               <SelectItem value="" text="--Select--" />
@@ -155,7 +152,7 @@ export default function APINodePropertyForm({
             <TextInput
               style={{ marginTop: '2.45rem', borderLeft: '1px solid black', borderBottom: '1px solid black' }}
               disabled={readOnly}
-              invalid={!!errors.propertyForm.url}
+              invalid={!!errors?.propertyForm?.url}
               value={formState.propertyForm.url}
               name="url"
               onChange={handlePropertyFormChange}
@@ -178,9 +175,9 @@ export default function APINodePropertyForm({
             />
           </div>
         </Column>
-        {errors.propertyForm.url && (
+        {errors?.propertyForm?.url && (
           <Column lg={16}>
-            <div className="error-message">{errors.propertyForm.url}</div>
+            <div className="error-message">{errors?.propertyForm?.url}</div>
           </Column>
         )}
         {/* Request Method */}
@@ -191,8 +188,8 @@ export default function APINodePropertyForm({
             name="requestMethod"
             labelText="Request Method (required)"
             defaultValue={formState.propertyForm.requestMethod}
-            invalid={!!errors.propertyForm.requestMethod}
-            invalidText={errors.propertyForm.requestMethod}
+            invalid={!!errors?.propertyForm?.requestMethod}
+            invalidText={errors?.propertyForm?.requestMethod}
             onChange={handlePropertyFormChange}
           >
             {requestMethods.map((method) => (
@@ -336,13 +333,13 @@ export default function APINodePropertyForm({
             id="inputOutputFormats"
             name="inputOutputFormats"
             labelText="Input Output Format (required)"
-            invalid={!!errors.propertyForm.inputOutputFormats}
-            invalidText={errors.propertyForm.inputOutputFormats}
+            invalid={!!errors?.propertyForm.inputOutputFormats}
+            invalidText={errors?.propertyForm.inputOutputFormats}
             defaultValue={formState.propertyForm.inputOutputFormats}
             onChange={handlePropertyFormChange}
           >
             {inputOutputFormats.map((method) => (
-              <SelectItem key={method.value} value={method.value} text={method.label} />
+              <SelectItem key={method.value} value={method.value} text={method.label} disabled={method.disabled} />
             ))}
           </Select>
         </Column>
@@ -369,18 +366,20 @@ export default function APINodePropertyForm({
                 className="request-wrapper"
                 id="request"
                 name="request"
+                invalid={!!errors?.propertyForm?.request}
+                invalidText={errors?.propertyForm?.request}
                 disabled={readOnly}
                 value={formState.propertyForm.request}
                 onChange={handlePropertyFormChange}
-                style={{ maxHeight: '200px', overflowY: `${showCode ? 'hidden' : 'auto'}` }}
+                style={{ maxHeight: '200px', overflowY: `${!showCode ? 'hidden' : 'auto'}`, resize: 'none' }}
               />
               <Button size="sm" kind="ghost" disabled={readOnly} onClick={showCodeHandle} className="btn-show-code">
-                {showCode ? 'Show Code' : 'Hide Code'}
+                {showCode ? 'Hide Code' : 'Show Code'}
               </Button>
             </div>
             <Button
               onClick={() => {
-                setOpenContextMappingModal(true);
+                OpenMappingDialog('request')
               }}
               className="context-mapping-btn-api-node"
               kind="tertiary"
@@ -456,34 +455,6 @@ export default function APINodePropertyForm({
           </div>
         </Column>
       </Grid>
-
-      <Modal
-        open={openCancelDialog}
-        onRequestClose={() => setOpenCancelDialog(false)}
-        isFullWidth
-        modalHeading="Confirmation"
-        primaryButtonText="Exit"
-        secondaryButtonText="Cancel"
-      >
-        <p
-          style={{
-            padding: '0px 0px 1rem 1rem'
-          }}
-        >
-          Your changes are not saved. Do you want to exit without saving changes?{' '}
-        </p>
-      </Modal>
-
-      <Modal
-        open={openContextMappingModal}
-        onRequestClose={() => {
-          setOpenContextMappingModal(false);
-        }}
-        passiveModal
-        modalHeading="Sample Modal"
-      >
-        Functionality is not Implemented
-      </Modal>
     </div>
   );
 }

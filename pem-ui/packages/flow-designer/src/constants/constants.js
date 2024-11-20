@@ -690,14 +690,13 @@ export const requestMethods = [
 ];
 
 export const inputOutputFormats = [
-  { id: 'select', label: 'Choose an option', value: '' },
-  { id: 'xml', label: 'XML', value: 'application/xml' },
-  { id: 'json', label: 'JSON', value: 'application/json' }
+  { id: 'select', label: 'Choose an option', value: '', disabled: false },
+  { id: 'xml', label: 'XML', value: 'application/xml', disabled: true },
+  { id: 'json', label: 'JSON', value: 'application/json', disabled: false }
 ];
 
 export const outputFormats = [
   { id: 'select', label: 'Choose an option', value: '' },
-  { id: 'xml', label: 'XML', value: 'application/xml' },
   { id: 'json', label: 'JSON', value: 'application/json' }
 ];
 

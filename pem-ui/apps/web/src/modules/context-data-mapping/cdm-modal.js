@@ -204,7 +204,7 @@ const ContextDataModal = ({ mode, context }) => {
           if (context === 'PROPERTY') {
             modalConfig.onAction('submit', { data: this.model.originalData });
           } else {
-            modalConfig.onAction('submit', { data: `${this.ui.selectedJPath}` });
+            modalConfig.onAction('submit', { data: `\${${this.ui.selectedJPath}\}` });
           }
 
         },

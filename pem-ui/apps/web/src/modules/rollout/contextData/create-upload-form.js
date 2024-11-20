@@ -132,7 +132,7 @@ const CreateUploadForm = ({ documentCategory, contextPage, cdmPage }) => {
             </Column>
             <Column lg={11}></Column>
             <Column lg={5} className='btn-wrapper'>
-              <Button kind="tertiary" onClick={() => { page.form.apiConfiguration.handleSubmit(page.uiSave)() }}>Create</Button>
+              <Button kind="tertiary" onClick={() => { page.form.file.handleSubmit(page.uiOnRequestSubmit)() }}>Create</Button>
             </Column>
 
           </Grid>

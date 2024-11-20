@@ -5,6 +5,7 @@ import DataLoaderConfig from './data-loader-config.js';
 const CDM = {
   ModalPage: React.lazy(() => import('./cdm-modal.js')),
   ModalPageRequest: React.lazy(() => import('./cdm-modal-request.js')),
+  ModalPageMapping: React.lazy(() => import('./cdm-modal-mapping.js')),
   DataLoaderConfig: DataLoaderConfig,
 };
 
@@ -24,6 +25,15 @@ const modals = [
     element: (
       <Shell.PageContainer mode="MODAL_PAGE" dataLoaderConfig={CDM.DataLoaderConfig}>
         <CDM.ModalPage mode="CONTEXT_DATA" context="PROPERTY"></CDM.ModalPage>
+      </Shell.PageContainer>
+    )
+  },
+  {
+    page: 'CONTEXT_DATA_MAPPING.MAPPING',
+    size: 'lg',
+    element: (
+      <Shell.PageContainer mode="MODAL_PAGE" dataLoaderConfig={CDM.DataLoaderConfig}>
+        <CDM.ModalPageMapping mode="CONTEXT_DATA" ></CDM.ModalPageMapping>
       </Shell.PageContainer>
     )
   },

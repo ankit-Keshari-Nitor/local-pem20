@@ -15,7 +15,6 @@ import './style.scss';
 import CreateApiConfiguration from './create-api-configuration';
 import CreateUploadForm from './create-upload-form';
 
-
 /* const iconMapping = {
   TEXT: StringText,
   API_CONFIG: Api_1,
@@ -107,7 +106,7 @@ const ContextDataModal = ({ mode, context }) => {
           pagination: {},
           tableLoadingState: false,
           tableEmptyState: undefined,
-          view: 'table',
+          view: 'table'
         },
 
         form: {
@@ -116,7 +115,7 @@ const ContextDataModal = ({ mode, context }) => {
             booleanProperty: '',
             activityFileProperty: '',
             apiConfigProperty: '',
-            logoFileProperty: '',
+            logoFileProperty: ''
           }
         },
 
@@ -204,9 +203,8 @@ const ContextDataModal = ({ mode, context }) => {
           if (context === 'PROPERTY') {
             modalConfig.onAction('submit', { data: this.model.originalData });
           } else {
-            modalConfig.onAction('submit', { data: `\${${this.ui.selectedJPath}\}` });
+            modalConfig.onAction('submit', { data: '${' + this.ui.selectedJPath + '}' });
           }
-
         },
 
         uiOnSelectJPath: function (event, selectedNode) {
@@ -217,7 +215,7 @@ const ContextDataModal = ({ mode, context }) => {
           this.setUI('selectedNode', selectedNode);
           this.setUI('selectedNodes', [selectedNode.id]);
           this.form.property.reset();
-          this.uiOnMap(selectedNode.value.type, selectedNode.value.value, selectedNode)
+          this.uiOnMap(selectedNode.value.type, selectedNode.value.value, selectedNode);
           switch (selectedNode.value.type) {
             case 'TEXT':
               this.form.property.setValue('textProperty', selectedNode.value.value);
@@ -291,7 +289,7 @@ const ContextDataModal = ({ mode, context }) => {
               break;
           }
           const propertyRef = JSONPath({ path: `${selectedNode.activeNodeId}`, json: page.model.originalData, wrap: false });
-          selectedNode.value.value = ''
+          selectedNode.value.value = '';
           propertyRef.pValue = '';
           const transformedData = generateTreeData(page.model.originalData);
           /*     updateTreeNodeIcon(transformedData, iconMapping); */
@@ -300,36 +298,39 @@ const ContextDataModal = ({ mode, context }) => {
 
         uiOnMap: function (type, val, selectedNode = undefined) {
           let handler;
-          let key = {}
+          let key = {};
 
           switch (type) {
             case 'API_CONFIG':
               if (val) {
-                key.id = val
-                handler = val ? this.ds.viewSponsorServerList(key) : undefined
-                handler && handler.then((response) => {
-                  this.setModel('apiConfigListData', response.data);
-                })
+                key.id = val;
+                handler = val ? this.ds.viewSponsorServerList(key) : undefined;
+                handler &&
+                  handler.then((response) => {
+                    this.setModel('apiConfigListData', response.data);
+                  });
               }
               page.datatable.apiConfigList.refresh();
               break;
             case 'LOGO_FILE':
               if (val) {
-                key.id = val
-                handler = this.ds.viewDocumentList(key)
-                handler && handler.then((response) => {
-                  this.setModel('headerLogoListData', response.data);
-                })
+                key.id = val;
+                handler = this.ds.viewDocumentList(key);
+                handler &&
+                  handler.then((response) => {
+                    this.setModel('headerLogoListData', response.data);
+                  });
               }
               page.datatable.headerLogoList.refresh();
               break;
             case 'ACTIVITY_FILE':
               if (val) {
-                key.id = val
-                handler = this.ds.viewDocumentList(key)
-                handler && handler.then((response) => {
-                  this.setModel('activityFileListData', response.data);
-                })
+                key.id = val;
+                handler = this.ds.viewDocumentList(key);
+                handler &&
+                  handler.then((response) => {
+                    this.setModel('activityFileListData', response.data);
+                  });
               }
               page.datatable.activityFileList.refresh();
               break;
@@ -337,7 +338,7 @@ const ContextDataModal = ({ mode, context }) => {
               break;
           }
           const propertyRef = JSONPath({ path: `${selectedNode.activeNodeId}`, json: page.model.originalData, wrap: false });
-          selectedNode.value.value = val
+          selectedNode.value.value = val;
           propertyRef.pValue = val;
           const transformedData = generateTreeData(page.model.originalData);
           /*       updateTreeNodeIcon(transformedData, iconMapping); */
@@ -421,9 +422,9 @@ const ContextDataModal = ({ mode, context }) => {
         onSelectionChange: (...args) => {
           if (args[0].join('') !== '') {
             const propertyRef = JSONPath({ path: `${page.ui.selectedNode.activeNodeId}`, json: page.model.originalData, wrap: false });
-            page.ui.selectedNode.value.value = args[0].join('')
+            page.ui.selectedNode.value.value = args[0].join('');
             propertyRef.pValue = args[0].join('');
-            page.uiOnMap(propertyRef.pType, args[0].join(''), page.ui.selectedNode)
+            page.uiOnMap(propertyRef.pType, args[0].join(''), page.ui.selectedNode);
           }
         }
       },
@@ -473,7 +474,7 @@ const ContextDataModal = ({ mode, context }) => {
             type: 'batch',
             resourceKey: '',
             label: 'Add',
-            onAction: (...args) => { }
+            onAction: (...args) => {}
           }
         ],
         search: {
@@ -507,9 +508,9 @@ const ContextDataModal = ({ mode, context }) => {
         onSelectionChange: (...args) => {
           if (args[0].join('') !== '') {
             const propertyRef = JSONPath({ path: `${page.ui.selectedNode.activeNodeId}`, json: page.model.originalData, wrap: false });
-            page.ui.selectedNode.value.value = args[0].join('')
+            page.ui.selectedNode.value.value = args[0].join('');
             propertyRef.pValue = args[0].join('');
-            page.uiOnMap(propertyRef.pType, args[0].join(''), page.ui.selectedNode)
+            page.uiOnMap(propertyRef.pType, args[0].join(''), page.ui.selectedNode);
           }
         }
       },
@@ -586,9 +587,9 @@ const ContextDataModal = ({ mode, context }) => {
         onSelectionChange: (...args) => {
           if (args[0].join('') !== '') {
             const propertyRef = JSONPath({ path: `${page.ui.selectedNode.activeNodeId}`, json: page.model.originalData, wrap: false });
-            page.ui.selectedNode.value.value = args[0].join('')
+            page.ui.selectedNode.value.value = args[0].join('');
             propertyRef.pValue = args[0].join('');
-            page.uiOnMap(propertyRef.pType, args[0].join(''), page.ui.selectedNode)
+            page.uiOnMap(propertyRef.pType, args[0].join(''), page.ui.selectedNode);
           }
         }
       },
@@ -688,8 +689,13 @@ const ContextDataModal = ({ mode, context }) => {
                       {(!page.ui.selectedNode || page.ui?.selectedNode?.value?.type === 'OBJECT') && (
                         <>
                           <div className="no-connector-container">
-                            <div><ListBoxes className='listbox-svg' /> </div>
-                            <div> <span className='no-connector-container-text'>No Node Selected </span></div>
+                            <div>
+                              <ListBoxes className="listbox-svg" />{' '}
+                            </div>
+                            <div>
+                              {' '}
+                              <span className="no-connector-container-text">No Node Selected </span>
+                            </div>
                             <div>Please select Node from left panel</div>
                           </div>
                         </>
@@ -701,7 +707,13 @@ const ContextDataModal = ({ mode, context }) => {
                               <>
                                 <Layer>
                                   <Layer>
-                                    <TextInput className="right-panel" id="context-constant" type="text" labelText="Set value for selected node" placeholder="Enter Value"></TextInput>
+                                    <TextInput
+                                      className="right-panel"
+                                      id="context-constant"
+                                      type="text"
+                                      labelText="Set value for selected node"
+                                      placeholder="Enter Value"
+                                    ></TextInput>
                                   </Layer>
                                 </Layer>
                               </>
@@ -715,52 +727,100 @@ const ContextDataModal = ({ mode, context }) => {
                               ></CDS.TextInput>
                             )}
                             {page.ui.selectedNode.value.type === CONTEXT_TYPES.BOOLEAN && (
-                              <CDS.Toggle className="right-panel" name="booleanProperty" labelText="Set value for selected node" rules={{ onChange: page.uiOnPropertyChange }}></CDS.Toggle>
+                              <CDS.Toggle
+                                className="right-panel"
+                                name="booleanProperty"
+                                labelText="Set value for selected node"
+                                rules={{ onChange: page.uiOnPropertyChange }}
+                              ></CDS.Toggle>
                             )}
                             {page.ui.selectedNode.value.type === CONTEXT_TYPES.API_CONFIG && (
-                              <>{
-                                (page.ui.selectedNode.value.value) ?
+                              <>
+                                {page.ui.selectedNode.value.value ? (
                                   <>
                                     <div className="unmap-header">
                                       <span className="pem-unmap-table-title">{pageUtil.t('mod-context-properties:page.viewAPIConfig')}</span>
-                                      <Button className='pem-unmap-button-wrapper' onClick={() => page.uiOnUnmapBtn(page.ui.selectedNode.value.type, page.ui.selectedNode)}>Unmap</Button>
+                                      <Button className="pem-unmap-button-wrapper" onClick={() => page.uiOnUnmapBtn(page.ui.selectedNode.value.type, page.ui.selectedNode)}>
+                                        Unmap
+                                      </Button>
                                     </div>
-                                    <Grid className='unmap-wrapper'>
+                                    <Grid className="unmap-wrapper">
                                       {/* Name */}
-                                      <Column className='unmap-col-wrapper' lg={6}>{pageUtil.t('mod-context-properties:form.name')}</Column>
-                                      <Column className='unmap-col-wrapper' lg={6}>{page.model.apiConfigListData?.name}</Column>
+                                      <Column className="unmap-col-wrapper" lg={6}>
+                                        {pageUtil.t('mod-context-properties:form.name')}
+                                      </Column>
+                                      <Column className="unmap-col-wrapper" lg={6}>
+                                        {page.model.apiConfigListData?.name}
+                                      </Column>
                                       {/* Protocol */}
-                                      <Column className='unmap-col-wrapper' lg={6}>{pageUtil.t('mod-context-properties:form.protocol')}</Column>
-                                      <Column className='unmap-col-wrapper' lg={6}>{page.model.apiConfigListData?.protocol}</Column>
+                                      <Column className="unmap-col-wrapper" lg={6}>
+                                        {pageUtil.t('mod-context-properties:form.protocol')}
+                                      </Column>
+                                      <Column className="unmap-col-wrapper" lg={6}>
+                                        {page.model.apiConfigListData?.protocol}
+                                      </Column>
                                       {/* Host */}
-                                      <Column className='unmap-col-wrapper' lg={6}>{pageUtil.t('mod-context-properties:form.host')}</Column>
-                                      <Column className='unmap-col-wrapper' lg={6}>{page.model.apiConfigListData?.host}</Column>
+                                      <Column className="unmap-col-wrapper" lg={6}>
+                                        {pageUtil.t('mod-context-properties:form.host')}
+                                      </Column>
+                                      <Column className="unmap-col-wrapper" lg={6}>
+                                        {page.model.apiConfigListData?.host}
+                                      </Column>
                                       {/* Port */}
-                                      <Column className='unmap-col-wrapper' lg={6}>{pageUtil.t('mod-context-properties:form.port')}</Column>
-                                      <Column className='unmap-col-wrapper' lg={6}>{page.model.apiConfigListData?.port}</Column>
+                                      <Column className="unmap-col-wrapper" lg={6}>
+                                        {pageUtil.t('mod-context-properties:form.port')}
+                                      </Column>
+                                      <Column className="unmap-col-wrapper" lg={6}>
+                                        {page.model.apiConfigListData?.port}
+                                      </Column>
                                       {/* SSL Protocol */}
-                                      <Column className='unmap-col-wrapper' lg={6}>{pageUtil.t('mod-context-properties:form.sslProtocol')}</Column>
-                                      <Column className='unmap-col-wrapper' lg={6}>{page.model.apiConfigListData?.sslProtocol ? page.model.apiConfigListData?.sslProtocol : 'None'}</Column>
+                                      <Column className="unmap-col-wrapper" lg={6}>
+                                        {pageUtil.t('mod-context-properties:form.sslProtocol')}
+                                      </Column>
+                                      <Column className="unmap-col-wrapper" lg={6}>
+                                        {page.model.apiConfigListData?.sslProtocol ? page.model.apiConfigListData?.sslProtocol : 'None'}
+                                      </Column>
                                       {/* preemptive Auth*/}
-                                      <Column className='unmap-col-wrapper' lg={6}>{pageUtil.t('mod-context-properties:form.preemptiveAuth')}</Column>
-                                      <Column className='unmap-col-wrapper' lg={6}>{page.model.apiConfigListData?.preemptiveAuth?.code === "TRUE" ? 'Yes' : 'No'}</Column>
+                                      <Column className="unmap-col-wrapper" lg={6}>
+                                        {pageUtil.t('mod-context-properties:form.preemptiveAuth')}
+                                      </Column>
+                                      <Column className="unmap-col-wrapper" lg={6}>
+                                        {page.model.apiConfigListData?.preemptiveAuth?.code === 'TRUE' ? 'Yes' : 'No'}
+                                      </Column>
                                       {/* authenticationType */}
-                                      <Column className='unmap-col-wrapper' lg={6}>{pageUtil.t('mod-context-properties:form.authenticationType')}</Column>
-                                      <Column className='unmap-col-wrapper' lg={6}>                           
-                                        <span>{(!page.model.apiConfigListData?.userName && !page.model.apiConfigListData?.password) && page.model.apiConfigListData?.isInternalAuth?.code === "FALSE" ? 'None' : page.model.apiConfigListData?.isInternalAuth?.code === "TRUE" ? 'Internally generated token' : page.model.apiConfigListData?.userName && page.model.apiConfigListData?.password ? 'User Name and Password' : ''}</span>
+                                      <Column className="unmap-col-wrapper" lg={6}>
+                                        {pageUtil.t('mod-context-properties:form.authenticationType')}
+                                      </Column>
+                                      <Column className="unmap-col-wrapper" lg={6}>
+                                        <span>
+                                          {!page.model.apiConfigListData?.userName &&
+                                          !page.model.apiConfigListData?.password &&
+                                          page.model.apiConfigListData?.isInternalAuth?.code === 'FALSE'
+                                            ? 'None'
+                                            : page.model.apiConfigListData?.isInternalAuth?.code === 'TRUE'
+                                              ? 'Internally generated token'
+                                              : page.model.apiConfigListData?.userName && page.model.apiConfigListData?.password
+                                                ? 'User Name and Password'
+                                                : ''}
+                                        </span>
                                       </Column>
                                       {/* Verify host*/}
-                                      <Column className='unmap-col-wrapper' lg={6}>{pageUtil.t('mod-context-properties:form.verifyHost')}</Column>
-                                      <Column className='unmap-col-wrapper' lg={6}>{page.model.apiConfigListData?.verifyHost?.code === 'TRUE' ? 'Yes' : 'No'}</Column>
-
+                                      <Column className="unmap-col-wrapper" lg={6}>
+                                        {pageUtil.t('mod-context-properties:form.verifyHost')}
+                                      </Column>
+                                      <Column className="unmap-col-wrapper" lg={6}>
+                                        {page.model.apiConfigListData?.verifyHost?.code === 'TRUE' ? 'Yes' : 'No'}
+                                      </Column>
                                     </Grid>
-                                  </> :
+                                  </>
+                                ) : (
                                   <>
                                     <Tabs
                                       defaultSelectedIndex={0}
                                       onChange={(e) => {
                                         page.uiTabChange(e, CONTEXT_TYPES.API_CONFIG);
-                                      }}                                            >
+                                      }}
+                                    >
                                       <TabList>
                                         <Tab>{pageUtil.t('mod-context-properties:tabs.apiConfigList')}</Tab>
                                         <Tab>{pageUtil.t('mod-context-properties:tabs.createNew')}</Tab>
@@ -787,55 +847,80 @@ const ContextDataModal = ({ mode, context }) => {
                                       </TabPanels>
                                     </Tabs>
                                   </>
-                              }
-
+                                )}
                               </>
                             )}
                             {page.ui.selectedNode.value.type === CONTEXT_TYPES.LOGO_FILE && (
-                              <> {
-                                (page.ui.selectedNode.value.value) ?
+                              <>
+                                {' '}
+                                {page.ui.selectedNode.value.value ? (
                                   <>
                                     <div className="unmap-header">
                                       <span className="pem-unmap-table-title">{pageUtil.t('mod-context-properties:page.viewDocument')}</span>
-                                      <Button className='pem-unmap-button-wrapper' onClick={() => page.uiOnUnmapBtn(page.ui.selectedNode.value.type, page.ui.selectedNode)}>Unmap</Button>
+                                      <Button className="pem-unmap-button-wrapper" onClick={() => page.uiOnUnmapBtn(page.ui.selectedNode.value.type, page.ui.selectedNode)}>
+                                        Unmap
+                                      </Button>
                                     </div>
-                                    <Grid className='unmap-wrapper'>
+                                    <Grid className="unmap-wrapper">
                                       {/* Name */}
-                                      <Column className='unmap-col-wrapper' lg={6}>{pageUtil.t('mod-file:list.columns.documentName')}</Column>
-                                      <Column className='unmap-col-wrapper' lg={6}>{page.model.headerLogoListData?.documentName}</Column>
+                                      <Column className="unmap-col-wrapper" lg={6}>
+                                        {pageUtil.t('mod-file:list.columns.documentName')}
+                                      </Column>
+                                      <Column className="unmap-col-wrapper" lg={6}>
+                                        {page.model.headerLogoListData?.documentName}
+                                      </Column>
                                       {/* Owner */}
-                                      <Column className='unmap-col-wrapper' lg={6}>{pageUtil.t('mod-file:list.columns.createdBy')}</Column>
-                                      <Column className='unmap-col-wrapper' lg={6}>{page.model.headerLogoListData?.createdBy}</Column>
+                                      <Column className="unmap-col-wrapper" lg={6}>
+                                        {pageUtil.t('mod-file:list.columns.createdBy')}
+                                      </Column>
+                                      <Column className="unmap-col-wrapper" lg={6}>
+                                        {page.model.headerLogoListData?.createdBy}
+                                      </Column>
                                       {/* Category */}
-                                      <Column className='unmap-col-wrapper' lg={6}>{pageUtil.t('mod-file:list.columns.documentCategory')}</Column>
-                                      <Column className='unmap-col-wrapper' lg={6}>{page.model.headerLogoListData?.documentCategory?.display}</Column>
+                                      <Column className="unmap-col-wrapper" lg={6}>
+                                        {pageUtil.t('mod-file:list.columns.documentCategory')}
+                                      </Column>
+                                      <Column className="unmap-col-wrapper" lg={6}>
+                                        {page.model.headerLogoListData?.documentCategory?.display}
+                                      </Column>
                                       {/* Type */}
-                                      <Column className='unmap-col-wrapper' lg={6}>{pageUtil.t('mod-file:list.columns.contentType')}</Column>
-                                      <Column className='unmap-col-wrapper' lg={6}>{page.model.headerLogoListData?.contentType}</Column>
+                                      <Column className="unmap-col-wrapper" lg={6}>
+                                        {pageUtil.t('mod-file:list.columns.contentType')}
+                                      </Column>
+                                      <Column className="unmap-col-wrapper" lg={6}>
+                                        {page.model.headerLogoListData?.contentType}
+                                      </Column>
                                       {/* Encrypted */}
-                                      <Column className='unmap-col-wrapper' lg={6}>{pageUtil.t('mod-file:list.columns.isEncrypted')}</Column>
-                                      <Column className='unmap-col-wrapper' lg={6}>{page.model.headerLogoListData?.isEncrypted?.code === 'TRUE' ? 'Yes' : 'No'}</Column>
+                                      <Column className="unmap-col-wrapper" lg={6}>
+                                        {pageUtil.t('mod-file:list.columns.isEncrypted')}
+                                      </Column>
+                                      <Column className="unmap-col-wrapper" lg={6}>
+                                        {page.model.headerLogoListData?.isEncrypted?.code === 'TRUE' ? 'Yes' : 'No'}
+                                      </Column>
                                       {/* Upload Date*/}
-                                      <Column className='unmap-col-wrapper' lg={6}>{pageUtil.t('mod-file:list.columns.createTs')}</Column>
-                                      <Column className='unmap-col-wrapper' lg={6}>
+                                      <Column className="unmap-col-wrapper" lg={6}>
+                                        {pageUtil.t('mod-file:list.columns.createTs')}
+                                      </Column>
+                                      <Column className="unmap-col-wrapper" lg={6}>
                                         {page.model.headerLogoListData?.createTs
                                           ? (() => {
-                                            const date = new Date(page.model.headerLogoListData.createTs);
-                                            const options = {
-                                              year: 'numeric',
-                                              month: 'short', // For abbreviated month (e.g., "Oct")
-                                              day: 'numeric',
-                                              hour: 'numeric',
-                                              minute: 'numeric',
-                                              second: 'numeric',
-                                              hour12: true
-                                            };
-                                            return date.toLocaleString('en-US', options); // Format the date
-                                          })()
+                                              const date = new Date(page.model.headerLogoListData.createTs);
+                                              const options = {
+                                                year: 'numeric',
+                                                month: 'short', // For abbreviated month (e.g., "Oct")
+                                                day: 'numeric',
+                                                hour: 'numeric',
+                                                minute: 'numeric',
+                                                second: 'numeric',
+                                                hour12: true
+                                              };
+                                              return date.toLocaleString('en-US', options); // Format the date
+                                            })()
                                           : ''}
                                       </Column>
                                     </Grid>
-                                  </> :
+                                  </>
+                                ) : (
                                   <>
                                     <Tabs
                                       defaultSelectedIndex={0}
@@ -849,7 +934,6 @@ const ContextDataModal = ({ mode, context }) => {
                                       </TabList>
                                       <TabPanels>
                                         <TabPanel>
-
                                           <div className="pem--table-header">
                                             <span className="pem--table-title">{pageUtil.t('mod-context-properties:tabs.titleOne')}</span>
                                           </div>
@@ -863,7 +947,6 @@ const ContextDataModal = ({ mode, context }) => {
                                             emptyState={page.datatable.headerLogoList.emptyState}
                                             totalItems={page.model.headerLogoList.meta.totalItems}
                                           ></Shell.DataTable>
-
                                         </TabPanel>
                                         <TabPanel>
                                           <CreateUploadForm documentCategory="LOGO" cdmPage={page} />
@@ -871,54 +954,80 @@ const ContextDataModal = ({ mode, context }) => {
                                       </TabPanels>
                                     </Tabs>
                                   </>
-                              }
+                                )}
                               </>
                             )}
                             {page.ui.selectedNode.value.type === CONTEXT_TYPES.ACTIVITY_FILE && (
-                              <>{
-                                (page.ui.selectedNode.value.value) ?
+                              <>
+                                {page.ui.selectedNode.value.value ? (
                                   <>
                                     <div className="unmap-header">
                                       <span className="pem-unmap-table-title">{pageUtil.t('mod-context-properties:page.viewDocument')}</span>
-                                      <Button className='pem-unmap-button-wrapper' onClick={() => page.uiOnUnmapBtn(page.ui.selectedNode.value.type, page.ui.selectedNode)}>Unmap</Button>
+                                      <Button className="pem-unmap-button-wrapper" onClick={() => page.uiOnUnmapBtn(page.ui.selectedNode.value.type, page.ui.selectedNode)}>
+                                        Unmap
+                                      </Button>
                                     </div>
-                                    <Grid className='unmap-wrapper'>
+                                    <Grid className="unmap-wrapper">
                                       {/* Name */}
-                                      <Column className='unmap-col-wrapper' lg={6}>{pageUtil.t('mod-file:list.columns.documentName')}</Column>
-                                      <Column className='unmap-col-wrapper' lg={6}>{page.model.activityFileListData?.documentName}</Column>
+                                      <Column className="unmap-col-wrapper" lg={6}>
+                                        {pageUtil.t('mod-file:list.columns.documentName')}
+                                      </Column>
+                                      <Column className="unmap-col-wrapper" lg={6}>
+                                        {page.model.activityFileListData?.documentName}
+                                      </Column>
                                       {/* Owner */}
-                                      <Column className='unmap-col-wrapper' lg={6}>{pageUtil.t('mod-file:list.columns.createdBy')}</Column>
-                                      <Column className='unmap-col-wrapper' lg={6}>{page.model.activityFileListData?.createdBy}</Column>
+                                      <Column className="unmap-col-wrapper" lg={6}>
+                                        {pageUtil.t('mod-file:list.columns.createdBy')}
+                                      </Column>
+                                      <Column className="unmap-col-wrapper" lg={6}>
+                                        {page.model.activityFileListData?.createdBy}
+                                      </Column>
                                       {/* Category */}
-                                      <Column className='unmap-col-wrapper' lg={6}>{pageUtil.t('mod-file:list.columns.documentCategory')}</Column>
-                                      <Column className='unmap-col-wrapper' lg={6}>{page.model.activityFileListData?.documentCategory?.display}</Column>
+                                      <Column className="unmap-col-wrapper" lg={6}>
+                                        {pageUtil.t('mod-file:list.columns.documentCategory')}
+                                      </Column>
+                                      <Column className="unmap-col-wrapper" lg={6}>
+                                        {page.model.activityFileListData?.documentCategory?.display}
+                                      </Column>
                                       {/* Type */}
-                                      <Column className='unmap-col-wrapper' lg={6}>{pageUtil.t('mod-file:list.columns.contentType')}</Column>
-                                      <Column className='unmap-col-wrapper' lg={6}>{page.model.activityFileListData?.contentType}</Column>
+                                      <Column className="unmap-col-wrapper" lg={6}>
+                                        {pageUtil.t('mod-file:list.columns.contentType')}
+                                      </Column>
+                                      <Column className="unmap-col-wrapper" lg={6}>
+                                        {page.model.activityFileListData?.contentType}
+                                      </Column>
                                       {/* Encrypted */}
-                                      <Column className='unmap-col-wrapper' lg={6}>{pageUtil.t('mod-file:list.columns.isEncrypted')}</Column>
-                                      <Column className='unmap-col-wrapper' lg={6}>{page.model.activityFileListData?.isEncrypted?.code === 'TRUE' ? 'Yes' : 'No'}</Column>
+                                      <Column className="unmap-col-wrapper" lg={6}>
+                                        {pageUtil.t('mod-file:list.columns.isEncrypted')}
+                                      </Column>
+                                      <Column className="unmap-col-wrapper" lg={6}>
+                                        {page.model.activityFileListData?.isEncrypted?.code === 'TRUE' ? 'Yes' : 'No'}
+                                      </Column>
                                       {/* Upload Date*/}
-                                      <Column className='unmap-col-wrapper' lg={6}>{pageUtil.t('mod-file:list.columns.createTs')}</Column>
-                                      <Column className='unmap-col-wrapper' lg={6}>
+                                      <Column className="unmap-col-wrapper" lg={6}>
+                                        {pageUtil.t('mod-file:list.columns.createTs')}
+                                      </Column>
+                                      <Column className="unmap-col-wrapper" lg={6}>
                                         {page.model.activityFileListData?.createTs
                                           ? (() => {
-                                            const date = new Date(page.model.activityFileListData.createTs);
-                                            const options = {
-                                              year: 'numeric',
-                                              month: 'short', // For abbreviated month (e.g., "Oct")
-                                              day: 'numeric',
-                                              hour: 'numeric',
-                                              minute: 'numeric',
-                                              second: 'numeric',
-                                              hour12: true
-                                            };
-                                            return date.toLocaleString('en-US', options); // Format the date
-                                          })()
+                                              const date = new Date(page.model.activityFileListData.createTs);
+                                              const options = {
+                                                year: 'numeric',
+                                                month: 'short', // For abbreviated month (e.g., "Oct")
+                                                day: 'numeric',
+                                                hour: 'numeric',
+                                                minute: 'numeric',
+                                                second: 'numeric',
+                                                hour12: true
+                                              };
+                                              return date.toLocaleString('en-US', options); // Format the date
+                                            })()
                                           : ''}
                                       </Column>
                                     </Grid>
-                                  </> : <>
+                                  </>
+                                ) : (
+                                  <>
                                     <Tabs
                                       defaultSelectedIndex={0}
                                       onChange={(e) => {
@@ -951,14 +1060,15 @@ const ContextDataModal = ({ mode, context }) => {
                                       </TabPanels>
                                     </Tabs>
                                   </>
-                              }
+                                )}
                               </>
                             )}
                           </>
                         )}
                       </CDS.Form>
                     </Column>
-                  </div>                </Panel>
+                  </div>{' '}
+                </Panel>
                 {/* </Grid> */}
               </PanelGroup>
             </>

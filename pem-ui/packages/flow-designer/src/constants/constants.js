@@ -697,7 +697,7 @@ export const inputOutputFormats = [
 
 export const outputFormats = [
   { id: 'select', label: 'Choose an option', value: '' },
-  { id: 'json', label: 'JSON', value: 'application/json' }
+  { id: 'xml', label: 'XML', value: 'application/xml' }
 ];
 
 export const apiConfig = [

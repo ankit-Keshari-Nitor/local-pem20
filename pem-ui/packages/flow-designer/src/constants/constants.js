@@ -73,7 +73,7 @@ export const NODE_TYPES = {
     entryValidationMessage: '',
     contextMenu: [
       { label: 'Delete', action: 'delete' },
-      { label: 'Copy', action: 'copy' },
+      { label: 'Copy', action: 'copy' }
       // { label: 'Save as Template', action: 'savetemplate' }
     ],
     nodeIcon: <PartnerBlockIcon />,
@@ -106,7 +106,7 @@ export const NODE_TYPES = {
     entryValidationMessage: '',
     contextMenu: [
       { label: 'Delete', action: 'delete' },
-      { label: 'Copy', action: 'copy' },
+      { label: 'Copy', action: 'copy' }
       // { label: 'Save as Template', action: 'savetemplate' }
     ],
     nodeIcon: <ApprovalBlockIcon />,
@@ -139,7 +139,7 @@ export const NODE_TYPES = {
     entryValidationMessage: '',
     contextMenu: [
       { label: 'Delete', action: 'delete' },
-      { label: 'Copy', action: 'copy' },
+      { label: 'Copy', action: 'copy' }
       // { label: 'Save as Template', action: 'savetemplate' }
     ],
     nodeIcon: <AttributeBlockIcon />,
@@ -172,7 +172,7 @@ export const NODE_TYPES = {
     entryValidationMessage: '',
     contextMenu: [
       { label: 'Delete', action: 'delete' },
-      { label: 'Copy', action: 'copy' },
+      { label: 'Copy', action: 'copy' }
       // { label: 'Save as Template', action: 'savetemplate' }
     ],
     nodeIcon: <SponsorBlockIcon />,
@@ -205,7 +205,7 @@ export const NODE_TYPES = {
     entryValidationMessage: '',
     contextMenu: [
       { label: 'Delete', action: 'delete' },
-      { label: 'Copy', action: 'copy' },
+      { label: 'Copy', action: 'copy' }
       // { label: 'Save as Template', action: 'savetemplate' }
     ],
     nodeIcon: <CustomBlockIcon />,
@@ -238,7 +238,7 @@ export const NODE_TYPES = {
     entryValidationMessage: '',
     contextMenu: [
       { label: 'Delete', action: 'delete' },
-      { label: 'Copy', action: 'copy' },
+      { label: 'Copy', action: 'copy' }
       // { label: 'Save as Template', action: 'savetemplate' }
     ],
     nodeIcon: <SystemBlockIcon />,
@@ -273,7 +273,7 @@ export const NODE_TYPES = {
     entryValidationMessage: '',
     contextMenu: [
       { label: 'Delete', action: 'delete' },
-      { label: 'Copy', action: 'copy' },
+      { label: 'Copy', action: 'copy' }
       // { label: 'Save as Template', action: 'savetemplate' }
     ],
     nodeIcon: <GatewayBlockIcon />,
@@ -306,7 +306,7 @@ export const NODE_TYPES = {
     entryValidationMessage: '',
     contextMenu: [
       { label: 'Delete', action: 'delete' },
-      { label: 'Copy', action: 'copy' },
+      { label: 'Copy', action: 'copy' }
       // { label: 'Save as Template', action: 'savetemplate' }
     ],
     form: {},
@@ -340,7 +340,7 @@ export const NODE_TYPES = {
     entryValidationMessage: '',
     contextMenu: [
       { label: 'Delete', action: 'delete' },
-      { label: 'Copy', action: 'copy' },
+      { label: 'Copy', action: 'copy' }
       // { label: 'Save as Template', action: 'savetemplate' }
     ],
     nodeIcon: <ApiBlockIcon />,
@@ -373,7 +373,7 @@ export const NODE_TYPES = {
     entryValidationMessage: '',
     contextMenu: [
       { label: 'Delete', action: 'delete' },
-      { label: 'Copy', action: 'copy' },
+      { label: 'Copy', action: 'copy' }
       // { label: 'Save as Template', action: 'savetemplate' }
     ],
     nodeIcon: <XsltBlockIcon />,
@@ -408,7 +408,7 @@ export const NODE_TYPES = {
     entryValidationMessage: '',
     contextMenu: [
       { label: 'Delete', action: 'delete' },
-      { label: 'Copy', action: 'copy' },
+      { label: 'Copy', action: 'copy' }
       // { label: 'Save as Template', action: 'savetemplate' }
     ],
     nodeIcon: <GatewayBlockIcon />,

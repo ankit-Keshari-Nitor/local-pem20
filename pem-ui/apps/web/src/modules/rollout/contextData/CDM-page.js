@@ -6,25 +6,22 @@ import '@b2bi/styles/pages/list-page.scss';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 
 import { CONTEXT_MAPPING_TYPES, CONTEXT_TYPES } from './constant';
-import { generateTreeData } from './CDM-utils';
+import { generateTreeData, updateTreeNodeIcon } from './CDM-utils';
 
 import '../styles.scss';
 
-import { ListBoxes } from '@carbon/icons-react';
+import { ListBoxes, TextFont, Image, Task, Repeat } from '@carbon/icons-react';
 
 import CreateApiConfiguration from './create-api-configuration';
 import CreateUploadForm from './create-upload-form';
 
-/* const iconMapping = {
-    TEXT: StringText,
-    API_CONFIG: Api_1,
+const iconMapping = {
+    TEXT: TextFont,
+    API_CONFIG: Repeat,
     LOGO_FILE: Image,
-    ACTIVITY_FILE: Schematics,
-    OBJECT: TreeViewAlt,
-    ARRAY: Table,
-    ARRAY_ITEM: ProgressBar,
-    DEFAULT: DataVolume
-}; */
+    ACTIVITY_FILE: Task,
+    OBJECT: ''
+};
 
 const ContextDataModal = ({ contextData, contextPage }) => {
     const pageUtil = Shell.PageUtil();
@@ -174,7 +171,7 @@ const ContextDataModal = ({ contextData, contextPage }) => {
                 },
                 _processProperty: function () {
                     const transformedData = generateTreeData(contextData);
-                    /*   updateTreeNodeIcon(transformedData, iconMapping) */
+                    updateTreeNodeIcon(transformedData, iconMapping)
                     this.setModel('data', transformedData);
                     contextPage.page.setModel('originalData', contextData);
                 },
@@ -209,7 +206,7 @@ const ContextDataModal = ({ contextData, contextPage }) => {
                     this.ui.selectedNode.value.value = event.target.value;
                     propertyRef.pValue = event.target.value;
                     const transformedData = generateTreeData(contextPage.page.model.originalData);
-                    /*   updateTreeNodeIcon(transformedData, iconMapping) */
+                    updateTreeNodeIcon(transformedData, iconMapping)
                     this.setModel('data', transformedData);
                 },
                 uiTabChange: function (...args) {
@@ -246,7 +243,7 @@ const ContextDataModal = ({ contextData, contextPage }) => {
                     selectedNode.value.value = ''
                     propertyRef.pValue = '';
                     const transformedData = generateTreeData(contextPage.page.model.originalData);
-                    /*  updateTreeNodeIcon(transformedData, iconMapping) */
+                    updateTreeNodeIcon(transformedData, iconMapping)
                     this.setModel('data', transformedData);
                 },
                 uiOnMap: function (type, val, selectedNode = undefined) {
@@ -290,7 +287,7 @@ const ContextDataModal = ({ contextData, contextPage }) => {
                     selectedNode.value.value = val
                     propertyRef.pValue = val;
                     const transformedData = generateTreeData(contextPage.page.model.originalData);
-                    /*  updateTreeNodeIcon(transformedData, iconMapping) */
+                    updateTreeNodeIcon(transformedData, iconMapping)
                     this.setModel('data', transformedData);
                 }
             };

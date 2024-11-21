@@ -500,7 +500,7 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
               className="canvas-wrapper"
               onClick={(e) => {
                 setSelectedFiledProps();
-                setFormFieldProps(layout.slice(0, 1));
+                // setFormFieldProps(layout.slice(0, 1));    // For FormProperty panel
               }}
             >
               <Canvas

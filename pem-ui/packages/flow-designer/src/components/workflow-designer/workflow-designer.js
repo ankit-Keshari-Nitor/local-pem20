@@ -52,7 +52,7 @@ const WorkFlowDesigner = forwardRef(
     selectedVersion, //current selected version,
     setNotificationProps, //toast message config
     getApiConfiguration, //to call API Config
-    getActivityFileList,// to call Activity File 
+    getActivityFileList, // to call Activity File
     getRoleList, // to call the role List
     isDialogFlowActive,
     setIsDialogFlowActive,
@@ -570,7 +570,7 @@ const WorkFlowDesigner = forwardRef(
           }
           return copyNode;
         });
-        const parseFormData = node.data?.form?.length > 0 ? node.data?.form : '';
+        const parseFormData = Object.keys(node.data?.form).length > 0 ? node.data?.form : '';
         const formData = {
           form: parseFormData?.cType ? parseFormData : [],
           formId: node.data.editableProps?.name ? node.data.editableProps?.name : node.data.id

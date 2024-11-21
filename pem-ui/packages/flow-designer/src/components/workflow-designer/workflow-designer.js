@@ -570,7 +570,7 @@ const WorkFlowDesigner = forwardRef(
           }
           return copyNode;
         });
-        const parseFormData = Object.keys(node.data?.form).length > 0 ? node.data?.form : '';
+        const parseFormData = node?.data?.form && Object.keys(node?.data?.form).length > 0 ? node.data?.form : '';
         const formData = {
           form: parseFormData?.cType ? parseFormData : [],
           formId: node.data.editableProps?.name ? node.data.editableProps?.name : node.data.id

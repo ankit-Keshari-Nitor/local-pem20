@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { TreeView, TreeNode, Search } from '@carbon/react';
 
 // Recursive function to render tree nodes
@@ -52,8 +52,8 @@ const CDMTreeView = ({ data, onSelect }) => {
   const [searchText, setSearchText] = useState(''); // Track the search input
   const [filteredData, setFilteredData] = useState(data); // Filtered tree data based on search text
 
-  // Update filtered tree data based on search text
-  const filterTreeData = (nodes, searchText) => {
+  // Use useCallback to memoize the filterTreeData function
+  const filterTreeData = useCallback((nodes, searchText) => {
     if (!searchText) {
       return nodes; // No filter applied if search is empty
     }
@@ -70,7 +70,7 @@ const CDMTreeView = ({ data, onSelect }) => {
         return null;
       })
       .filter(Boolean); // Remove nulls (nodes that do not match)
-  };
+  }, []);
 
   useEffect(() => {
     if (data) {

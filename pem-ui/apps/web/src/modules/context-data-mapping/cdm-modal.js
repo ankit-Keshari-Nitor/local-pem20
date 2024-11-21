@@ -7,25 +7,22 @@ import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 
 import CDMTreeView from './cdm-tree-view';
 import { CONTEXT_MAPPING_TYPES, CONTEXT_TYPES } from './constant';
-import { transformDataToTree, generateContextDataMapping, generateTreeData } from './cdm-utils';
-import { ListBoxes } from '@carbon/icons-react';
+import { transformDataToTree, generateContextDataMapping, generateTreeData, updateTreeNodeIcon } from './cdm-utils';
+import { ListBoxes, TextFont, Image, Task, Repeat } from '@carbon/icons-react';
 
 import './style.scss';
 
 import CreateApiConfiguration from './create-api-configuration';
 import CreateUploadForm from './create-upload-form';
 
-/* const iconMapping = {
-  TEXT: StringText,
-  API_CONFIG: Api_1,
+const iconMapping = {
+  TEXT: TextFont,
+  API_CONFIG: Repeat,
   LOGO_FILE: Image,
-  ACTIVITY_FILE: Schematics,
-  OBJECT: TreeViewAlt,
-  ARRAY: Table,
-  ARRAY_ITEM: ProgressBar,
-  DEFAULT: DataVolume
+  ACTIVITY_FILE: Task,
+  OBJECT: ''
 };
- */
+
 const ContextDataModal = ({ mode, context }) => {
   const pageUtil = Shell.PageUtil();
   const pageArgs = pageUtil.pageParams;
@@ -187,7 +184,7 @@ const ContextDataModal = ({ mode, context }) => {
 
         _processProperty: function () {
           const transformedData = generateTreeData(modalConfig.data.data);
-          /*   updateTreeNodeIcon(transformedData, iconMapping); */
+          updateTreeNodeIcon(transformedData, iconMapping);
           this.setModel('data', transformedData);
           this.setModel('originalData', modalConfig.data.data);
         },
@@ -242,7 +239,7 @@ const ContextDataModal = ({ mode, context }) => {
           this.ui.selectedNode.value.value = event.target.value;
           propertyRef.pValue = event.target.value;
           const transformedData = generateTreeData(this.model.originalData);
-          /*   updateTreeNodeIcon(transformedData, iconMapping); */
+          updateTreeNodeIcon(transformedData, iconMapping);
           this.setModel('data', transformedData);
         },
 
@@ -292,7 +289,7 @@ const ContextDataModal = ({ mode, context }) => {
           selectedNode.value.value = '';
           propertyRef.pValue = '';
           const transformedData = generateTreeData(page.model.originalData);
-          /*     updateTreeNodeIcon(transformedData, iconMapping); */
+          updateTreeNodeIcon(transformedData, iconMapping);
           this.setModel('data', transformedData);
         },
 
@@ -341,7 +338,7 @@ const ContextDataModal = ({ mode, context }) => {
           selectedNode.value.value = val;
           propertyRef.pValue = val;
           const transformedData = generateTreeData(page.model.originalData);
-          /*       updateTreeNodeIcon(transformedData, iconMapping); */
+          updateTreeNodeIcon(transformedData, iconMapping);
           this.setModel('data', transformedData);
         }
       };
@@ -474,7 +471,7 @@ const ContextDataModal = ({ mode, context }) => {
             type: 'batch',
             resourceKey: '',
             label: 'Add',
-            onAction: (...args) => {}
+            onAction: (...args) => { }
           }
         ],
         search: {
@@ -794,8 +791,8 @@ const ContextDataModal = ({ mode, context }) => {
                                       <Column className="unmap-col-wrapper" lg={6}>
                                         <span>
                                           {!page.model.apiConfigListData?.userName &&
-                                          !page.model.apiConfigListData?.password &&
-                                          page.model.apiConfigListData?.isInternalAuth?.code === 'FALSE'
+                                            !page.model.apiConfigListData?.password &&
+                                            page.model.apiConfigListData?.isInternalAuth?.code === 'FALSE'
                                             ? 'None'
                                             : page.model.apiConfigListData?.isInternalAuth?.code === 'TRUE'
                                               ? 'Internally generated token'
@@ -904,18 +901,18 @@ const ContextDataModal = ({ mode, context }) => {
                                       <Column className="unmap-col-wrapper" lg={6}>
                                         {page.model.headerLogoListData?.createTs
                                           ? (() => {
-                                              const date = new Date(page.model.headerLogoListData.createTs);
-                                              const options = {
-                                                year: 'numeric',
-                                                month: 'short', // For abbreviated month (e.g., "Oct")
-                                                day: 'numeric',
-                                                hour: 'numeric',
-                                                minute: 'numeric',
-                                                second: 'numeric',
-                                                hour12: true
-                                              };
-                                              return date.toLocaleString('en-US', options); // Format the date
-                                            })()
+                                            const date = new Date(page.model.headerLogoListData.createTs);
+                                            const options = {
+                                              year: 'numeric',
+                                              month: 'short', // For abbreviated month (e.g., "Oct")
+                                              day: 'numeric',
+                                              hour: 'numeric',
+                                              minute: 'numeric',
+                                              second: 'numeric',
+                                              hour12: true
+                                            };
+                                            return date.toLocaleString('en-US', options); // Format the date
+                                          })()
                                           : ''}
                                       </Column>
                                     </Grid>
@@ -1010,18 +1007,18 @@ const ContextDataModal = ({ mode, context }) => {
                                       <Column className="unmap-col-wrapper" lg={6}>
                                         {page.model.activityFileListData?.createTs
                                           ? (() => {
-                                              const date = new Date(page.model.activityFileListData.createTs);
-                                              const options = {
-                                                year: 'numeric',
-                                                month: 'short', // For abbreviated month (e.g., "Oct")
-                                                day: 'numeric',
-                                                hour: 'numeric',
-                                                minute: 'numeric',
-                                                second: 'numeric',
-                                                hour12: true
-                                              };
-                                              return date.toLocaleString('en-US', options); // Format the date
-                                            })()
+                                            const date = new Date(page.model.activityFileListData.createTs);
+                                            const options = {
+                                              year: 'numeric',
+                                              month: 'short', // For abbreviated month (e.g., "Oct")
+                                              day: 'numeric',
+                                              hour: 'numeric',
+                                              minute: 'numeric',
+                                              second: 'numeric',
+                                              hour12: true
+                                            };
+                                            return date.toLocaleString('en-US', options); // Format the date
+                                          })()
                                           : ''}
                                       </Column>
                                     </Grid>

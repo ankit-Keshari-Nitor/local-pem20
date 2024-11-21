@@ -256,7 +256,7 @@ const getConditions = (source, target, node) => {
   if (node && node.type === 'BRANCH_START') {
     const connectorData = node.data.branchCondition.find((x) => x.target === target);
     return {
-      group: connectorData.condition && exitConditionObjectForApi(connectorData.condition)
+      group: connectorData.condition && exitConditionObjectForApi(connectorData?.condition)
     };
   } else {
     return {
@@ -266,11 +266,30 @@ const getConditions = (source, target, node) => {
 };
 
 // Function to handle all the nodes and edges data that will send to API
-export const generateNodeEdgesForApi = (nodes, edges) => {
+export const generateNodeEdgesForApi = (nodes, edges, error, level) => {
   const nodesData = nodes.map((node, index) => {
+    if (node.type.toUpperCase() === 'BRANCH_START' && node.data.branchCondition.length === 0) {
+      error.push({
+        error: (level ? 'DialogFlow' : 'TaskFlow') + ': Exclusive Branch Start has no outgoing sequence flow'
+      });
+    }
+    if (node.type.toUpperCase() === 'BRANCH_START' && node.data.branchCondition.length > 1) {
+      node.data.branchCondition.map((conditions) => {
+        if (conditions.condition.rules.length === 0) {
+          error.push({
+            error: (level ? 'DialogFlow' : 'TaskFlow') + ': Exclusive Branch Start has not outgoing sequence flow without condition'
+          });
+        }
+      });
+    }
+    if (node.type.toUpperCase() === 'FORM' && Object.keys(node.data.form).length === 0) {
+      error.push({
+        error: (level ? 'DialogFlow' : 'TaskFlow') + ': Form has no elements'
+      });
+    }
     const nodeObj = {
       id: node.id ? node.id : `${node.type}-${index}`,
-      name: ['END', 'START'].includes(node.type) ? `${node.data.taskName}_${index}` : node.data.editableProps?.name ? node.data.editableProps?.name : node.data.id,
+      name: ['END', 'START'].includes(node.type) ? `${node.type}` : node.data.editableProps?.name ? node.data.editableProps?.name : node.data.id,
       type: node.type === 'BRANCH_START' || node.type === 'BRANCH_END' ? 'GATEWAY' : node.type,
       diagram: {
         x: node.position.x,
@@ -283,7 +302,7 @@ export const generateNodeEdgesForApi = (nodes, edges) => {
     const nodeSpecificData = getNodeSpecificDataObj(node);
     if (Nodes_With_SubProcess.includes(node.type.toUpperCase())) {
       if (node.data.dialogNodes) {
-        const subProcessData = generateNodeEdgesForApi(node.data.dialogNodes, node.data.dialogEdges);
+        const subProcessData = generateNodeEdgesForApi(node.data.dialogNodes, node.data.dialogEdges, error, true);
         nodeObj.nodes = subProcessData.nodes;
         nodeObj.connectors = subProcessData.edges;
       }
@@ -320,7 +339,8 @@ export const generateNodeEdgesForApi = (nodes, edges) => {
   });
   return {
     edges: edgesData,
-    nodes: nodesData
+    nodes: nodesData,
+    error: error
   };
 };
 
@@ -355,7 +375,7 @@ const exitConditionObject = ({ group }) => {
 // function to handle the conversion of Branch condition after getting data from API
 const branchConditionObject = (edge, object = []) => {
   // Parse and get the exit condition object from edge.condition
-  const condition = exitConditionObject(JSON.parse(edge.condition));
+  const condition = exitConditionObject(edge.condition);
 
   // Update the edge condition with the parsed condition
   edge.condition = condition;
@@ -375,14 +395,26 @@ const generateActivitySchemaForSubProcess = (taskNode, readOnly) => {
     return nodeObjects(node, readOnly);
   });
   const childEdges = taskNode.connectors.map((edge) => {
-    if (edge.condition && edge.condition.length > 0) {
-      let nodeIndex = newChildNodes.findIndex((n) => n.id === edge.source);
+    let nodeIndex = newChildNodes.findIndex((n) => n.id === edge.source);
+    if (edge?.condition || newChildNodes[nodeIndex].type === 'BRANCH_START') {
       if (nodeIndex > -1) {
-        newChildNodes[nodeIndex].type === 'BRANCH_START'
-          ? (newChildNodes[nodeIndex].data.branchCondition = branchConditionObject(edge, newChildNodes[nodeIndex].data?.branchCondition))
-          : (newChildNodes[nodeIndex].data.exitValidationQuery = exitConditionObject(edge.condition));
-
-        //newChildNodes[nodeIndex].data.exitValidationQuery = exitConditionObject(JSON.parse(edge.condition));
+        if (newChildNodes[nodeIndex].type === 'BRANCH_START') {
+          if (edge?.condition) {
+            newChildNodes[nodeIndex].data.branchCondition = branchConditionObject(edge, newChildNodes[nodeIndex].data?.branchCondition);
+          } else {
+            // For single outflow from branch (when branch start don't have exit validation)
+            edge.condition = {
+              group: {
+                combinator: 'and',
+                not: false,
+                rules: []
+              }
+            };
+            newChildNodes[nodeIndex].data.branchCondition = branchConditionObject(edge, newChildNodes[nodeIndex].data?.branchCondition);
+          }
+        } else {
+          newChildNodes[nodeIndex].data.exitValidationQuery = exitConditionObject(edge.condition);
+        }
       }
     }
     let edgeObj = getEdge(edge, readOnly, taskNode.nodes, 'dialog');
@@ -406,12 +438,26 @@ export const generateActivitySchema = (nodes, edges, readOnly) => {
     return nodeSpecificData;
   });
   const newEdges = edges.map((edge) => {
-    if (edge?.condition) {
-      let nodeIndex = newNodes.findIndex((n) => n.id === edge.source);
+    let nodeIndex = newNodes.findIndex((n) => n.id === edge.source);
+    if (edge?.condition || newNodes[nodeIndex].type === 'BRANCH_START') {
       if (nodeIndex > -1) {
-        newNodes[nodeIndex].type === 'BRANCH_START'
-          ? (newNodes[nodeIndex].data.branchCondition = branchConditionObject(edge, newNodes[nodeIndex].data?.branchCondition))
-          : (newNodes[nodeIndex].data.exitValidationQuery = exitConditionObject(edge.condition));
+        if (newNodes[nodeIndex].type === 'BRANCH_START') {
+          if (edge?.condition) {
+            newNodes[nodeIndex].data.branchCondition = branchConditionObject(edge, newNodes[nodeIndex].data?.branchCondition);
+          } else {
+            // For single outflow from branch (when branch start don't have exit validation)
+            edge.condition = {
+              group: {
+                combinator: 'and',
+                not: false,
+                rules: []
+              }
+            };
+            newNodes[nodeIndex].data.branchCondition = branchConditionObject(edge, newNodes[nodeIndex].data?.branchCondition);
+          }
+        } else {
+          newNodes[nodeIndex].data.exitValidationQuery = exitConditionObject(edge.condition);
+        }
       }
     }
     return getEdge(edge, readOnly, nodes, 'task');

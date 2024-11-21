@@ -746,12 +746,12 @@ export const queryValidation = (query, queryValidator) => {
           }
           break;
         case 'boolean':
-          if (leftOp !== 'true' || leftOp !== 'false' || rightOp !== 'true' || rightOp !== 'false') {
+          if (!['true', 'false'].includes(leftOp) || !['true', 'false'].includes(rightOp) || operator === '') {
             queryValidator = {
               ...queryValidator,
               valid: false,
-              reasons: 'Invalid Boolean value',
-              [item.id]: { valid: false, reasons: 'Invalid Boolean value' }
+              reasons: 'Invalid Boolean value or Select the appropriate operator',
+              [item.id]: { valid: false, reasons: 'Invalid Boolean value or Select the appropriate operator' }
             };
           }
           break;

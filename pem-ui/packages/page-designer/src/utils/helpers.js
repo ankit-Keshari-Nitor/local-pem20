@@ -552,7 +552,7 @@ export const convertToApiSchema = (layout) => {
       }
     ]
   };
-  return formSchema;
+  return schema.length > 0 ? formSchema : {};
 };
 
 export const defaultFormProps = {

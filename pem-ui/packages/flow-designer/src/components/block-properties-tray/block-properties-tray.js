@@ -29,7 +29,7 @@ export default function BlockPropertiesTray(props) {
     isDialogFlowActive,
     selectedTaskNode,
     getApiConfiguration,
-    getActivityFileList,
+    getDocumentFile,
     getRoleList,
     activityDefinitionData
   } = props;

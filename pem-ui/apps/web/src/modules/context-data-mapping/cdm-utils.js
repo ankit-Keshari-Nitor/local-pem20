@@ -83,8 +83,8 @@ const transformDataToTree = (data, parentKey = '') => {
   return (
     data !== 'undefined' &&
     data?.map((item) => {
-      const nodeId = parentKey !== "" ? `${parentKey}.${item.name}` : `${item.name}`;
-
+      const itemName = item.name === 'ProcessData' || item.name === 'ContextData' ? `${item.name?.toLowerCase()}` : `${item.name}`
+      const nodeId = parentKey !== "" ? `${parentKey}.${itemName}` : itemName;
       const { items, data, ...itemProps } = item;
       const treeNode = {
         id: nodeId && nodeId,
@@ -109,7 +109,8 @@ const transformDataToTree = (data, parentKey = '') => {
 
 const transformDataToTreeBasedOnType = (data, type, parentKey = '') => {
   return data.map((item) => {
-    const nodeId = parentKey !== "" ? `${parentKey}.${item.name}` : `${item.name}`;
+    const itemName = item.name === 'ProcessData' || item.name === 'ContextData' ? `${item.name?.toLowerCase()}` : `${item.name}`
+    const nodeId = parentKey !== "" ? `${parentKey}.${itemName}` : itemName;
 
     if (item.type === type || item.data?.type === "CATEGORY") {
       const treeNode = {

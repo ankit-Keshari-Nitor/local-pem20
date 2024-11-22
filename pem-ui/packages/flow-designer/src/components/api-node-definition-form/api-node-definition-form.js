@@ -18,7 +18,7 @@ export default function APINodeDefinitionForm({
   setOpenPropertiesBlock,
   setNotificationProps,
   getApiConfiguration,
-  getActivityFileList,
+  getDocumentFile,
   activityDefinitionData
 }) {
   const pageUtil = Shell.PageUtil();
@@ -78,7 +78,7 @@ export default function APINodeDefinitionForm({
       propertyForm: {
         apiConfig: selectedNode.data?.api?.apiConfiguration || '',
         hostPrefix: selectedNode.data?.api?.hostPrefix || true,
-        url: selectedNode.data?.api?.url.split('/', 4)[3] || '',
+        url: selectedNode.data?.api?.url.includes('http://') || selectedNode.data?.api?.url.includes('https://') ? selectedNode.data?.api?.url.split('/', 4)[3] : selectedNode.data?.api?.url.split('/').slice(0, 2)[1] || '',
         requestMethod: selectedNode.data?.api?.method || '',
         inputOutputFormats: selectedNode.data?.api?.requestContentType || '',
         escapeRequest: selectedNode.data?.api?.escapeRequest || false,
@@ -87,7 +87,13 @@ export default function APINodeDefinitionForm({
         testMode: selectedNode.data?.api?.testMode || true
       }
     });
-    setApiConfigUrl(selectedNode.data?.api?.url.split('/', 3).join('/') || '');
+
+    if (selectedNode.data?.api?.url.includes('http://') || selectedNode.data?.api?.url.includes('https://')) {
+      setApiConfigUrl(selectedNode.data?.api?.url.split('/', 3).join('/'));
+    } else {
+      setApiConfigUrl(selectedNode.data?.api?.url.split('/').slice(0, 2)[0] || '');
+    }
+
     if (selectedNode.data?.api?.requestHeaders) {
       try {
         const headersArray = JSON.parse(selectedNode.data.api.requestHeaders);
@@ -110,7 +116,7 @@ export default function APINodeDefinitionForm({
         setFileKey(selectedNode.data?.api?.file);
         if (!(/\./.test(selectedNode.data?.api?.file))) {
           try {
-            let file = await getActivityFileList(selectedNode.data?.api?.file);
+            let file = await getDocumentFile(selectedNode.data?.api?.file);
             setFile({
               status: 'edit',
               iconDescription: 'Delete Icon',
@@ -446,7 +452,19 @@ export default function APINodeDefinitionForm({
                 [fieldName]: newData
               }
             }));
-
+            // Validate the specific field and update errors
+            let error = '';
+            if (fieldName === 'apiConfig' && !newData) {
+              error = 'API Configuration is required';
+            }
+            // Update the error state for the specific field
+            setErrors((prevErrors) => ({
+              ...prevErrors,
+              propertyForm: {
+                ...prevErrors.propertyForm,
+                [fieldName]: error
+              }
+            }));
           });
       } catch (e) {
         console.log('Error-', e);
@@ -535,8 +553,21 @@ export default function APINodeDefinitionForm({
                 propertyForm: {
                   ...prev.propertyForm,
                   [fieldName]: fieldName === 'url'
-                    ? `${prev.propertyForm[fieldName] ? prev.propertyForm[fieldName] + ',' : ''}${newData}`
-                    : newData
+                    ? newData ? `${prev.propertyForm[fieldName] ? prev.propertyForm[fieldName] + ',' : ''}${newData}`
+                      : newData : ''
+                }
+              }));
+              // Validate the specific field and update errors
+              let error = '';
+              if (fieldName === 'url' && !newData) {
+                error = 'URL is required';
+              }
+              // Update the error state for the specific field
+              setErrors((prevErrors) => ({
+                ...prevErrors,
+                propertyForm: {
+                  ...prevErrors.propertyForm,
+                  [fieldName]: error
                 }
               }));
             } else {
@@ -554,6 +585,9 @@ export default function APINodeDefinitionForm({
         console.log('Error-', e);
       }
     }
+
+
+
   };
 
   return (

@@ -14,7 +14,7 @@ import {
   BranchEndBlockNodeIcon
 } from '../icons';
 import { StartNode, EndNode, GatewayNode, TaskNode, BranchStartNode, BranchEndNode } from './../components/nodes';
-import { componentTypes, useFormApi, FormSpy } from '@data-driven-forms/react-form-renderer';
+import { componentTypes } from '@data-driven-forms/react-form-renderer';
 import textField from '@data-driven-forms/carbon-component-mapper/text-field';
 import textarea from '@data-driven-forms/carbon-component-mapper/textarea';
 import select from '@data-driven-forms/carbon-component-mapper/select';

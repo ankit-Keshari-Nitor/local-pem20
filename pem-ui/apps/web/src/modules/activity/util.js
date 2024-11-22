@@ -9,16 +9,16 @@ const getNodeSpecificDataObj = (node) => {
       return {
         description: node.data.editableProps?.description,
         api: {
-          apiConfiguration: node.data?.api?.apiConfiguration || 'apiConfiguration',
-          url: node.data?.api?.url || 'https://jira.com/browse/PEM-273476',
-          method: node.data?.api?.method || 'GET',
-          requestContentType: node.data?.api?.requestContentType || 'JSON',
-          responseContentType: node.data?.api?.requestContentType || 'JSON',
-          file: node.data?.api?.file || 'file object',
-          requestHeaders: node.data?.api?.requestHeaders || '[{"key":"value"}]',
-          request: node.data?.api?.request || '{"name":"test_name"}',
-          sampleResponse: node.data?.api?.sampleResponse || '{"name":"test_name"}',
-          response: node.data?.api?.response || '{"name":"test_name"}'
+          apiConfiguration: node.data?.api?.apiConfiguration || '',
+          url: node.data?.api?.url || '',
+          method: node.data?.api?.method || '',
+          requestContentType: node.data?.api?.requestContentType || '',
+          responseContentType: node.data?.api?.requestContentType || '',
+          file: node.data?.api?.file || '',
+          requestHeaders: node.data?.api?.requestHeaders || '',
+          request: node.data?.api?.request || '',
+          sampleResponse: node.data?.api?.sampleResponse || '',
+          response: node.data?.api?.response || ''
         }
       };
     case 'XSLT':

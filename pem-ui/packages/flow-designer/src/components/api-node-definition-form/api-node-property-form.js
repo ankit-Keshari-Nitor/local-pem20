@@ -62,7 +62,7 @@ export default function APINodePropertyForm({
       );
       if (!apiConfigExists && apiConfigData.length > 0) {
         setApiConfig(currentApiConfig);
-        setApiConfigUrl('${protocol}://${host}:${port}')
+        setApiConfigUrl('')
       } else {
         setApiConfig('')
       }
@@ -450,7 +450,7 @@ export default function APINodePropertyForm({
         </Column>
         {/* TestMode */}
         <Column lg={16}>
-          <div className="tab-panel-checkbox" style={{ marginBottom: '2rem' }}>
+          <div className="tab-panel-checkbox" style={{ marginBottom: '2rem', marginLeft: '0rem' }}>
             <Checkbox id="testMode" labelText="Call in Testmode" checked={formState.propertyForm.testMode} disabled={readOnly} onChange={handlePropertyFormChange} />
           </div>
         </Column>

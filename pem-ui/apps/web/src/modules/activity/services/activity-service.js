@@ -156,7 +156,7 @@ export const getAPIConfiguration = async () => {
 }
 
 // Function to get the Activity File List
-export const getActivityFile = async (key) => {
+export const getDocumentFile = async (key) => {
   let url = `${API_END_POINTS.ACTIVITY_FILE}${key}/`;
   let dataLoaderConfig = { url, method: API_METHODS.GET };
 

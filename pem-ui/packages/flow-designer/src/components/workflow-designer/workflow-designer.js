@@ -147,6 +147,7 @@ const WorkFlowDesigner = forwardRef(
       } else {
         nodeDataRefActivity.current = { state: false, store: storeData };
       }
+      console.log('StoreData>>>',storeData);
     }, [setTaskNodes, setTaskEdges, storeData, updateActivitySchema]);
 
     useEffect(() => {
@@ -163,7 +164,11 @@ const WorkFlowDesigner = forwardRef(
       }
     }, [dialogNodes]);
 
-    const deleteNode = (id, isdialog, selectedTaskNodeId) => {
+    const deleteNode = (id, isdialog, selectedTaskNodeId, branchNode=false) => {
+      console.log('deleteNode >>>id>>>>',id)
+      console.log('deleteNode >>>isdialog>>>>',isdialog)
+      console.log('deleteNode >>>selectedTaskNodeId>>>>',selectedTaskNodeId)
+      console.log('deleteNode >>>branchNode>>>>',branchNode)
       setIsdialogNodeDelete(isdialog);
       const dialogData = isdialog && nodeDataRef.current.nodes.filter((node) => node.id === selectedTaskNodeId)[0];
       const nodesData = isdialog ? dialogData?.data?.dialogNodes : nodeDataRef.current.nodes;
@@ -230,42 +235,44 @@ const WorkFlowDesigner = forwardRef(
 
       // Delete node bypass for connecting Edges
       let updatedEdge = newEdges;
-      if (targetEdge?.source && sourceEdge?.target) {
-        const newEdge = {
-          markerEnd: sourceEdge?.markerEnd,
-          type: sourceEdge?.type,
-          id: `${targetEdge?.source}_to_${sourceEdge?.target}`,
-          source: targetEdge?.source,
-          target: sourceEdge?.target,
-          data: sourceEdge?.data,
-          style: sourceEdge?.style,
-          sourceHandle: targetEdge.sourceHandle,
-          targetHandle: sourceEdge.targetHandle
-        };
-        updatedEdge = [...newEdges, newEdge];
-      }
-      if (isdialog) {
-        const taskNodeData = nodeDataRef.current.edges.map((node) => {
-          if (node.id === selectedTaskNodeId) {
-            const {
-              data: { dialogEdges, ...restdata },
-              ...rest
-            } = node;
-            return { ...rest, data: { ...restdata, dialogEdges: updatedEdge } };
-          } else {
-            return node;
-          }
-        });
-        nodeDataRef.current.nodes = taskNodeData;
-      } else {
-        nodeDataRef.current.edges = updatedEdge;
+      if (!branchNode) {
+        if (targetEdge?.source && sourceEdge?.target) {
+          const newEdge = {
+            markerEnd: sourceEdge?.markerEnd,
+            type: sourceEdge?.type,
+            id: `${targetEdge?.source}_to_${sourceEdge?.target}`,
+            source: targetEdge?.source,
+            target: sourceEdge?.target,
+            data: sourceEdge?.data,
+            style: sourceEdge?.style,
+            sourceHandle: targetEdge.sourceHandle,
+            targetHandle: sourceEdge.targetHandle
+          };
+          updatedEdge = [...newEdges, newEdge];
+        }
+        if (isdialog) {
+          const taskNodeData = nodeDataRef.current.edges.map((node) => {
+            if (node.id === selectedTaskNodeId) {
+              const {
+                data: { dialogEdges, ...restdata },
+                ...rest
+              } = node;
+              return { ...rest, data: { ...restdata, dialogEdges: updatedEdge } };
+            } else {
+              return node;
+            }
+          });
+          nodeDataRef.current.nodes = taskNodeData;
+        } else {
+          nodeDataRef.current.edges = updatedEdge;
+        }
       }
       isdialog ? setDialogEdges(updatedEdge) : setTaskEdges(updatedEdge);
       isdialog ? store.setDialogEdges(selectedTaskNodeId, updatedEdge) : store.setTaskEdges(updatedEdge);
       setNotificationProps({
         open: true,
         title: 'Success',
-        subtitle: `Task Successfully deleted.`,
+        subtitle: `Node Successfully deleted.`,
         kind: 'success',
         onCloseButtonClick: () => setNotificationProps(null)
       });
@@ -709,7 +716,8 @@ const WorkFlowDesigner = forwardRef(
         node.type === NODE_TYPE.SPONSOR ||
         node.type === NODE_TYPE.CUSTOM ||
         node.type === NODE_TYPE.SYSTEM ||
-        node.type === NODE_TYPE.BRANCH_START
+        node.type === NODE_TYPE.BRANCH_START ||
+        node.type === NODE_TYPE.BRANCH_END
       ) {
         let copyNodes = nodes;
         copyNodes.map((copyNode) => {
@@ -864,6 +872,7 @@ const WorkFlowDesigner = forwardRef(
                   versionData={versionData}
                   selectedVersion={selectedVersion}
                   onVersionSelection={onVersionSelection}
+                  deleteNode={deleteNode}
                 />
               ) : (
                 activityDefinitionData && (
@@ -901,6 +910,7 @@ const WorkFlowDesigner = forwardRef(
                     deleteBranchNodeConnector={deleteBranchNodeConnector}
                     isDialogFlowActive={isDialogFlowActive}
                     getRoleList={getRoleList}
+                    deleteNode={deleteNode}
                   />
                 )
               )}

@@ -44,7 +44,16 @@ const DropConnector = ({ children, index, moveDialogItem }) => {
   );
 };
 
-export default function   BranchStartPropertiesTrayTwo({ readOnly, selectedNode, selectedTaskNode, isDialogFlowActive, deleteBranchNodeConnector, setOpenPropertiesBlock }) {
+export default function BranchStartPropertiesTrayTwo({
+  readOnly,
+  selectedNode,
+  selectedTaskNode,
+  isDialogFlowActive,
+  deleteBranchNodeConnector,
+  setOpenPropertiesBlock,
+  deleteNode,
+  branchStart
+}) {
   const store = useTaskStore();
   const storeData = useTaskStore((state) => state.tasks);
   const editTask = useTaskStore((state) => state.editTaskNodePros);
@@ -54,33 +63,34 @@ export default function   BranchStartPropertiesTrayTwo({ readOnly, selectedNode,
   const [branchNameError, setBranchNameError] = useState(false);
   const [selectedBranchConnector, setSelectedBranchConnector] = useState([]);
   const [showDialogSequence, setShowDialogSequence] = useState(false);
-
   useEffect(() => {
     setBranchName(selectedNode?.data?.editableProps.name ? selectedNode?.data?.editableProps.name : selectedNode?.data.id);
   }, [storeData]);
 
   useEffect(() => {
-    let updatedBranchConditions = selectedNode?.data.branchCondition.map((condition) => {
-      let targetNode = null;
-      if (isDialogFlowActive) {
-        storeData.nodes.map((node) => {
-          if (node.id === selectedTaskNode.id) {
-            const {
-              data: { dialogNodes }
-            } = node;
-            targetNode = dialogNodes.filter((node) => node.id === condition.target);
-          }
-        });
-      } else {
-        targetNode = storeData.nodes.filter((node) => node.id === condition.target);
-      }
-      return {
-        ...condition,
-        targetNodeName: targetNode && targetNode[0].data.editableProps.name ? targetNode[0].data.editableProps.name : targetNode[0]?.data.id
-      };
-    });
+    if (branchStart) {
+      let updatedBranchConditions = selectedNode?.data.branchCondition.map((condition) => {
+        let targetNode = null;
+        if (isDialogFlowActive) {
+          storeData.nodes.map((node) => {
+            if (node.id === selectedTaskNode.id) {
+              const {
+                data: { dialogNodes }
+              } = node;
+              targetNode = dialogNodes.filter((node) => node.id === condition.target);
+            }
+          });
+        } else {
+          targetNode = storeData.nodes.filter((node) => node.id === condition.target);
+        }
+        return {
+          ...condition,
+          targetNodeName: targetNode && targetNode[0].data?.editableProps?.name ? targetNode[0]?.data.editableProps?.name : targetNode[0]?.data.id
+        };
+      });
 
-    setSelectedBranchConnector(updatedBranchConditions);
+      setSelectedBranchConnector(updatedBranchConditions);
+    }
   }, [storeData]);
 
   // Function to update the branch name
@@ -163,87 +173,100 @@ export default function   BranchStartPropertiesTrayTwo({ readOnly, selectedNode,
             onChange={handleBranchNameChange}
             invalid={branchNameError}
             invalidText="Branch Name is required"
-          />{' '}
+          />
+        </Column>
+        <Column className='branch-delete' lg={8}>
+          <span
+            onClick={() => {
+              deleteNode(selectedNode.id, isDialogFlowActive, selectedTaskNode?.id, true);
+            }}
+          >
+            <TrashCan />
+          </span>
         </Column>
       </Grid>
       {/* Conditional Builder and Dialog Sequence */}
-      <Grid className="properties-container">
-        {selectedBranchConnector && selectedBranchConnector.length > 0 ? (
-          <>
-            <Column lg={16} className="hamburger-container">
-              <span className="hamburger-icon" onClick={handleHamburgerClick}>
-                <HamburgerIcon />
-              </span>
-            </Column>
-            {/* Add Conditional Builder to each node container */}
-            <Column lg={showDialogSequence ? 11 : 16} className="dialog-properties-container">
-              {selectedBranchConnector.map((connector) => {
-                return (
-                  <div id={connector.connectorId}>
-                    <Grid>
-                      <Column lg={16}>
-                        <span className="pem-node-name">{connector.targetNodeName}</span>
-                      </Column>
-                      <Column lg={16}>
-                        <ConditionalBuilder readOnly={readOnly} query={connector.condition} updateConnectorQuery={updateConnectorQuery} id={connector.target} />
-                      </Column>
-                    </Grid>
-                  </div>
-                );
-              })}
-            </Column>
-            {/* Dialog Sequence */}
-            {showDialogSequence && (
-              <Column lg={5} className="dialog-properties-container">
-                <div className="dialog-sequence-wrapper">
-                  <Grid>
-                    <Column lg={16}>
-                      <span className="pem-node-name">Dialog Sequence</span>
-                      {selectedBranchConnector.map((connector, index) => (
-                        <DropConnector index={index} moveDialogItem={moveDialogItem} key={connector.connectorId}>
-                          <Grid className="dialog-sequence-container" id={connector.target}>
-                            <Column lg={3}>
-                              <DraggableConnectorItem connector={connector} index={index} moveDialogItem={moveDialogItem} />
-                            </Column>
-                            <Column lg={10} className="text-input-container">
-                              <TextInput
-                                id={`text-value-${connector.target}`}
-                                disabled
-                                value={connector.targetNodeName}
-                                onChange={(e) => handleNodeNameChange(e, connector.target)}
-                                className='draggable-input'
-                              />
-                            </Column>
-                            {!readOnly && (
-                              <Column lg={3} className="delete-icon-container" onClick={() => deleteConnector(connector.connectorId)}>
-                                <TrashCan className="trash-icon" />
-                              </Column>
-                            )}
-                          </Grid>
-                        </DropConnector>
-                      ))}
-                    </Column>
-                  </Grid>
-                </div>
+      {branchStart && (
+        <>
+          <Grid className="properties-container">
+            {selectedBranchConnector && selectedBranchConnector.length > 0 ? (
+              <>
+                <Column lg={16} className="hamburger-container">
+                  <span className="hamburger-icon" onClick={handleHamburgerClick}>
+                    <HamburgerIcon />
+                  </span>
+                </Column>
+                {/* Add Conditional Builder to each node container */}
+                <Column lg={showDialogSequence ? 11 : 16} className="dialog-properties-container">
+                  {selectedBranchConnector.map((connector) => {
+                    return (
+                      <div id={connector.connectorId}>
+                        <Grid>
+                          <Column lg={16}>
+                            <span className="pem-node-name">{connector.targetNodeName}</span>
+                          </Column>
+                          <Column lg={16}>
+                            <ConditionalBuilder readOnly={readOnly} query={connector.condition} updateConnectorQuery={updateConnectorQuery} id={connector.target} />
+                          </Column>
+                        </Grid>
+                      </div>
+                    );
+                  })}
+                </Column>
+                {/* Dialog Sequence */}
+                {showDialogSequence && (
+                  <Column lg={5} className="dialog-properties-container">
+                    <div className="dialog-sequence-wrapper">
+                      <Grid>
+                        <Column lg={16}>
+                          <span className="pem-node-name">Dialog Sequence</span>
+                          {selectedBranchConnector.map((connector, index) => (
+                            <DropConnector index={index} moveDialogItem={moveDialogItem} key={connector.connectorId}>
+                              <Grid className="dialog-sequence-container" id={connector.target}>
+                                <Column lg={3}>
+                                  <DraggableConnectorItem connector={connector} index={index} moveDialogItem={moveDialogItem} />
+                                </Column>
+                                <Column lg={10} className="text-input-container">
+                                  <TextInput
+                                    id={`text-value-${connector.target}`}
+                                    disabled
+                                    value={connector.targetNodeName}
+                                    onChange={(e) => handleNodeNameChange(e, connector.target)}
+                                    className="draggable-input"
+                                  />
+                                </Column>
+                                {!readOnly && (
+                                  <Column lg={3} className="delete-icon-container" onClick={() => deleteConnector(connector.connectorId)}>
+                                    <TrashCan className="trash-icon" />
+                                  </Column>
+                                )}
+                              </Grid>
+                            </DropConnector>
+                          ))}
+                        </Column>
+                      </Grid>
+                    </div>
+                  </Column>
+                )}
+              </>
+            ) : (
+              <Column lg={16} className="no-connector-container">
+                <span>No connector found!!</span>
               </Column>
             )}
-          </>
-        ) : (
-          <Column lg={16} className="no-connector-container">
-            <span>No connector found!!</span>
-          </Column>
-        )}
-      </Grid>
-      <Grid className="button-container-container">
-        <Column lg={16} className="buttons-container">
-          <Button data-testid="cancel" name="cancel" kind="secondary" type="button" className="button" onClick={saveBranchData} disabled={readOnly}>
-            Cancel
-          </Button>
-          <Button data-testid="save" color="primary" variant="contained" type="submit" className="button" onClick={saveBranchData} disabled={readOnly}>
-            Save
-          </Button>
-        </Column>
-      </Grid>
+          </Grid>
+          <Grid className="button-container-container">
+            <Column lg={16} className="buttons-container">
+              <Button data-testid="cancel" name="cancel" kind="secondary" type="button" className="button" onClick={saveBranchData} disabled={readOnly}>
+                Cancel
+              </Button>
+              <Button data-testid="save" color="primary" variant="contained" type="submit" className="button" onClick={saveBranchData} disabled={readOnly}>
+                Save
+              </Button>
+            </Column>
+          </Grid>
+        </>
+      )}
     </>
   );
 }

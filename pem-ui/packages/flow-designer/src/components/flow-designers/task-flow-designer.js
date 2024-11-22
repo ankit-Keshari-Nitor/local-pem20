@@ -44,7 +44,8 @@ const TaskFlowDesigner = ({
   deleteBranchNodeConnector,
   isDialogFlowActive,
   getRoleList,
-  setNotificationProps //toast message config
+  setNotificationProps, //toast message config
+  deleteNode
 }) => {
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const activityDefPanelRef = useRef();
@@ -127,7 +128,7 @@ const TaskFlowDesigner = ({
                     isDialogFlowActive={isDialogFlowActive}
                     getRoleList={getRoleList}
                     activityDefinitionData={activityDefinitionData}
-
+                    deleteNode={deleteNode}
                   />
                 </div>
               </div>

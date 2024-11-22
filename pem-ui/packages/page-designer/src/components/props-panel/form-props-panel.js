@@ -5,7 +5,7 @@ import { FONT_FAMILY, FONT_SIZE, FONT_STYLE } from '../../constants/constants';
 export const FormPropsPanel = ({ formFieldProps, onFormPropsChange }) => {
   const formProps = useRef();
   formProps.current = formFieldProps[0];
-  const { customProps, ...rest } = formProps.current;
+  // const { customProps, ...rest } = formProps.current;
   //const font= '16px'
   return (
     <div className="right-palette-container">
@@ -35,8 +35,7 @@ export const FormPropsPanel = ({ formFieldProps, onFormPropsChange }) => {
                   value={formProps.current.name}
                   onChange={(e) =>
                     onFormPropsChange({
-                      ...rest,
-                      customProps,
+                      ...formProps.current,
                       name: e.target.value
                     })
                   }
@@ -49,8 +48,7 @@ export const FormPropsPanel = ({ formFieldProps, onFormPropsChange }) => {
                   value={formProps.current.id}
                   onChange={(e) =>
                     onFormPropsChange({
-                      ...rest,
-                      customProps,
+                      ...formProps.current,
                       id: e.target.value
                     })
                   }
@@ -63,8 +61,7 @@ export const FormPropsPanel = ({ formFieldProps, onFormPropsChange }) => {
                   value={formProps.current.width}
                   onChange={(e) =>
                     onFormPropsChange({
-                      ...rest,
-                      customProps,
+                      ...formProps.current,
                       width: e.target.value
                     })
                   }
@@ -77,8 +74,7 @@ export const FormPropsPanel = ({ formFieldProps, onFormPropsChange }) => {
                   value={formProps.current.height}
                   onChange={(e) =>
                     onFormPropsChange({
-                      ...rest,
-                      customProps,
+                      ...formProps.current,
                       height: e.target.value
                     })
                   }
@@ -87,8 +83,8 @@ export const FormPropsPanel = ({ formFieldProps, onFormPropsChange }) => {
             </Grid>
           </TabPanel>
           <TabPanel>
-            <Grid style={{ marginTop: '2rem', marginLeft: '1rem' }}>
-              <Column lg={10}>
+            <Grid style={{ marginTop: '1rem', marginLeft: '1rem' }}>
+              {/* <Column lg={10}>
                 <RadioButtonGroup
                   id={'form-style-opt'}
                   name={`radio-group-style`}
@@ -103,23 +99,25 @@ export const FormPropsPanel = ({ formFieldProps, onFormPropsChange }) => {
                   <RadioButton key={'Default'} labelText={'Default'} value={'Default'} />
                   <RadioButton key={'Custom'} labelText={'Custom'} value={'Custom'} />
                 </RadioButtonGroup>
-              </Column>
+              </Column> */}
               <Column className="props-field" lg={8}>
                 <Select
                   id={'form-font'}
                   labelText={'Font'}
                   onChange={(e) =>
                     onFormPropsChange({
-                      ...rest,
-                      customProps: {
-                        ...customProps,
-                        fontFamily: e.target.value
-                      }
+                      ...formProps.current,
+                      fontFamily: e.target.value
+                      // ...rest,
+                      // customProps: {
+                      //   ...customProps,
+                      //   fontFamily: e.target.value
+                      // }
                     })
                   }
-                  readOnly={formProps.current?.defaultStyle}
-                  defaultValue={formProps.current?.defaultStyle ? formProps.current?.defaultProps.fontFamily : formProps.current?.customProps.fontFamily}
-                  value={formProps.current?.defaultStyle ? formProps.current?.defaultProps.fontFamily : formProps.current?.customProps.fontFamily}
+                  //readOnly={formProps.current?.defaultStyle}
+                  defaultValue={formProps.current?.fontFamily}
+                  value={formProps.current?.fontFamily}
                 >
                   {FONT_FAMILY.map((family, index) => {
                     return <SelectItem key={`Font-${index}`} value={family.fontFamily} text={family.fontFamily} />;
@@ -132,16 +130,18 @@ export const FormPropsPanel = ({ formFieldProps, onFormPropsChange }) => {
                   labelText={'Font Size'}
                   onChange={(e) =>
                     onFormPropsChange({
-                      ...rest,
-                      customProps: {
-                        ...customProps,
-                        fontSize: e.target.value
-                      }
+                      ...formProps.current,
+                      fontSize: e.target.value
+                      // ...rest,
+                      // customProps: {
+                      //   ...customProps,
+                      //   fontSize: e.target.value
+                      // }
                     })
                   }
-                  readOnly={formProps.current?.defaultStyle}
-                  defaultValue={formProps.current?.defaultStyle ? formProps.current?.defaultProps.fontSize : formProps.current?.customProps.fontSize}
-                  value={formProps.current?.defaultStyle ? formProps.current?.defaultProps.fontSize : formProps.current?.customProps.fontSize}
+                  //readOnly={formProps.current?.defaultStyle}
+                  defaultValue={formProps.current?.fontSize}
+                  value={formProps.current?.fontSize}
                 >
                   {FONT_SIZE.map((fontSize, index) => {
                     return <SelectItem key={`FontSize-${index}`} value={fontSize.fontSize} text={fontSize.fontSize} />;
@@ -152,31 +152,35 @@ export const FormPropsPanel = ({ formFieldProps, onFormPropsChange }) => {
                 <TextInput
                   id={'form-color'}
                   labelText={'Font Color'}
-                  value={formProps.current?.defaultStyle ? formProps.current?.defaultProps.fontColor : formProps.current?.customProps.fontColor}
+                  value={formProps.current?.fontColor}
                   onChange={(e) =>
                     onFormPropsChange({
-                      ...rest,
-                      customProps: {
-                        ...customProps,
-                        fontColor: e.target.value
-                      }
+                      ...formProps.current,
+                      fontColor: e.target.value
+                      // ...rest,
+                      // customProps: {
+                      //   ...customProps,
+                      //   fontColor: e.target.value
+                      // }
                     })
                   }
-                  readOnly={formProps.current?.defaultStyle}
+                  //readOnly={formProps.current?.defaultStyle}
                 />
               </Column>
               <Column className="props-field" lg={8}>
                 <TextInput
                   id={'form-background'}
                   labelText={'Form Background'}
-                  value={formProps.current?.defaultStyle ? formProps.current?.defaultProps.formBackground : formProps.current?.customProps.formBackground}
+                  value={formProps.current?.formBackground}
                   onChange={(e) =>
                     onFormPropsChange({
-                      ...rest,
-                      customProps: {
-                        ...customProps,
-                        formBackground: e.target.value
-                      }
+                      ...formProps.current,
+                      formBackground: e.target.value
+                      // ...rest,
+                      // customProps: {
+                      //   ...customProps,
+                      //   formBackground: e.target.value
+                      // }
                     })
                   }
                   readOnly={formProps.current?.defaultStyle}
@@ -188,16 +192,18 @@ export const FormPropsPanel = ({ formFieldProps, onFormPropsChange }) => {
                   labelText={'Label Style'}
                   onChange={(e) =>
                     onFormPropsChange({
-                      ...rest,
-                      customProps: {
-                        ...customProps,
-                        labelStyle: e.target.value
-                      }
+                      ...formProps.current,
+                      labelStyle: e.target.value
+                      // ...rest,
+                      // customProps: {
+                      //   ...customProps,
+                      //   labelStyle: e.target.value
+                      // }
                     })
                   }
-                  defaultValue={formProps.current?.defaultStyle ? formProps.current?.defaultProps.labelStyle : formProps.current?.customProps.labelStyle}
-                  value={formProps.current?.defaultStyle ? formProps.current?.defaultProps.labelStyle : formProps.current?.customProps.labelStyle}
-                  readOnly={formProps.current?.defaultStyle}
+                  defaultValue={formProps.current?.labelStyle}
+                  value={formProps.current?.labelStyle}
+                  //readOnly={formProps.current?.defaultStyle}
                 >
                   {FONT_STYLE.map((fontStyle, index) => {
                     return <SelectItem key={`fontStyle-${index}`} value={fontStyle.value} text={fontStyle.fontStyle} />;
@@ -210,16 +216,18 @@ export const FormPropsPanel = ({ formFieldProps, onFormPropsChange }) => {
                   labelText={'Label Font Size'}
                   onChange={(e) =>
                     onFormPropsChange({
-                      ...rest,
-                      customProps: {
-                        ...customProps,
-                        labelFontSize: e.target.value
-                      }
+                      ...formProps.current,
+                      labelFontSize: e.target.value
+                      // ...rest,
+                      // customProps: {
+                      //   ...customProps,
+                      //   labelFontSize: e.target.value
+                      // }
                     })
                   }
-                  defaultValue={formProps.current?.defaultStyle ? formProps.current?.defaultProps.labelFontSize : formProps.current?.customProps.labelFontSize}
-                  value={formProps.current?.defaultStyle ? formProps.current?.defaultProps.labelFontSize : formProps.current?.customProps.labelFontSize}
-                  readOnly={formProps.current?.defaultStyle}
+                  defaultValue={formProps.current?.labelFontSize}
+                  value={formProps.current?.labelFontSize}
+                  //readOnly={formProps.current?.defaultStyle}
                 >
                   {FONT_SIZE.map((fontSize, index) => {
                     return <SelectItem key={`LabelFontSize-${index}`} value={fontSize.fontSize} text={fontSize.fontSize} />;
@@ -233,14 +241,16 @@ export const FormPropsPanel = ({ formFieldProps, onFormPropsChange }) => {
                   value={formProps.current?.labelColor}
                   onChange={(e) =>
                     onFormPropsChange({
-                      ...rest,
-                      customProps: {
-                        ...customProps,
-                        labelColor: e.target.value
-                      }
+                      ...formProps.current,
+                      labelColor: e.target.value
+                      // ...rest,
+                      // customProps: {
+                      //   ...customProps,
+                      //   labelColor: e.target.value
+                      // }
                     })
                   }
-                  readOnly={formProps.current?.defaultStyle}
+                  //readOnly={formProps.current?.defaultStyle}
                 />
               </Column>
             </Grid>

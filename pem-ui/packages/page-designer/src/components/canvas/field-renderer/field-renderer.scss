@@ -11,7 +11,7 @@
   border: 1px solid hsl(205, 100%, 50%);
 
   .add-row {
-    display: block;
+    display: flex;
   }
 }
 
@@ -59,8 +59,12 @@
 .add-row {
   display: none;
   position: absolute;
-  left: 33rem;
   bottom: -2rem;
+}
+
+.add-row-container {
+  display: flex;
+  justify-content: center;
 }
 
 .form-fields {
@@ -69,8 +73,8 @@
 
 .canvas-form-fields {
   position: relative;
-  width: 89%;
-  margin-left: 1rem;
+  width: 98%;
+  margin-left: 0.5rem;
 }
 
 .custom-field-grid {
@@ -85,5 +89,9 @@
 }
 
 .col-span-margin {
-  margin-left: -3rem;
+  margin-left: -4rem;
+}
+
+.radio-btn-group {
+  margin-top: 1rem;
 }

@@ -27,7 +27,7 @@ export const FormPropsPanel = ({ formFieldProps, onFormPropsChange }) => {
         </TabList>
         <TabPanels>
           <TabPanel>
-            <Grid style={{ marginTop: '1rem', marginLeft: '1rem'  }}>
+            <Grid style={{ marginTop: '1rem', marginLeft: '0.5rem' }}>
               <Column className="props-field" lg={8}>
                 <TextInput
                   id={'form-name'}
@@ -87,7 +87,7 @@ export const FormPropsPanel = ({ formFieldProps, onFormPropsChange }) => {
             </Grid>
           </TabPanel>
           <TabPanel>
-            <Grid style={{ marginTop: '2rem', marginLeft: '1rem' }}>
+            <Grid style={{ marginTop: '2rem', marginLeft: '0.75rem' }}>
               <Column lg={10}>
                 <RadioButtonGroup
                   id={'form-style-opt'}

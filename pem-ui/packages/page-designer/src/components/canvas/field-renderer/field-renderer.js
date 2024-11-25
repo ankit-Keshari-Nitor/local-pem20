@@ -74,18 +74,18 @@ const FieldRenderer = ({
   );
   drag(ref);
   return !previewMode ? (
-    <div ref={isNestedBlock ? ref : null} style={{ opacity }}>
+    <div ref={isNestedBlock ? ref : null} style={{ opacity}}>
       <div
         onClick={(e) => {
           setIsSelected([{ [path]: true }]);
         }}
         className={isSelected[0] !== undefined && isSelected[0][path] ? 'element form-fields-Selected' : 'element'}
-      >
-        <Grid className="custom-field-grid">
+      > 
+        <Grid fullWidth className="custom-field-grid">
           {isNestedBlock && (
             <Column lg={1} className="col-span-margin">
               <span className="drag-icon">
-                <Draggable />
+                <Draggable className='drag-icon'/>
               </span>
             </Column>
           )}
@@ -96,9 +96,12 @@ const FieldRenderer = ({
         </Grid>
         {isNestedBlock && (
           <>
+          <div className="add-row-container">
             <div className="add-row" onClick={(e) => onAddRow(e, path)}>
-              <AddRowIcon />
+                <AddRowIcon />
             </div>
+          </div>
+           
             {isSelected[0] !== undefined && isSelected[0][path] && (
               <div className="action-container">
                 <Grid className="actions-icons">

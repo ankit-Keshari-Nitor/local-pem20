@@ -441,7 +441,7 @@ export default function PropsPanel({
                                     {/* Mapping */}
                                     {item.type === MAPPING && (
 
-                                      <Column lg={item.size.col}>
+                                      <Column className="mapping-column" lg={item.size.col} >
                                         <TextInput
                                           key={idx}
                                           id={String(idx)}
@@ -455,10 +455,10 @@ export default function PropsPanel({
                                         />
 
                                         <Button
-                                          size="md"
+                                          size="sm"
                                           className="opt-btn context-mapping-btn"
                                           kind="secondary"
-                                          renderIcon={VectorIcon}
+                                          renderIcon={() => <div className='vector-btn'><VectorIcon/></div>}
                                           onClick={() => OpenMappingDialog(selectedFieldProps?.id, key, item.propsName, selectedFieldProps?.currentPathDetail)}
                                         ></Button>
                                       </Column>
@@ -472,7 +472,7 @@ export default function PropsPanel({
                                               key={idx}
                                               size="sm"
                                               id={'toggle-' + key + '-' + String(idx) + '-' + selectedFieldProps?.id}
-                                              className="right-palette-form-item"
+                                              className="right-palette-form-item-toggle"
                                               labelText={item.label}
                                               defaultToggled={Boolean(item.value)}
                                               toggled={Boolean(item.value)}
@@ -493,7 +493,7 @@ export default function PropsPanel({
                                               key={idx}
                                               size="sm"
                                               id={'toggle-' + String(idx) + '-' + selectedFieldProps?.id}
-                                              className="right-palette-form-item "
+                                              className="right-palette-form-item-toggle"
                                               labelText={item.label}
                                               defaultToggled={Boolean(item.value.value)}
                                               toggled={Boolean(item.value.value)}
@@ -528,7 +528,6 @@ export default function PropsPanel({
                                     {/* Radio */}
                                     {item.type === RADIO && (
                                       <Column lg={item.size.col}>
-                                        <div className="right-palette-form-item">
                                           <RadioButtonGroup
                                             key={`radio-group-${item.label}`}
                                             legendText={item.label}
@@ -542,11 +541,10 @@ export default function PropsPanel({
                                             {item?.options.length > 0 &&
                                               item?.options.map((option, idx) =>
                                                 option?.value ? (
-                                                  <RadioButton id={`radio-group-${item.label}-${idx}`} key={idx} labelText={option.label} value={option.value} />
+                                                  <RadioButton className='radio-btn-group' id={`radio-group-${item.label}-${idx}`} key={idx} labelText={option.label} value={option.value} />
                                                 ) : null
                                               )}
                                           </RadioButtonGroup>
-                                        </div>
                                       </Column>
                                     )}
                                     {/* CheckBox */}
@@ -602,7 +600,9 @@ export default function PropsPanel({
                                       <Column lg={item.size.col ? item.size.col : 16}>
                                         <div className="right-palette-form-item">
                                           {file == undefined ? (
-                                            <Button className="attachment-btn" onClick={() => onOpenFiles(key, item.propsName, selectedFieldProps, item.documentCategory)}> Select </Button>
+                                            <div className="attachment-btn">
+                                               <Button size="md" onClick={() => onOpenFiles(key, item.propsName, selectedFieldProps, item.documentCategory)}> Select </Button>
+                                            </div>
                                           ) : (
                                             <FileUploaderItem
                                               errorBody={`500kb max file size. Select a new file and try again.`}
@@ -705,10 +705,10 @@ export default function PropsPanel({
                                                       onChange={(e) => handleRowOpt(index, e.target.value, rowitem.key)}
                                                     />
                                                     <Button
-                                                      size="md"
+                                                      size="sm"
                                                       className="opt-btn context-mapping-btn"
                                                       kind="secondary"
-                                                      renderIcon={VectorIcon}
+                                                      renderIcon={<div className='vector-btn'><VectorIcon/></div>}
                                                       onClick={() =>
                                                         OpenMappingDialog(selectedFieldProps?.id, key, item.propsName, selectedFieldProps?.currentPathDetail, index, rowitem.key)
                                                       }
@@ -773,7 +773,7 @@ export default function PropsPanel({
                           labelText={
                             <>
                               {'Use Value as Label'}
-                              <Tooltip className="min-max-tooltip" align="left" label={'Use value as a label'}>
+                              <Tooltip className="min-max-tooltip" align="top-right" label={'Use value as a label'}>
                                 <Help />
                               </Tooltip>
                             </>
@@ -824,7 +824,7 @@ export default function PropsPanel({
                                     size="md"
                                     className="mapping-button context-mapping-btn"
                                     kind="secondary"
-                                    renderIcon={VectorIcon}
+                                    renderIcon={<div className='vector-btn'><VectorIcon/></div>}
                                     onClick={() => OpenMappingDialog(selectedFieldProps?.id, 'Basic', 'mapping', selectedFieldProps?.currentPathDetail)}
                                   ></Button>
                                 )}
@@ -853,7 +853,7 @@ export default function PropsPanel({
                                       size="md"
                                       className="mapping-button context-mapping-btn"
                                       kind="secondary"
-                                      renderIcon={VectorIcon}
+                                      renderIcon={<div className='vector-btn'><VectorIcon/></div>}
                                       onClick={() => OpenMappingDialog(selectedFieldProps?.id, 'Basic', 'options', selectedFieldProps?.currentPathDetail)}
                                     ></Button>
                                   )}
@@ -874,7 +874,7 @@ export default function PropsPanel({
                                   className={`right-props-icon ${options.length === 1 && 'right-props-margin-icon'}  right-props-icon-background valueasLabel-text-field ${selectedRadioValue === 'static' && !isValueAsLabel && (options.length > 1 ? 'value-label-icon' : 'value-label-opt-icon')}`}
                                 >
                                   <span className="right-props-plus-icon-color" onClick={() => handleAddOption(index)}>
-                                    <CarbonPlus />
+                                    <CarbonPlus className="carbon-plus-btn"/>
                                   </span>
                                 </Column>
                               </>
@@ -896,10 +896,10 @@ export default function PropsPanel({
                               onChange={(e) => handleOptionChange(0, e.target.value, 'value')}
                             />
                             <Button
-                              size="md"
+                              size="sm"
                               className="mapping-button label-mapping-button context-mapping-btn"
                               kind="secondary"
-                              renderIcon={VectorIcon}
+                              renderIcon={()=> <div className='vector-btn'><VectorIcon/></div>}
                               onClick={() => OpenMappingDialog(selectedFieldProps?.id, 'Basic', TABLE_ROWS, selectedFieldProps?.currentPathDetail, 0, 'value')}
                             ></Button>
                           </div>
@@ -919,7 +919,7 @@ export default function PropsPanel({
                                 size="md"
                                 className="mapping-button label-mapping-button context-mapping-btn"
                                 kind="secondary"
-                                renderIcon={VectorIcon}
+                                renderIcon={()=> <div className='vector-btn'><VectorIcon/></div>}
                                 onClick={() => OpenMappingDialog(selectedFieldProps?.id, 'Basic', TABLE_ROWS, selectedFieldProps?.currentPathDetail, 0, 'label')}
                               ></Button>
                             </div>
@@ -939,7 +939,7 @@ export default function PropsPanel({
                               size="md"
                               className="mapping-button label-mapping-button context-mapping-btn"
                               kind="secondary"
-                              renderIcon={VectorIcon}
+                              renderIcon={()=> <div className='vector-btn'><VectorIcon/></div>}
                               onClick={() => OpenMappingDialog(selectedFieldProps?.id, 'Basic', TABLE_ROWS, selectedFieldProps?.currentPathDetail, 1, 'value')}
                             ></Button>
                           </div>
@@ -958,7 +958,7 @@ export default function PropsPanel({
                               size="md"
                               className="mapping-button label-mapping-button context-mapping-btn"
                               kind="secondary"
-                              renderIcon={VectorIcon}
+                              renderIcon={()=> <div className='vector-btn'><VectorIcon/></div>}
                               onClick={() => OpenMappingDialog(selectedFieldProps?.id, 'Basic', TABLE_ROWS, selectedFieldProps?.currentPathDetail, 1, 'label')}
                             ></Button>
                           </div>
@@ -1028,8 +1028,8 @@ export default function PropsPanel({
                                   <>
                                     {advncProps.label}
                                     {advncProps.tooltip && (
-                                      <Tooltip className="min-max-tooltip" align="bottom" label={'It is the ' + advncProps.label + ' of use input'}>
-                                        <Information />
+                                      <Tooltip className="min-max-tooltip" advanceProps align={advncProps.propsName === "min" ? "top-left" : "top-right" } label={'It is the ' + advncProps.label + ' of use input'}>
+                                        <Information/>
                                       </Tooltip>
                                     )}
                                   </>
@@ -1265,7 +1265,7 @@ export default function PropsPanel({
                                   );
                                 }}
                               >
-                                <DatePickerInput id="date-picker-single" labelText={advncProps?.label} placeholder="mm/dd/yyyy" />
+                                <DatePickerInput id="date-picker-single-validation" labelText={advncProps?.label} placeholder="mm/dd/yyyy" />
                               </DatePicker>
                             </Column>
                           )}

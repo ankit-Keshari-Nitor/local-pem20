@@ -5,7 +5,7 @@
   flex: 1;
   overflow-x: hidden;
   overflow-y: scroll;
-  padding: 10px;
+  padding: 8px;
 }
 
 .right-palette-container .tab-panel {
@@ -22,6 +22,7 @@
   // margin-bottom: 16px;
   // max-width: 90% !important;
   display: inline-block;
+  width: 88%;
 }
 
 .mapping-button {
@@ -47,10 +48,11 @@
 // }
 
 .opt-btn {
+  height: 2.55rem !important;
   background-color: #e8e8e8;
   padding-inline-end: unset;
   border-color: #0f62fe;
-  margin-top: 2.5rem;
+  margin-top: 2.46rem;
 }
 
 .opt-btn > svg {
@@ -163,7 +165,7 @@
 .right-props-icon {
   border: 1px solid #0f62fe;
   width: 100%;
-  height: 55%;
+  height: 67%;
   padding-top: 0.4rem;
   padding-left: 0.35rem;
   margin-left: 0.35rem;
@@ -210,6 +212,7 @@
 
 .radio-col-gap {
   margin-left: 0.5rem;
+  width: 98%;
 }
 
 .value-radio-btn-group {
@@ -225,7 +228,7 @@
 }
 
 .label-mapping-button {
-  margin-top: 1.5rem;
+  margin-top: 2.44rem;
 }
 
 .mapping-text-field-dynamic {
@@ -315,4 +318,26 @@
   min-height: 40px;
   height: 41px;
   margin-top: 2.5rem !important;
+}
+
+.radio-btn-group {
+  margin-top: 0.5rem;
+}
+
+.attachment-btn {
+  margin-left: 2.6rem;
+  margin-top: 2.3rem;
+}
+
+.mapping-column {
+  display: flex;
+  width: 96%;
+}
+
+.carbon-plus-btn {
+  margin-left: 0.12rem;
+}
+
+.vector-btn {
+  margin-left: -0.25rem;
 }

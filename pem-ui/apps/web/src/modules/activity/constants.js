@@ -18,6 +18,7 @@ export const API_END_POINTS = {
 
   API_CONFIGURATION: '/rest/sponsors/b2b/apiconfigurations/',
   ACTIVITY_FILE: '/rest/sponsors/b2b/vchdocuments/',
+  DOCUMENTS:'/sponsors/cashbank/v2/documents/',
   ROLES: '/sponsors/cashbank/v2/roles?pageNo=0&pageSize=10&sortBy=modifyTs&sortDir=DESC'
 };
 

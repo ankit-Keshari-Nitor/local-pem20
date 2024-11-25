@@ -44,7 +44,15 @@ const DropConnector = ({ children, index, moveDialogItem }) => {
   );
 };
 
-export default function   BranchStartPropertiesTrayTwo({ readOnly, selectedNode, selectedTaskNode, isDialogFlowActive, deleteBranchNodeConnector, setOpenPropertiesBlock }) {
+export default function BranchStartPropertiesTray({
+  readOnly,
+  selectedNode,
+  selectedTaskNode,
+  isDialogFlowActive,
+  deleteBranchNodeConnector,
+  setOpenPropertiesBlock,
+  activityDefinitionData
+}) {
   const store = useTaskStore();
   const storeData = useTaskStore((state) => state.tasks);
   const editTask = useTaskStore((state) => state.editTaskNodePros);
@@ -76,7 +84,7 @@ export default function   BranchStartPropertiesTrayTwo({ readOnly, selectedNode,
       }
       return {
         ...condition,
-        targetNodeName: targetNode && targetNode[0].data.editableProps.name ? targetNode[0].data.editableProps.name : targetNode[0]?.data.id
+        targetNodeName: targetNode && targetNode[0].data?.editableProps?.name ? targetNode[0].data?.editableProps?.name : targetNode[0]?.data?.id
       };
     });
 
@@ -185,7 +193,13 @@ export default function   BranchStartPropertiesTrayTwo({ readOnly, selectedNode,
                         <span className="pem-node-name">{connector.targetNodeName}</span>
                       </Column>
                       <Column lg={16}>
-                        <ConditionalBuilder readOnly={readOnly} query={connector.condition} updateConnectorQuery={updateConnectorQuery} id={connector.target} />
+                        <ConditionalBuilder
+                          readOnly={readOnly}
+                          query={connector.condition}
+                          updateConnectorQuery={updateConnectorQuery}
+                          id={connector.target}
+                          activityDefinitionData={activityDefinitionData}
+                        />
                       </Column>
                     </Grid>
                   </div>
@@ -211,7 +225,7 @@ export default function   BranchStartPropertiesTrayTwo({ readOnly, selectedNode,
                                 disabled
                                 value={connector.targetNodeName}
                                 onChange={(e) => handleNodeNameChange(e, connector.target)}
-                                className='draggable-input'
+                                className="draggable-input"
                               />
                             </Column>
                             {!readOnly && (

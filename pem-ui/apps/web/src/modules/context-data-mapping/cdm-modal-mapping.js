@@ -60,7 +60,7 @@ const ContextDataModal = ({ mode }) => {
                   recurseObject(value);
                 } else {
                   if (key === reqObject) {
-                    currentObject[key] = '${' + { data } + '}';
+                    currentObject[key] = '${' + data + '}';
                   }
                 }
               });

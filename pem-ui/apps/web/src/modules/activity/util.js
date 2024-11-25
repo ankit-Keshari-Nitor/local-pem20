@@ -274,6 +274,7 @@ export const generateNodeEdgesForApi = (nodes, edges, error, level) => {
             error: (level ? 'DialogFlow' : 'TaskFlow') + ': Exclusive Branch Start has not outgoing sequence flow without condition'
           });
         }
+        return error;
       });
     }
     if (node.type.toUpperCase() === 'BRANCH_START' && node.data.branchCondition.length > 1) {
@@ -283,6 +284,7 @@ export const generateNodeEdgesForApi = (nodes, edges, error, level) => {
             error: (level ? 'DialogFlow' : 'TaskFlow') + ': Exclusive Branch Start has not outgoing sequence flow without condition'
           });
         }
+        return error;
       });
     }
     if (node.type.toUpperCase() === 'FORM' && Object.keys(node.data.form).length === 0) {
@@ -395,7 +397,7 @@ const branchConditionObject = (edge, object = []) => {
 // Function to handle conversion of all the nodes and edges data of subprocess getting data from API
 const generateActivitySchemaForSubProcess = (taskNode, readOnly) => {
   const newChildNodes = taskNode.nodes.map((node) => {
-    return nodeObjects(node, readOnly);
+    return nodeObjects(node, readOnly) || {};  // Return an empty object if undefined
   });
   const childEdges = taskNode.connectors.map((edge) => {
     let nodeIndex = newChildNodes.findIndex((n) => n.id === edge.source);
@@ -463,7 +465,7 @@ export const generateActivitySchema = (nodes, edges, readOnly) => {
         }
       }
     }
-    return getEdge(edge, readOnly, nodes, 'task');
+    return getEdge(edge, readOnly, nodes, 'task') || {};  // Ensure return value
   });
   return {
     nodes: newNodes,

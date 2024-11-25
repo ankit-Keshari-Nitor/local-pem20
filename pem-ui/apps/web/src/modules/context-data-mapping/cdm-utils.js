@@ -40,12 +40,17 @@ const generateContextDataMapping = (storeData) => {
     name: "ProcessData",
     type: '',
     data: { type: "CATEGORY" },
-    items: [{
-      name: "ContextData",
+    items: [/* {
+      name: "ParticipantActivityKey",
       type: '',
-      data: { type: "CATEGORY" },
-      items: generateContextDataMappingChildern(storeData) // Pass storeData directly for mapping
-    }]
+      data: { type: "SUBCATEGORY" },
+      items: []
+    }, */ {
+        name: "ContextData",
+        type: '',
+        data: { type: "CATEGORY" },
+        items: generateContextDataMappingChildern(storeData) // Pass storeData directly for mapping
+      }]
   }];
 };
 
@@ -83,7 +88,7 @@ const transformDataToTree = (data, parentKey = '') => {
   return (
     data !== 'undefined' &&
     data?.map((item) => {
-      const itemName = item.name === 'ProcessData' || item.name === 'ContextData' ? `${item.name?.toLowerCase()}` : `${item.name}`
+      const itemName = item.name === 'ProcessData' || item.name === 'ContextData' ? `${item.name.charAt(0).toLowerCase()}${item.name.slice(1)}` : `${item.name}`
       const nodeId = parentKey !== "" ? `${parentKey}.${itemName}` : itemName;
       const { items, data, ...itemProps } = item;
       const treeNode = {
@@ -98,7 +103,7 @@ const transformDataToTree = (data, parentKey = '') => {
         treeNode.children = transformDataToTree(item.items, nodeId);
       }
 
-      if (item.data && item.data.type !== 'TEXT' && item.data.type !== 'API_CONFIG' && item.data.type !== 'LOGO_FILE' && item.data.type !== 'ACTIVITY_FILE' && item.data.type !== 'CATEGORY' && item.data.type !== undefined && typeof item.data === 'object') {
+      if (item.data && item.data.type !== 'TEXT' && item.data.type !== 'SUBCATEGORY' && item.data.type !== 'API_CONFIG' && item.data.type !== 'LOGO_FILE' && item.data.type !== 'ACTIVITY_FILE' && item.data.type !== 'CATEGORY' && item.data.type !== undefined && typeof item.data === 'object') {
         treeNode.children = treeNode.children.concat(transformDataChildren(item.data, nodeId));
       }
 
@@ -109,12 +114,12 @@ const transformDataToTree = (data, parentKey = '') => {
 
 const transformDataToTreeBasedOnType = (data, type, parentKey = '') => {
   return data.map((item) => {
-    const itemName = item.name === 'ProcessData' || item.name === 'ContextData' ? `${item.name?.toLowerCase()}` : `${item.name}`
+    const itemName = item.name === 'ProcessData' || item.name === 'ContextData' ? `${item.name.charAt(0).toLowerCase()}${item.name.slice(1)}` : `${item.name}`
     const nodeId = parentKey !== "" ? `${parentKey}.${itemName}` : itemName;
 
     if (item.type === type || item.data?.type === "CATEGORY") {
       const treeNode = {
-        id: nodeId,
+        id: nodeId + '.pValue',
         title: item.name,
         type: item.type || item.data.type,
         children: []

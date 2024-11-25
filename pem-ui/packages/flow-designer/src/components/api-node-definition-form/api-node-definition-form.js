@@ -42,8 +42,9 @@ export default function APINodeDefinitionForm({
       requestMethod: selectedNode.data?.api?.method || '',
       inputOutputFormats: selectedNode.data?.api?.requestContentType || '',
       escapeRequest: selectedNode.data?.api?.escapeRequest || false,
-      request: selectedNode.data?.api?.request || '',
-      response: selectedNode.data?.api?.sampleResponse || '',
+      request: selectedNode.data?.api?.request || '{}',
+      response: selectedNode.data?.api?.sampleResponse || '{}',
+      sampleResponse: selectedNode.data?.api?.sampleResponse || '{}',
       testMode: selectedNode.data?.api?.testMode || true
     }
   });
@@ -179,6 +180,17 @@ export default function APINodeDefinitionForm({
         [name]: type === 'checkbox' ? checked : type === 'select-one' ? e.target.selectedOptions[0].value : value
       }
     }));
+    if (name === "inputOutputFormats" && e.target.selectedOptions[0].value === "application/json") {
+      setFormState((prev) => ({
+        ...prev,
+        propertyForm: {
+          ...prev.propertyForm,
+          "request": "{}",
+          "sampleResponse": "{}",
+          "response": "{}"
+        }
+      }));
+    }
 
     // Validate the specific field and update errors
     let error = '';
@@ -226,10 +238,23 @@ export default function APINodeDefinitionForm({
   const validateForms = () => {
     const defineErrors = {};
     const propertyErrors = {};
-
+    const regex = /[&<>."\'{}\\]/;
+    const regexDes = /[<>]/;
     // Validate Define Form
-    if (!formState.defineForm.name) {
-      defineErrors.name = 'Name is required';
+    if (!formState.defineForm.name || formState.defineForm.name?.trim().length === 0) {
+      defineErrors.name = 'Name is required.';
+    }
+
+    if (formState.defineForm.name?.trim().length > 0 && formState?.defineForm.name.trim().length >= 30) {
+      defineErrors.name = 'Name must be no longer then 30 characters';
+    }
+
+    if (regex.test(formState.defineForm.name.trim())) {
+      defineErrors.name = 'Name should not contain &,<,>,",\',.,{,}, characters.';
+    }
+
+    if (regexDes.test(formState.defineForm.description?.trim())) {
+      defineErrors.description = 'Description should not contain <> characters.';
     }
 
     // Validate Property Form
@@ -434,6 +459,7 @@ export default function APINodeDefinitionForm({
   };
 
   const OpenMappingDialog = (fieldName, index) => {
+
     if (activityDefinitionData?.definition?.contextData === undefined) {
       return;
     }
@@ -626,6 +652,8 @@ export default function APINodeDefinitionForm({
                       value={formState.defineForm.description}
                       onChange={handleDefineFormChange}
                       labelText="Description"
+                      invalid={!!errors?.defineForm?.description}
+                      invalidText={errors?.defineForm?.description}
                     ></TextArea>
                   </Column>
                 </Grid>

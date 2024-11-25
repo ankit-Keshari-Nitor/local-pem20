@@ -6,7 +6,7 @@ import { QUERY_COMBINATOR, QUERY_FIELDS } from '../../constants';
 
 import './condition-builder.scss';
 
-export default function BranchConditionalBuilder({ readOnly = { readOnly }, query, updateConnectorQuery, id }) {
+export default function BranchConditionalBuilder({ readOnly = { readOnly }, query, updateConnectorQuery, id, activityDefinitionData }) {
   return (
     <Grid>
       <Column className="form-field" lg={16}>
@@ -19,6 +19,7 @@ export default function BranchConditionalBuilder({ readOnly = { readOnly }, quer
             controlClassnames={{ queryBuilder: 'queryBuilder-branches', body: 'inline-indycomb-left' }}
             disabled={readOnly}
             showNotToggle
+            context={activityDefinitionData}
           />
         </CarbonWrapper>
       </Column>

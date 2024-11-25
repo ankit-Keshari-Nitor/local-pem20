@@ -109,3 +109,9 @@
   color: var(--cds-text-primary, #161616) !important;
   -webkit-text-fill-color: var(--cds-text-primary, #161616) !important;
 }
+
+.branch-delete {
+  text-align: right;
+  margin-right: 1rem;
+  cursor: pointer;
+}

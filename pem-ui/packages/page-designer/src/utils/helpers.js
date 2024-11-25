@@ -535,7 +535,7 @@ export const nestedLayoutView = (childLayout, childSchema) => {
 
 export const convertToApiSchema = (layout) => {
   const schema = nestedLayoutView(layout.slice(1), []);
-  const { customProps, defaultProps, id, type, ...rest } = layout.slice(0, 1)[0];
+  const { customProps, defaultProps, id, type,  ...rest } = layout.slice(0, 1)[0];
   const formProps = rest.defaultStyle ? defaultProps : customProps;
   const formSchema = {
     id: id,
@@ -555,15 +555,15 @@ export const convertToApiSchema = (layout) => {
   return schema.length > 0 ? formSchema : {};
 };
 
-export const defaultFormProps = {
-  fontFamily: 'IBM Plex Sans',
-  fontSize: '14px',
-  fontColor: '#161616',
-  formBackground: 'white',
-  labelStyle: '400',
-  labelFontSize: '14px',
-  labelColor: '#161616'
-};
+// export const defaultFormProps = {
+//   fontFamily: 'IBM Plex Sans',
+//   fontSize: '14px',
+//   fontColor: '#161616',
+//   formBackground: 'white',
+//   labelStyle: '400',
+//   labelFontSize: '14px',
+//   labelColor: '#161616'
+// };
 
 export const formInitializer = (formObj) => {
   return formObj.form?.cType
@@ -575,13 +575,20 @@ export const formInitializer = (formObj) => {
           name: 'Form',
           width: '100px',
           height: '100px',
-          defaultStyle: true,
-          defaultProps: {
-            ...defaultFormProps
-          },
-          customProps: {
-            ...defaultFormProps
-          }
+          fontFamily: 'IBM Plex Sans',
+          fontSize: '14px',
+          fontColor: '#161616',
+          formBackground: 'white',
+          labelStyle: '400',
+          labelFontSize: '14px',
+          labelColor: '#161616'
+          //defaultStyle: true,
+          // defaultProps: {
+          //   ...defaultFormProps
+          // },
+          // customProps: {
+          //   ...defaultFormProps
+          // }
         },
         {
           type: 'row',
@@ -606,17 +613,18 @@ export const getFormObject = (schema, formObj, colSize = 16) => {
         const {
           id,
           cType,
-          props: { defaultStyle, height, name, width, ...rest }
+          props: { height, name, width, ...rest }
         } = item;
         formObj.push({
           id: id,
           type: cType.toLowerCase(),
-          defaultStyle: defaultStyle,
+          //defaultStyle: defaultStyle,
           height: height,
           name: name,
           width: width,
-          customProps: { ...rest },
-          defaultProps: { ...defaultFormProps }
+          ...rest
+          // customProps: { ...rest },
+          // defaultProps: { ...defaultFormProps }
         });
         getFormObject(schema[index]?.children, formObj);
         break;

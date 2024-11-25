@@ -31,7 +31,8 @@ export default function BlockPropertiesTray(props) {
     getApiConfiguration,
     getDocumentFile,
     getRoleList,
-    activityDefinitionData
+    activityDefinitionData,
+    deleteNode
   } = props;
 
   const [isExpanded, setIsExpanded] = useState(false);
@@ -128,9 +129,9 @@ export default function BlockPropertiesTray(props) {
       case NODE_TYPE.API:
         return <APINodeDefinitionForm id={'api-define-form'} schema={API_FORM_SCHEMA} {...props} />;
       case NODE_TYPE.BRANCH_START:
-        return <BranchStartPropertiesTray id={'branch-start-properties-form'} {...props} />;
+        return <BranchStartPropertiesTray id={'branch-start-properties-form'} {...props} deleteNode={deleteNode} branchStart/>;
       case NODE_TYPE.BRANCH_END:
-        return null;
+        return <BranchStartPropertiesTray id={'branch-start-properties-form'} {...props} deleteNode={deleteNode} />;
       default:
         return null;
     }

@@ -46,7 +46,8 @@ const DialogFlowDesigner = ({
   activityOperation,
   versionData,
   selectedVersion,
-  onVersionSelection
+  onVersionSelection,
+  deleteNode
 }) => {
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const activityDefPanelRef = useRef();
@@ -131,6 +132,7 @@ const DialogFlowDesigner = ({
                     getApiConfiguration={getApiConfiguration}
                     getDocumentFile={getDocumentFile}
                     activityDefinitionData={activityDefinitionData}
+                    deleteNode={deleteNode}
                   />
                 </div>
               </div>

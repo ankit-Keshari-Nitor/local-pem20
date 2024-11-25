@@ -215,7 +215,8 @@ const DefinitionList = ({ mode, context }) => {
             onAction: (...args) => {
               let action = pageUtil.t('mod-activity-list:list.actions.cloneActivity');
               let activityDefnKey = args[1].activityDefnKey;
-              return page.uiOnCellActionClick.apply(page, [action, activityDefnKey]);
+              let actVersionKey = args[1].defaultVersion.activityDefnVersionKey;
+              return page.uiOnCellActionClick.apply(page, [action, activityDefnKey, actVersionKey]);
             },
             resourceKey: `DEFINITION.CLONE`
           },
@@ -358,18 +359,18 @@ const DefinitionList = ({ mode, context }) => {
           }
         },
 
-        init: function () { },
+        init: function () {},
         _filterRowActions: function (selectedRow, rowActions) {
           if (selectedRow.defaultVersion.status !== 'DRAFT') {
-            rowActions.edit.isVisible = false
+            rowActions.edit.isVisible = false;
           }
           if (selectedRow.defaultVersion.status === 'DELETE') {
             rowActions.delete.isVisible = false;
             rowActions.testActivity.isVisible = false;
-            rowActions.shareUnshared.isVisible = false
+            rowActions.shareUnshared.isVisible = false;
           }
         },
-        _filterBatchActions: function (selectedRow, batchActionsObj) { },
+        _filterBatchActions: function (selectedRow, batchActionsObj) {},
         uiImport: function () {
           pageUtil.showPageModal('FUNCTIONALITY_NOT_IMPLEMENTED_MODAL.View', {});
         },
@@ -436,7 +437,6 @@ const DefinitionList = ({ mode, context }) => {
                 });
               break;
             case pageUtil.t('mod-activity-list:list.actions.rollout'):
-
               pageUtil.showPageModal('ROLLOUT.SELECT', {
                 data: {
                   activityDefnVersionKey: actVersionKey,
@@ -474,7 +474,19 @@ const DefinitionList = ({ mode, context }) => {
               pageUtil.showPageModal('FUNCTIONALITY_NOT_IMPLEMENTED_MODAL.View', {});
               break;
             case pageUtil.t('mod-activity-list:list.actions.cloneActivity'):
-              pageUtil.showPageModal('FUNCTIONALITY_NOT_IMPLEMENTED_MODAL.View', {});
+              pageUtil
+                .showPageModal('CONFIRMATION_MODAL.VIEW', {
+                  data: {
+                    message: `Do you want to clone the Activity Definition '${record.name}' ?`,
+                    action: 'mod-activity-list:list.actions.clone',
+                    activityDefnKey: activityDefKey,
+                    activityDefnVersionKey: actVersionKey,
+                    activityName: record.name
+                  }
+                })
+                .then((modalData) => {
+                  page.datatable.definitionList.refresh();
+                });
               break;
             case pageUtil.t('mod-activity-list:list.actions.shareUnshared'):
               pageUtil.showPageModal('FUNCTIONALITY_NOT_IMPLEMENTED_MODAL.View', {});
@@ -504,7 +516,6 @@ const DefinitionList = ({ mode, context }) => {
           ></Shell.DataTable>
         </Shell.PageBody>
         <Shell.PageActions></Shell.PageActions>
-
       </Shell.Page>
     </>
   );

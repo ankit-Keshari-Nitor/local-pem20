@@ -44,7 +44,7 @@ const DropConnector = ({ children, index, moveDialogItem }) => {
   );
 };
 
-export default function BranchStartPropertiesTrayTwo({
+export default function BranchStartPropertiesTray({
   readOnly,
   selectedNode,
   selectedTaskNode,
@@ -52,7 +52,8 @@ export default function BranchStartPropertiesTrayTwo({
   deleteBranchNodeConnector,
   setOpenPropertiesBlock,
   deleteNode,
-  branchStart
+  branchStart,
+  activityDefinitionData
 }) {
   const store = useTaskStore();
   const storeData = useTaskStore((state) => state.tasks);
@@ -175,7 +176,7 @@ export default function BranchStartPropertiesTrayTwo({
             invalidText="Branch Name is required"
           />
         </Column>
-        <Column className='branch-delete' lg={8}>
+        <Column className="branch-delete" lg={8}>
           <span
             onClick={() => {
               deleteNode(selectedNode.id, isDialogFlowActive, selectedTaskNode?.id, true);
@@ -206,7 +207,13 @@ export default function BranchStartPropertiesTrayTwo({
                             <span className="pem-node-name">{connector.targetNodeName}</span>
                           </Column>
                           <Column lg={16}>
-                            <ConditionalBuilder readOnly={readOnly} query={connector.condition} updateConnectorQuery={updateConnectorQuery} id={connector.target} />
+                            <ConditionalBuilder
+                              readOnly={readOnly}
+                              query={connector.condition}
+                              updateConnectorQuery={updateConnectorQuery}
+                              id={connector.target}
+                              activityDefinitionData={activityDefinitionData}
+                            />
                           </Column>
                         </Grid>
                       </div>

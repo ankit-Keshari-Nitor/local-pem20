@@ -25,7 +25,8 @@
       "import": "Import",
       "markAsFinal": "Mark As Final",
       "rollout": "Rollout",
-      "restore": "Restore"
+      "restore": "Restore",
+      "clone": "Clone"
     },
     "filters": {
       "status": "Status",

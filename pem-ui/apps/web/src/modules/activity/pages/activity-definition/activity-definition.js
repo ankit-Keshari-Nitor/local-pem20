@@ -70,7 +70,9 @@ export default function ActivityDefinition() {
           const { nodes, edges } = generateActivitySchema(response.activityData.schema.nodes, response.activityData.schema.edges, readOnly);
           response.activityData.schema.nodes = nodes;
           response.activityData.schema.edges = edges;
+          response.activityData.definition.contextData = response.activityData?.version?.contextData
           setActivityDefinitionData(response.activityData);
+
           updateActivityData(response.activityData);
           setActivityVersions(response.versions);
         } else {
@@ -298,6 +300,7 @@ export default function ActivityDefinition() {
   const getDocumentFile = async (key) => {
     try {
       const activityList = await ActivityService.getDocumentFile(key); // Ensure this is awaited if it's a promise
+      // const data = await ActivityService.getDocuments(key)
       return activityList;
     } catch (error) {
       console.error('Error fetching API configuration:', error);

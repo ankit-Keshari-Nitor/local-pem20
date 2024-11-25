@@ -15,16 +15,23 @@ const DataLoaderConfig = {
       return {
         type: 'RESTAPI',
         method: 'POST',
-        url: '/sponsors/cashbank/v2/activityDefinitions/:activityDefnKey/versions/:activityDefnVersionKey/actions/markAsFinal',
+        url: '/sponsors/cashbank/v2/activityDefinitions/:activityDefnKey/versions/:activityDefnVersionKey/actions/markAsFinal'
       };
     },
     DELETE: ({ getEnvironmentValue }) => {
       return {
         type: 'RESTAPI',
         method: 'DELETE',
-        url: '/sponsors/cashbank/v2/activityDefinitions/:activityDefnKey',
+        url: '/sponsors/cashbank/v2/activityDefinitions/:activityDefnKey'
       };
     },
+    GET_ACTIVITY_DEFINITION_DATA: ({ getEnvironmentValue }) => {
+      return {
+        type: 'RESTAPI',
+        method: 'GET',
+        url: '/sponsors/cashbank/v2/activityDefinitions/:activityDefnKey/versions/:activityDefnVersionKey/actions/getData'
+      };
+    }
   },
   ACTIVITY_VERSION: {
     LIST: ({ getEnvironmentValue }) => {
@@ -41,9 +48,9 @@ const DataLoaderConfig = {
       return {
         type: 'RESTAPI',
         method: 'POST',
-        url: '/sponsors/cashbank/v2/activityDefinitions/:activityDefnKey/versions/:activityDefnVersionKey/actions/markAsDefault',
+        url: '/sponsors/cashbank/v2/activityDefinitions/:activityDefnKey/versions/:activityDefnVersionKey/actions/markAsDefault'
       };
-    },
+    }
   }
 };
 

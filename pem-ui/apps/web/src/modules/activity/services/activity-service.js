@@ -13,7 +13,6 @@ const generateOptions = (param = {}) => {
   return options;
 };
 
-
 // Function to get the list of all activities
 export const getActivityList = async (pageNo, pageSize, sortDir = 'ASC', searchKey = '', status = '', sortBy = 'modifyts') => {
   const url = `${API_END_POINTS.ACTIVITY_DEFINITION}`;
@@ -30,7 +29,7 @@ export const getActivityList = async (pageNo, pageSize, sortDir = 'ASC', searchK
     }
   };
   const response = await new RestApiService().call(config, null);
-  
+
   if (response.success) {
     const customizedData = response.data.content.map((e) => ({
       id: e.activityDefnKey,
@@ -122,13 +121,13 @@ export const getActivityDetails = async (activityKey, activityVersoinKey) => {
 };
 
 // Function to save the details of activity
-export const saveActivityData = async (activityData) => {
+export const saveActivityData = async (activityData, cloneActivityName) => {
   const url = `${API_END_POINTS.ACTIVITY_DEFINITION}`;
   const file = new Blob([JSON.stringify(activityData)], { type: 'text/json' });
   const config = {
     url,
     data: {
-      name: activityData.name,
+      name: !cloneActivityName ? activityData.name : cloneActivityName,
       description: activityData.description,
       application: 'PEM',
       file: file
@@ -153,7 +152,7 @@ export const getAPIConfiguration = async () => {
 
   const response = await new Shell.RestApiService().call(dataLoaderConfig, null, generateOptions());
   return response.status === 200 ? response?.data : [];
-}
+};
 
 // Function to get the Activity File List
 export const getDocumentFile = async (key) => {
@@ -162,14 +161,48 @@ export const getDocumentFile = async (key) => {
 
   const response = await new Shell.RestApiService().call(dataLoaderConfig, null, generateOptions());
   return response.status === 200 ? response?.data : [];
+};
+
+export const getDocuments = async (key) => {
+  try {
+    const response = await fetch(`${API_END_POINTS.DOCUMENTS}document-01`);
+    if (!response.ok) {
+      console.log('Failed to fetch the document');
+      return null;
+    }
+
+    const blob = await response.blob();
+    console.log('Blob received: ', blob);
+
+    // Read the Blob as a data URL
+    const base64String = await readFileInput(blob);
+    console.log('Base64 String: ', base64String);
+
+    return base64String;
+  } catch (error) {
+    console.error('Error fetching or processing the document: ', error);
+    return null;
+  }
+};
+
+// Function to read a Blob into a Base64 string using FileReader
+function readFileInput(input) {
+  return new Promise((resolve, reject) => {
+    const fr = new FileReader();
+    fr.onloadend = () => {
+      const base64String = fr.result.split(',')[1]; // Extract base64 from the data URL
+      resolve(base64String);
+    };
+    fr.onerror = (error) => reject(error);
+    fr.readAsDataURL(input);
+  });
 }
 
 //Function to fetch the list of roles
 export const getRoles = async () => {
-
   let url = `${API_END_POINTS.ROLES}`;
   let dataLoaderConfig = { url, method: API_METHODS.GET };
 
   const response = await new Shell.RestApiService().call(dataLoaderConfig, null, generateOptions());
   return response?.status === 200 ? response?.data?.content : [];
-}
+};

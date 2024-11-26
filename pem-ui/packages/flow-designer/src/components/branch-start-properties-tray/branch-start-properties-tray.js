@@ -187,7 +187,7 @@ export default function BranchStartPropertiesTray({
             invalidText="Branch Name is required"
           />
         </Column>
-        <Column className="branch-delete" lg={8}>
+        {/* <Column className="branch-delete" lg={8}>
           <span
             onClick={() => {
               deleteNode(selectedNode.id, isDialogFlowActive, selectedTaskNode?.id, true);
@@ -195,7 +195,7 @@ export default function BranchStartPropertiesTray({
           >
             <TrashCan />
           </span>
-        </Column>
+        </Column> */}
       </Grid>
       {/* Conditional Builder and Dialog Sequence */}
       {branchStart && (

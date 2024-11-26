@@ -167,17 +167,13 @@ export const getDocuments = async (key) => {
   try {
     const response = await fetch(`${API_END_POINTS.DOCUMENTS}document-01`);
     if (!response.ok) {
-      console.log('Failed to fetch the document');
       return null;
     }
 
     const blob = await response.blob();
-    console.log('Blob received: ', blob);
 
     // Read the Blob as a data URL
     const base64String = await readFileInput(blob);
-    console.log('Base64 String: ', base64String);
-
     return base64String;
   } catch (error) {
     console.error('Error fetching or processing the document: ', error);

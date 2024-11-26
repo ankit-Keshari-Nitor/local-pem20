@@ -443,7 +443,7 @@ export default function APINodePropertyForm({
             labelText="Sample Response"
             rows={3}
             id="response"
-            name="sampleResponse"
+            name="response"
             disabled={readOnly}
             style={{ overflowY: 'auto' }}
           />

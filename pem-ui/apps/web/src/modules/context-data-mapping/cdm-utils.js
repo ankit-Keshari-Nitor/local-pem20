@@ -116,12 +116,12 @@ const transformDataToTreeBasedOnType = (data, type, parentKey = '') => {
   return data.map((item) => {
     const itemName = item.name === 'ProcessData' || item.name === 'ContextData' ? `${item.name.charAt(0).toLowerCase()}${item.name.slice(1)}` : `${item.name}`
     const nodeId = parentKey !== "" ? `${parentKey}.${itemName}` : itemName;
-
     if (item.type === type || item.data?.type === "CATEGORY") {
       const treeNode = {
         id: nodeId + '.pValue',
         title: item.name,
         type: item.type || item.data.type,
+        value: item?.data?.value,
         children: []
       };
 

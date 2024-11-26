@@ -8,7 +8,6 @@ import './../block-properties-tray/block-properties-tray.scss';
 
 export default function ActivityDefinitionForm(props) {
   const { readOnly, versionData = [], setShowActivityDefineDrawer, onActivityDetailsSave, activityOperation, activityDefinitionData, onExpand, setNotificationProps } = props;
-
   const [isExpanded, setIsExpanded] = useState(false);
 
   const onExpansionIconClick = (isExpanded) => {
@@ -75,6 +74,7 @@ export default function ActivityDefinitionForm(props) {
         readOnly={readOnly}
         setShowActivityDefineDrawer={setShowActivityDefineDrawer}
         setNotificationProps={setNotificationProps}
+        isExpanded={isExpanded}
       />
     </div>
   );

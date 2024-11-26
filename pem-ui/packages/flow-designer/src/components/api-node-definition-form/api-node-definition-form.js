@@ -616,6 +616,11 @@ export default function APINodeDefinitionForm({
 
   };
 
+  const onCloseModel = () => {
+    setOpenCancelDialog(false);
+    setOpenPropertiesBlock(false)
+  }
+
   return (
     <div>
       <Tabs onChange={handleTabChange}>
@@ -732,6 +737,7 @@ export default function APINodeDefinitionForm({
         modalHeading="Confirmation"
         primaryButtonText="Exit"
         secondaryButtonText="Cancel"
+        onRequestSubmit={onCloseModel}
       >
         <p
           style={{

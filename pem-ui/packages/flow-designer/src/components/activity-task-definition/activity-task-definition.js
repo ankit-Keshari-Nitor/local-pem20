@@ -1,12 +1,12 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState } from 'react';
-import { TextInput, Button, TextArea, Column, Grid } from '@carbon/react';
+import { TextInput, Button, TextArea, Column, Grid, Modal } from '@carbon/react';
 import './activity-task-definition.scss';
 import { VectorIcon } from '../../icons';
 import { ACTIVITY_TASK_SCHEMA } from '../../constants';
 import Shell from '@b2bi/shell';
 
-const ActivityTaskDefinition = ({ id, onSubmitDefinitionForm, setShowActivityDefineDrawer, activityDefinitionData, readOnly, activityOperation }) => {
+const ActivityTaskDefinition = ({ id, onSubmitDefinitionForm, setShowActivityDefineDrawer, activityDefinitionData, readOnly, activityOperation, isExpanded }) => {
   ACTIVITY_TASK_SCHEMA.fields = ACTIVITY_TASK_SCHEMA.fields.map((item) => ({ ...item, isReadOnly: readOnly }));
   const pageUtil = Shell.PageUtil();
   const [formState, setFormState] = useState({
@@ -15,6 +15,16 @@ const ActivityTaskDefinition = ({ id, onSubmitDefinitionForm, setShowActivityDef
     contextData: '{}'
   });
   const [errors, setErrors] = useState({ errors: {} });
+  const [openCancelDialog, setOpenCancelDialog] = useState(false);
+
+  const onCancelDefinitionForm = () => {
+    setOpenCancelDialog(true);
+  };
+
+  const onCloseModel = () => {
+    setOpenCancelDialog(false)
+    setShowActivityDefineDrawer(false)
+  }
 
   useEffect(() => {
     if (activityDefinitionData && activityDefinitionData.definition) {
@@ -148,8 +158,11 @@ const ActivityTaskDefinition = ({ id, onSubmitDefinitionForm, setShowActivityDef
             invalidText={errors.errors.description}
           />
         </Column>
-        <Column className="col-margin" lg={formState.contextData !== '' ? 15 : 16}>
+      </Grid>
+      <Grid >
+        <Column className="col-margin" lg={isExpanded ? 15 : 14}>
           <TextArea
+            className="txt-area"
             id="contextData"
             data-testid="contextData"
             labelText={pageUtil.t('mod-context-data-properties:form.contextData')}
@@ -164,7 +177,7 @@ const ActivityTaskDefinition = ({ id, onSubmitDefinitionForm, setShowActivityDef
           />
         </Column>
         {formState.contextData !== '' && (
-          <Column lg={1} className="context-mapping-button-container">
+          <Column className="context-mapping-button-container">
             <Button
               onClick={() => {
                 validateContextData(formState.contextData);
@@ -180,8 +193,10 @@ const ActivityTaskDefinition = ({ id, onSubmitDefinitionForm, setShowActivityDef
             />
           </Column>
         )}
+      </Grid>
+      <Grid fullWidth className="button-container-container">
         <Column lg={16} className="buttons-containers">
-          <Button onClick={() => setShowActivityDefineDrawer(false)} kind="secondary" data-testid="cancel" name="cancel" type="button" className="button" disabled={readOnly}>
+          <Button onClick={onCancelDefinitionForm} kind="secondary" data-testid="cancel" name="cancel" type="button" className="button" disabled={readOnly}>
             {pageUtil.t('mod-context-data-properties:form.button.cancel')}
           </Button>
           <Button onClick={handleSave} data-testid="save" color="primary" variant="contained" type="button" className="button" disabled={readOnly}>
@@ -189,6 +204,23 @@ const ActivityTaskDefinition = ({ id, onSubmitDefinitionForm, setShowActivityDef
           </Button>
         </Column>
       </Grid>
+      <Modal
+        open={openCancelDialog}
+        onRequestClose={() => setOpenCancelDialog(false)}
+        isFullWidth
+        modalHeading="Confirmation"
+        primaryButtonText="Exit"
+        secondaryButtonText="Cancel"
+        onRequestSubmit={onCloseModel}
+      >
+        <p
+          style={{
+            padding: '0px 0px 1rem 1rem'
+          }}
+        >
+          Your changes are not saved. Do you want to exit without saving changes?{' '}
+        </p>
+      </Modal>
     </form>
   );
 };

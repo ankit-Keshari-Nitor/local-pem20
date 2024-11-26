@@ -38,6 +38,8 @@ const ContextDataModalRequest = ({ mode, context }) => {
         uiOnSelectJPath: function (event, selectedNode) {
           if (selectedNode === 'CATEGORY') {
             this.setUI('selectedJPath', '');
+          } if (selectedNode.value === "" || selectedNode.value === undefined) {
+            this.setUI('selectedJPath', '');
           } else {
             this.setUI('selectedJPath', selectedNode.id);
           }

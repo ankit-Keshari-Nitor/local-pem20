@@ -147,7 +147,6 @@ const WorkFlowDesigner = forwardRef(
       } else {
         nodeDataRefActivity.current = { state: false, store: storeData };
       }
-      console.log('StoreData>>>',storeData);
     }, [setTaskNodes, setTaskEdges, storeData, updateActivitySchema]);
 
     useEffect(() => {
@@ -165,10 +164,6 @@ const WorkFlowDesigner = forwardRef(
     }, [dialogNodes]);
 
     const deleteNode = (id, isdialog, selectedTaskNodeId, branchNode=false) => {
-      console.log('deleteNode >>>id>>>>',id)
-      console.log('deleteNode >>>isdialog>>>>',isdialog)
-      console.log('deleteNode >>>selectedTaskNodeId>>>>',selectedTaskNodeId)
-      console.log('deleteNode >>>branchNode>>>>',branchNode)
       setIsdialogNodeDelete(isdialog);
       const dialogData = isdialog && nodeDataRef.current.nodes.filter((node) => node.id === selectedTaskNodeId)[0];
       const nodesData = isdialog ? dialogData?.data?.dialogNodes : nodeDataRef.current.nodes;

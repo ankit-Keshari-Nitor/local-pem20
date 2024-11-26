@@ -78,7 +78,7 @@ export default function APINodeDefinitionForm({
       },
       propertyForm: {
         apiConfig: selectedNode.data?.api?.apiConfiguration || '',
-        hostPrefix: selectedNode.data?.api?.hostPrefix || true,
+        hostPrefix: selectedNode.data?.api?.hostPrefix,
         url: selectedNode.data?.api?.url.includes('http://') || selectedNode.data?.api?.url.includes('https://') ? selectedNode.data?.api?.url.split('/', 4)[3] : selectedNode.data?.api?.url.split('/').slice(0, 2)[1] || '',
         requestMethod: selectedNode.data?.api?.method || '',
         inputOutputFormats: selectedNode.data?.api?.requestContentType || '',
@@ -180,6 +180,17 @@ export default function APINodeDefinitionForm({
         [name]: type === 'checkbox' ? checked : type === 'select-one' ? e.target.selectedOptions[0].value : value
       }
     }));
+
+    //hostPrefix
+    if (name === "hostPrefix" && checked) {
+      const selectedConfig = apiConfigData.find((config) => config.apiConfigurationKey === formState.propertyForm.apiConfig);
+      let url = selectedConfig ? `${selectedConfig?.protocol}://${selectedConfig?.host}:${selectedConfig?.port}` : '';
+      setApiConfigUrl(url);
+    } else if (name === "hostPrefix" && !checked) {
+      setApiConfigUrl('')
+    }
+
+    //inputOutputFormats
     if (name === "inputOutputFormats" && e.target.selectedOptions[0].value === "application/json") {
       setFormState((prev) => ({
         ...prev,
@@ -190,6 +201,15 @@ export default function APINodeDefinitionForm({
           "response": "{}"
         }
       }));
+    }
+
+    // Update apiConfigUrl based on the selected apiConfig
+    if (name === 'apiConfig' && value && formState.propertyForm.hostPrefix) {
+      const selectedConfig = apiConfigData.find((config) => config.apiConfigurationKey === value);
+      let url = selectedConfig ? `${selectedConfig?.protocol}://${selectedConfig?.host}:${selectedConfig?.port}` : '';
+      setApiConfigUrl(url); // Assuming 'url' is the property you want to map
+    } else if (name === 'apiConfig' && !value) {
+      setApiConfigUrl('');
     }
 
     // Validate the specific field and update errors
@@ -212,15 +232,6 @@ export default function APINodeDefinitionForm({
         [name]: error
       }
     }));
-
-    // Update apiConfigUrl based on the selected apiConfig
-    if (name === 'apiConfig' && value) {
-      const selectedConfig = apiConfigData.find((config) => config.apiConfigurationKey === value);
-      let url = selectedConfig ? `${selectedConfig?.protocol}://${selectedConfig?.host}:${selectedConfig?.port}` : '';
-      setApiConfigUrl(url); // Assuming 'url' is the property you want to map
-    } else if (name === 'apiConfig' && !value) {
-      setApiConfigUrl('');
-    }
   };
 
   // Handle changes to Property Form - Header

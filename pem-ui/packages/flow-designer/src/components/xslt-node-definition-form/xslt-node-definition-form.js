@@ -219,6 +219,11 @@ export default function XsltNodeDefinitionForm({
     setOpenCancelDialog(true);
   };
 
+  const onCloseModel = () => {
+    setOpenCancelDialog(false);
+    setOpenPropertiesBlock(false)
+  }
+
   return (
     <div>
       <Tabs>
@@ -314,6 +319,7 @@ export default function XsltNodeDefinitionForm({
         modalHeading="Confirmation"
         primaryButtonText="Exit"
         secondaryButtonText="Cancel"
+        onRequestSubmit={onCloseModel}
       >
         <p
           style={{

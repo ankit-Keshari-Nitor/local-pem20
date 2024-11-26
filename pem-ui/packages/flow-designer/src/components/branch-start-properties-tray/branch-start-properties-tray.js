@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Grid, Column, TextInput, Button } from '@carbon/react';
+import { Grid, Column, TextInput, Button, Modal } from '@carbon/react';
 import useTaskStore from '../../store';
 import './branch-start-properties-tray.scss';
 import { TrashCan } from '@carbon/icons-react';
@@ -64,6 +64,8 @@ export default function BranchStartPropertiesTray({
   const [branchNameError, setBranchNameError] = useState(false);
   const [selectedBranchConnector, setSelectedBranchConnector] = useState([]);
   const [showDialogSequence, setShowDialogSequence] = useState(false);
+  const [openCancelDialog, setOpenCancelDialog] = useState(false);
+
   useEffect(() => {
     setBranchName(selectedNode?.data?.editableProps.name ? selectedNode?.data?.editableProps.name : selectedNode?.data.id);
   }, [storeData]);
@@ -160,6 +162,15 @@ export default function BranchStartPropertiesTray({
     }
   };
 
+  const onCancelDefinitionForm = () => {
+    setOpenCancelDialog(true);
+  };
+
+  const onCloseModel = () => {
+    setOpenCancelDialog(false);
+    setOpenPropertiesBlock(false)
+  }
+  
   return (
     <>
       {/* Name input */}
@@ -176,7 +187,7 @@ export default function BranchStartPropertiesTray({
             invalidText="Branch Name is required"
           />
         </Column>
-        {/* <Column className="branch-delete" lg={8}>
+        <Column className="branch-delete" lg={8}>
           <span
             onClick={() => {
               deleteNode(selectedNode.id, isDialogFlowActive, selectedTaskNode?.id, true);
@@ -184,7 +195,7 @@ export default function BranchStartPropertiesTray({
           >
             <TrashCan />
           </span>
-        </Column> */}
+        </Column>
       </Grid>
       {/* Conditional Builder and Dialog Sequence */}
       {branchStart && (
@@ -264,7 +275,7 @@ export default function BranchStartPropertiesTray({
           </Grid>
           <Grid className="button-container-container">
             <Column lg={16} className="buttons-container">
-              <Button data-testid="cancel" name="cancel" kind="secondary" type="button" className="button" onClick={saveBranchData} disabled={readOnly}>
+              <Button data-testid="cancel" name="cancel" kind="secondary" type="button" className="button" onClick={onCancelDefinitionForm} disabled={readOnly}>
                 Cancel
               </Button>
               <Button data-testid="save" color="primary" variant="contained" type="submit" className="button" onClick={saveBranchData} disabled={readOnly}>
@@ -274,6 +285,23 @@ export default function BranchStartPropertiesTray({
           </Grid>
         </>
       )}
+      <Modal
+        open={openCancelDialog}
+        onRequestClose={()=> setOpenCancelDialog(false)}
+        isFullWidth
+        modalHeading="Confirmation"
+        primaryButtonText="Exit"
+        secondaryButtonText="Cancel"
+        onRequestSubmit={onCloseModel}
+      >
+        <p
+          style={{
+            padding: '0px 0px 1rem 1rem'
+          }}
+        >
+          Your changes are not saved. Do you want to exit without saving changes?{' '}
+        </p>
+      </Modal>
     </>
   );
 }

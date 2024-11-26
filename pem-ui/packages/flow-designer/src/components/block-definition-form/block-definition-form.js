@@ -8,7 +8,7 @@ import { COMPONENT_MAPPER, INITIAL_QUERY, NODE_TYPE, queryValidation } from '../
 import ConditionalBuilder from '../condition-builder';
 import { FormSpy } from '@data-driven-forms/react-form-renderer';
 
-export default function BlockDefinitionForm({ id, selectedNode, selectedTaskNode = null, schema, readOnly, setOpenPropertiesBlock, setNotificationProps, activityDefinitionData }) {
+export default function BlockDefinitionForm({ id, selectedNode, selectedTaskNode = null, schema, readOnly, setOpenPropertiesBlock, setNotificationProps, activityDefinitionData, setShowActivityDefineDrawer}) {
   let newSchema = { ...schema };
   newSchema.fields = newSchema.fields.map((item) => ({ ...item, isReadOnly: readOnly, helperText: readOnly ? '' : item.helperText }));
   const [openCancelDialog, setOpenCancelDialog] = useState(false);
@@ -32,6 +32,12 @@ export default function BlockDefinitionForm({ id, selectedNode, selectedTaskNode
     setOpenCancelDialog(true);
   };
 
+  const onCloseModel = () => {
+    setOpenCancelDialog(false);
+    setOpenPropertiesBlock(false)
+  }
+
+  
   const OnPropertySave = () => {
     queryValidator.current = queryValidation(query, {});
     if (Object.keys(formValidator.current).length === 0 && Object.keys(queryValidator.current).length === 0) {
@@ -152,11 +158,12 @@ export default function BlockDefinitionForm({ id, selectedNode, selectedTaskNode
       </Tabs>
       <Modal
         open={openCancelDialog}
-        onRequestClose={() => setOpenCancelDialog(false)}
+        onRequestClose={()=> setOpenCancelDialog(false)}
         isFullWidth
         modalHeading="Confirmation"
         primaryButtonText="Exit"
         secondaryButtonText="Cancel"
+        onRequestSubmit={onCloseModel}
       >
         <p
           style={{

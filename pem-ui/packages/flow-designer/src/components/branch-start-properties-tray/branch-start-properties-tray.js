@@ -188,13 +188,16 @@ export default function BranchStartPropertiesTray({
           />
         </Column>
         <Column className="branch-delete" lg={8}>
-          <span
+          <Button
+          style={{ marginTop: '2rem'}}
+           size="md"
             onClick={() => {
               deleteNode(selectedNode.id, isDialogFlowActive, selectedTaskNode?.id, true);
             }}
           >
-            <TrashCan />
-          </span>
+            {/* <TrashCan /> */}
+            Delete
+          </Button>
         </Column>
       </Grid>
       {/* Conditional Builder and Dialog Sequence */}

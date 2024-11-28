@@ -164,6 +164,10 @@ const WorkFlowDesigner = forwardRef(
     }, [dialogNodes]);
 
     const deleteNode = (id, isdialog, selectedTaskNodeId, branchNode=false) => {
+      setOpenTaskPropertiesBlock(false);
+      setOpenDialogPropertiesBlock(false);
+      setShowActivityDefineDrawer(true);
+
       setIsdialogNodeDelete(isdialog);
       const dialogData = isdialog && nodeDataRef.current.nodes.filter((node) => node.id === selectedTaskNodeId)[0];
       const nodesData = isdialog ? dialogData?.data?.dialogNodes : nodeDataRef.current.nodes;
@@ -799,6 +803,16 @@ const WorkFlowDesigner = forwardRef(
               saveFormDesignerData={saveFormDesignerData}
               formFields={formFields}
               getDocumentFile={getDocumentFile}
+              setIsPageDesignerActive={setIsPageDesignerActive}
+              setShowActivityDefineDrawer={setShowActivityDefineDrawer}
+              onActivityDetailsSave={updateActivityDetails}
+              activityOperation={activityOperation}
+              readOnly={readOnly}
+              versionData={versionData}
+              selectedVersion={selectedVersion}
+              onVersionSelection={onVersionSelection}
+              setNotificationProps={setNotificationProps}
+              showActivityDefineDrawer={showActivityDefineDrawer}
             />
           </DndProvider>
         ) : (

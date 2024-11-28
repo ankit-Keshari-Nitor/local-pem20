@@ -55,8 +55,25 @@ import {
 import { Button, Grid, Modal, Column, Layer } from '@carbon/react';
 import FormPreview from '../preview-mode';
 import { FormPropsPanel } from '../props-panel';
+import ActivityDefinitionForm from '../../../../flow-designer/src/components/activity-definition-form';
+import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 
-export default function Designer({ componentMapper, onClickPageDesignerBack, activityDefinitionData, saveFormDesignerData, formFields }) {
+export default function Designer({
+  componentMapper,
+  onClickPageDesignerBack,
+  activityDefinitionData,
+  saveFormDesignerData,
+  formFields,
+  showActivityDefineDrawer,
+  setShowActivityDefineDrawer,
+  updateActivityDetails,
+  activityOperation,
+  readOnly,
+  versionData,
+  selectedVersion,
+  onVersionSelection,
+  setNotificationProps
+}) {
   const initialComponents = INITIAL_DATA.components;
   const [layout, setLayout] = useState(formInitializer(formFields));
   const [components, setComponents] = useState(initialComponents);
@@ -69,6 +86,8 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
   const [propsPanelActiveTab, setPropsPanelActiveTab] = useState(0);
   const [isRowDelete, setIsRowDelete] = useState(false);
   const rowDataForDelete = useRef();
+  const activityDefPanelRef = useRef();
+
   const handleDrop = useCallback(
     (dropZone, item) => {
       let splitDropZonePath = dropZone.path.split('-');
@@ -206,6 +225,7 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
     }
     setSelectedFiledProps({ id: componentDetail.id, type: componentDetail.type, component: { ...filedTypeConfig }, currentPathDetail: currentPathDetail });
     setFormFieldProps(null);
+    setShowActivityDefineDrawer(false);
   };
 
   const columnSizeCustomization = (colsize, path) => {
@@ -461,6 +481,10 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
     );
   };
 
+  const handleExpansion = (expand, ref) => {
+    expand ? ref.current?.resize(180) : ref.current?.resize(34);
+  };
+
   return (
     <>
       <div className="page-designer">
@@ -492,63 +516,91 @@ export default function Designer({ componentMapper, onClickPageDesignerBack, act
           </div>
         </Layer>
         <div className="layout-container">
-          <div className="layout-container-wrapper">
-            <div className="components-tray">
-              <ComponentsTray componentMapper={componentMapper} />
-            </div>
-            <div
-              className="canvas-wrapper"
-              onClick={(e) => {
-                setSelectedFiledProps();
-                // setFormFieldProps(layout.slice(0, 1));    // For FormProperty panel
-              }}
-            >
-              <Canvas
-                layout={layout}
-                handleDrop={handleDrop}
-                renderRow={renderRow}
-                componentMapper={componentMapper}
-                onFieldSelect={onFieldSelect}
-                onFieldDelete={onFieldDelete}
-                handleSchemaChanges={handleSchemaChanges}
-                onRowCopy={onRowCopy}
-                onAddRow={onAddRow}
-                onGroupChange={onGroupChange}
-              />
-              <div className="btn-top-container">
-                <Grid fullWidth className="buttons-container-bottom">
-                  <Column lg={16} className="buttons-container">
-                    <Button kind="secondary" className="cancelButton">
-                      Cancel
-                    </Button>
-                    <Button kind="primary" className="saveButton" onClick={() => saveFormDesignerData(convertToApiSchema(layout))}>
-                      Save
-                    </Button>
-                  </Column>
-                </Grid>
+          <PanelGroup direction="horizontal">
+            <Panel minSize={0}>
+              <div className="layout-container-wrapper">
+                <div className="components-tray">
+                  <ComponentsTray componentMapper={componentMapper} />
+                </div>
+                <div
+                  className="canvas-wrapper"
+                  onClick={(e) => {
+                    setSelectedFiledProps();
+                    // setFormFieldProps(layout.slice(0, 1));    // For FormProperty panel
+                  }}
+                >
+                  <Canvas
+                    layout={layout}
+                    handleDrop={handleDrop}
+                    renderRow={renderRow}
+                    componentMapper={componentMapper}
+                    onFieldSelect={onFieldSelect}
+                    onFieldDelete={onFieldDelete}
+                    handleSchemaChanges={handleSchemaChanges}
+                    onRowCopy={onRowCopy}
+                    onAddRow={onAddRow}
+                    onGroupChange={onGroupChange}
+                  />
+                  <div className="btn-top-container">
+                    <Grid fullWidth className="buttons-container-bottom">
+                      <Column lg={16} className="buttons-container">
+                        <Button kind="secondary" className="cancelButton">
+                          Cancel
+                        </Button>
+                        <Button kind="primary" className="saveButton" onClick={() => saveFormDesignerData(convertToApiSchema(layout))}>
+                          Save
+                        </Button>
+                      </Column>
+                    </Grid>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-          {selectedFieldProps && (
-            <div className="props-panel">
-              <PropsPanel
-                layout={layout}
-                selectedFieldProps={selectedFieldProps}
-                handleSchemaChanges={handleSchemaChanges}
-                columnSizeCustomization={columnSizeCustomization}
-                onFieldDelete={onFieldDelete}
-                componentMapper={componentMapper}
-                replaceComponent={replaceComponent}
-                propsPanelActiveTab={propsPanelActiveTab}
-                activityDefinitionData={activityDefinitionData}
-              />
-            </div>
-          )}
-          {formFieldProps && (
-            <div className="props-panel">
-              <FormPropsPanel formFieldProps={formFieldProps} onFormPropsChange={onFormPropsChange} />
-            </div>
-          )}
+            </Panel>
+            {showActivityDefineDrawer && (
+              <>
+                <PanelResizeHandle />
+                <Panel ref={activityDefPanelRef} defaultSize={35} minSize={35}>
+                  <div className="dnd-flow">
+                    <div className="task-properties-container">
+                      <ActivityDefinitionForm
+                        setShowActivityDefineDrawer={setShowActivityDefineDrawer}
+                        onActivityDetailsSave={updateActivityDetails}
+                        activityOperation={activityOperation}
+                        activityDefinitionData={activityDefinitionData}
+                        readOnly={readOnly}
+                        versionData={versionData}
+                        selectedVersion={selectedVersion}
+                        onVersionSelection={onVersionSelection}
+                        onExpand={(isExpanded) => handleExpansion(isExpanded, activityDefPanelRef)}
+                        setNotificationProps={setNotificationProps}
+                        setSelectedFiledProps={false}
+                      />
+                    </div>
+                  </div>
+                </Panel>
+              </>
+            )}
+            {selectedFieldProps && !showActivityDefineDrawer && (
+              <div className="props-panel">
+                <PropsPanel
+                  layout={layout}
+                  selectedFieldProps={selectedFieldProps}
+                  handleSchemaChanges={handleSchemaChanges}
+                  columnSizeCustomization={columnSizeCustomization}
+                  onFieldDelete={onFieldDelete}
+                  componentMapper={componentMapper}
+                  replaceComponent={replaceComponent}
+                  propsPanelActiveTab={propsPanelActiveTab}
+                  activityDefinitionData={activityDefinitionData}
+                />
+              </div>
+            )}
+            {formFieldProps && (
+              <div className="props-panel">
+                <FormPropsPanel formFieldProps={formFieldProps} onFormPropsChange={onFormPropsChange} />
+              </div>
+            )}
+          </PanelGroup>
         </div>
       </div>
       {/* Confirmation Row Deletion Model */}

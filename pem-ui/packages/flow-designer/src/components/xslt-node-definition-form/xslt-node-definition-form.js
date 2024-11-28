@@ -125,14 +125,16 @@ export default function XsltNodeDefinitionForm({
             data: JSON.parse(activityDefinitionData.definition?.contextData ? activityDefinitionData.definition.contextData : activityDefinitionData?.version?.contextData)
           })
           .then((modalData) => {
-            const newData = modalData.data.data;
-            setFormState((prev) => ({
-              ...prev,
-              propertyForm: {
-                ...prev.propertyForm,
-                [fieldName]: newData
-              }
-            }));
+            if (modalData.actionType === 'submit') {
+              const newData = modalData.data.data;
+              setFormState((prev) => ({
+                ...prev,
+                propertyForm: {
+                  ...prev.propertyForm,
+                  [fieldName]: newData
+                }
+              }));
+            }
           });
       } catch (e) {
         console.log('Error-', e);

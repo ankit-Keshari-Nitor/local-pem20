@@ -26,6 +26,7 @@ export default function APINodeDefinitionForm({
   const [query, setQuery] = useState(INITIAL_QUERY);
   const [openCancelDialog, setOpenCancelDialog] = useState(false);
   const [errorMessage, setErrorMessage] = useState(selectedNode?.data?.exitValidationMessage);
+  const [responseDisable, setResponseDisable] = useState(false)
   const editDialog = useTaskStore((state) => state.editDialogNodePros);
 
   // Initialize form states
@@ -188,6 +189,22 @@ export default function APINodeDefinitionForm({
       setApiConfigUrl(url);
     } else if (name === "hostPrefix" && !checked) {
       setApiConfigUrl('')
+    }
+    //  Request Method 
+    if (name === "requestMethod" && (e.target.selectedOptions[0].value === "GET" || e.target.selectedOptions[0].value === "DELETE")) {
+      setResponseDisable(true);
+      setFile();
+      setFileKey('');
+      setFileMap('');
+      setFormState((prev) => ({
+        ...prev,
+        propertyForm: {
+          ...prev.propertyForm,
+          "request": "",
+        }
+      }));
+    } else {
+      setResponseDisable(false);
     }
 
     //inputOutputFormats
@@ -382,20 +399,22 @@ export default function APINodeDefinitionForm({
   const onOpenFiles = () => {
     pageUtil.showPageModal('FILE_ATTACHMENT.ACTIVITY').then((modalData) => {
       if (modalData.actionType === 'submit') {
-        setFile({
-          status: 'edit',
-          iconDescription: 'Delete Icon',
-          invalid: true,
-          errorSubject: 'InValid ',
-          name: modalData?.data?.data?.documentName,
-          filesize: modalData?.data?.data?.contentLength || modalData?.data?.data?.uploadFile?.addedFiles[0]?.size
-        });
-        setFileKey(modalData?.data?.data?.documentKey || modalData?.data?.key?.response);
-        setFileMap('');
-      } else {
-        setFile();
-        setFileKey('');
-        setFileMap('');
+        if (modalData.actionType === 'submit') {
+          setFile({
+            status: 'edit',
+            iconDescription: 'Delete Icon',
+            invalid: true,
+            errorSubject: 'InValid ',
+            name: modalData?.data?.data?.documentName,
+            filesize: modalData?.data?.data?.contentLength || modalData?.data?.data?.uploadFile?.addedFiles[0]?.size
+          });
+          setFileKey(modalData?.data?.data?.documentKey || modalData?.data?.key?.response);
+          setFileMap('');
+        } else {
+          setFile();
+          setFileKey('');
+          setFileMap('');
+        }
       }
     });
   };
@@ -481,27 +500,29 @@ export default function APINodeDefinitionForm({
             data: JSON.parse(activityDefinitionData.definition?.contextData ? activityDefinitionData.definition.contextData : activityDefinitionData?.version?.contextData)
           })
           .then((modalData) => {
-            const newData = modalData.data.data;
-            setFormState((prev) => ({
-              ...prev,
-              propertyForm: {
-                ...prev.propertyForm,
-                [fieldName]: newData
+            if (modalData.actionType === 'submit') {
+              const newData = modalData.data.data;
+              setFormState((prev) => ({
+                ...prev,
+                propertyForm: {
+                  ...prev.propertyForm,
+                  [fieldName]: newData
+                }
+              }));
+              // Validate the specific field and update errors
+              let error = '';
+              if (fieldName === 'apiConfig' && !newData) {
+                error = 'API Configuration is required';
               }
-            }));
-            // Validate the specific field and update errors
-            let error = '';
-            if (fieldName === 'apiConfig' && !newData) {
-              error = 'API Configuration is required';
+              // Update the error state for the specific field
+              setErrors((prevErrors) => ({
+                ...prevErrors,
+                propertyForm: {
+                  ...prevErrors.propertyForm,
+                  [fieldName]: error
+                }
+              }));
             }
-            // Update the error state for the specific field
-            setErrors((prevErrors) => ({
-              ...prevErrors,
-              propertyForm: {
-                ...prevErrors.propertyForm,
-                [fieldName]: error
-              }
-            }));
           });
       } catch (e) {
         console.log('Error-', e);
@@ -514,9 +535,11 @@ export default function APINodeDefinitionForm({
             data: JSON.parse(activityDefinitionData.definition?.contextData ? activityDefinitionData.definition.contextData : activityDefinitionData?.version?.contextData)
           })
           .then((modalData) => {
-            setFileMap(modalData.data.data);
-            setFile();
-            setFileKey(modalData.data.data)
+            if (modalData.actionType === 'submit') {
+              setFileMap(modalData.data.data);
+              setFile();
+              setFileKey(modalData.data.data)
+            }
           });
       } catch (e) {
         console.log('Error-', e);
@@ -583,39 +606,41 @@ export default function APINodeDefinitionForm({
             data: JSON.parse(activityDefinitionData.definition?.contextData ? activityDefinitionData.definition.contextData : activityDefinitionData?.version?.contextData)
           })
           .then((modalData) => {
-            if (fieldName !== 'name' && fieldName !== 'value') {
-              const newData = modalData.data.data;
-              setFormState((prev) => ({
-                ...prev,
-                propertyForm: {
-                  ...prev.propertyForm,
-                  [fieldName]: fieldName === 'url'
-                    ? newData ? `${prev.propertyForm[fieldName] ? prev.propertyForm[fieldName] + ',' : ''}${newData}`
-                      : newData : ''
+            if (modalData.actionType === 'submit') {
+              if (fieldName !== 'name' && fieldName !== 'value') {
+                const newData = modalData.data.data;
+                setFormState((prev) => ({
+                  ...prev,
+                  propertyForm: {
+                    ...prev.propertyForm,
+                    [fieldName]: fieldName === 'url'
+                      ? (newData ? `${prev.propertyForm[fieldName] ? prev.propertyForm[fieldName] : ''}${newData}` : '')
+                      : prev.propertyForm[fieldName], // Ensure other fields remain unaffected
+                  }
+                }));
+                // Validate the specific field and update errors
+                let error = '';
+                if (fieldName === 'url' && !newData) {
+                  error = 'URL is required';
                 }
-              }));
-              // Validate the specific field and update errors
-              let error = '';
-              if (fieldName === 'url' && !newData) {
-                error = 'URL is required';
+                // Update the error state for the specific field
+                setErrors((prevErrors) => ({
+                  ...prevErrors,
+                  propertyForm: {
+                    ...prevErrors.propertyForm,
+                    [fieldName]: error
+                  }
+                }));
+              } else {
+                const newData = modalData.data.data;
+                const updatedHeaders = headers.map((header, i) => {
+                  if (i === index) {
+                    return { ...header, [fieldName]: newData };
+                  }
+                  return header;
+                });
+                setHeaders(updatedHeaders);
               }
-              // Update the error state for the specific field
-              setErrors((prevErrors) => ({
-                ...prevErrors,
-                propertyForm: {
-                  ...prevErrors.propertyForm,
-                  [fieldName]: error
-                }
-              }));
-            } else {
-              const newData = modalData.data.data;
-              const updatedHeaders = headers.map((header, i) => {
-                if (i === index) {
-                  return { ...header, [fieldName]: newData };
-                }
-                return header;
-              });
-              setHeaders(updatedHeaders);
             }
           });
       } catch (e) {
@@ -708,6 +733,7 @@ export default function APINodeDefinitionForm({
                   OpenMappingDialog={OpenMappingDialog}
                   setApiConfigUrl={setApiConfigUrl}
                   fileMap={fileMap}
+                  responseDisable={responseDisable}
                 />
               </Layer>
             </Layer>

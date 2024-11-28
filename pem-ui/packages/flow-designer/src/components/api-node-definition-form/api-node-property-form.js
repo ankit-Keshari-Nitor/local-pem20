@@ -49,7 +49,7 @@ export default function APINodePropertyForm({
   setOpenContextMappingModal,
   OpenMappingDialog,
   setApiConfigUrl,
-  fileMap
+  fileMap, responseDisable
 }) {
 
   const [apiConfig, setApiConfig] = useState('');
@@ -368,7 +368,7 @@ export default function APINodePropertyForm({
                 name="request"
                 invalid={!!errors?.propertyForm?.request}
                 invalidText={errors?.propertyForm?.request}
-                disabled={readOnly}
+                disabled={responseDisable || readOnly}
                 value={formState.propertyForm.request}
                 onChange={handlePropertyFormChange}
                 style={{ maxHeight: '200px', overflowY: `${!showCode ? 'hidden' : 'auto'}`, resize: 'none' }}
@@ -405,7 +405,7 @@ export default function APINodePropertyForm({
                 renderIcon={VectorIcon}
                 size="sm"
                 hasIconOnly
-                disabled={readOnly}
+                disabled={responseDisable || readOnly}
                 iconDescription="Context Mapping"
                 tooltipAlignment="center"
                 style={{ marginTop: '1rem' }}
@@ -413,7 +413,7 @@ export default function APINodePropertyForm({
             </Column>
             <Column lg={14}>
               {file == undefined ? (
-                <Button disabled={readOnly} className="attachment-btn" onClick={onOpenFiles}>
+                <Button disabled={responseDisable || readOnly} className="attachment-btn" onClick={onOpenFiles}>
                   {' '}
                   Select from available files or upload new file
                 </Button>

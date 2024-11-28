@@ -206,7 +206,9 @@ const CarbonValueEditor = (allProps) => {
           data: JSON.parse(_context.definition?.contextData ? _context.definition.contextData : _context?.version?.contextData)
         })
         .then((modalData) => {
-          operandSelector(modalData?.data?.data);
+          if (modalData.actionType === 'submit') {
+            operandSelector(modalData?.data?.data);
+          }
         });
       setError('');
     } catch (e) {

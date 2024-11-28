@@ -243,7 +243,7 @@ export const NODE_TYPES = {
     ],
     nodeIcon: <SystemBlockIcon />,
     category: CATEGORYS.TASK,
-    active: true
+    active: false
   },
   [NODE_TYPE.TASK_GATEWAY]: {
     type: NODE_TYPE.TASK_GATEWAY,
@@ -378,7 +378,7 @@ export const NODE_TYPES = {
     ],
     nodeIcon: <XsltBlockIcon />,
     category: CATEGORYS.DIALOG,
-    active: true
+    active: false
   },
   [NODE_TYPE.DIALOG_GATEWAY]: {
     type: NODE_TYPE.DIALOG_GATEWAY,

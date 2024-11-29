@@ -72,7 +72,8 @@ export default function Designer({
   versionData,
   selectedVersion,
   onVersionSelection,
-  setNotificationProps
+  setNotificationProps,
+  getDocuments
 }) {
   const initialComponents = INITIAL_DATA.components;
   const [layout, setLayout] = useState(formInitializer(formFields));
@@ -592,6 +593,7 @@ export default function Designer({
                   replaceComponent={replaceComponent}
                   propsPanelActiveTab={propsPanelActiveTab}
                   activityDefinitionData={activityDefinitionData}
+                  getDocuments={getDocuments}
                 />
               </div>
             )}

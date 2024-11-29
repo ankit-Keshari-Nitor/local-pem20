@@ -186,7 +186,7 @@ function readFileInput(input) {
   return new Promise((resolve, reject) => {
     const fr = new FileReader();
     fr.onloadend = () => {
-      const base64String = fr.result.split(',')[1]; // Extract base64 from the data URL
+      const base64String = fr.result; // Extract base64 from the data URL
       resolve(base64String);
     };
     fr.onerror = (error) => reject(error);

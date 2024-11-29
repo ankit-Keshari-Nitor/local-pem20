@@ -5,12 +5,11 @@ import { ImageIcon } from './../icons';
 const type = FORM_FIELD_TYPE.IMAGE;
 
 const Image = ({ field }) => {
-    const { alternativeText, fileUploader, ...rest } = field;
-
+    const { fileUploader, height, width, ...rest } = field;
     return (
         <>
             {fileUploader ? (
-                <img src='#' alt={alternativeText || 'Image'} style={{ height: '100px', width: '100px' }} />
+                <img src={fileUploader?.base64} alt={fileUploader?.name || 'Image'} style={{ height: height || '100px', width: width || '100px' }} />
             ) : (
                 <ImageIcon />
             )}

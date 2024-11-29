@@ -172,7 +172,7 @@ export default function ActivityDefinition() {
       setNotificationProps({
         open: true,
         title: 'Validation',
-        subtitle: 'Atleast connector should be their in node',
+        subtitle: 'At least connector should be their in each node',
         kind: 'error',
         onCloseButtonClick: () => setNotificationProps(null)
       });

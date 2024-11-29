@@ -426,7 +426,7 @@ const DefinitionList = ({ mode, context }) => {
               pageUtil
                 .showPageModal('CONFIRMATION_MODAL.VIEW', {
                   data: {
-                    message: 'The Activity can not be modified once you Mark as final. Do you want to Mark as final?',
+                    message: pageUtil.t('mod-activity-list:list.messages.markAsFinalMessage'),
                     action: 'mod-activity-list:list.actions.markAsFinal',
                     activityDefnVersionKey: actVersionKey,
                     activityDefnKey: activityDefKey
@@ -452,7 +452,7 @@ const DefinitionList = ({ mode, context }) => {
               pageUtil
                 .showPageModal('CONFIRMATION_MODAL.VIEW', {
                   data: {
-                    message: 'Are you sure you want to delete? The Activity status will be changed to Deleted.',
+                    message: pageUtil.t('mod-activity-list:list.messages.deleteMessage'),
                     action: 'mod-activity-list:list.actions.delete',
                     activityDefnKey: activityDefKey
                   }
@@ -474,14 +474,16 @@ const DefinitionList = ({ mode, context }) => {
               pageUtil.showPageModal('FUNCTIONALITY_NOT_IMPLEMENTED_MODAL.View', {});
               break;
             case pageUtil.t('mod-activity-list:list.actions.cloneActivity'):
+              const message = pageUtil.t('mod-activity-list:list.messages.confirmationMessage');
               pageUtil
                 .showPageModal('CONFIRMATION_MODAL.VIEW', {
                   data: {
-                    message: `Do you want to clone the Activity Definition '${record.name}' ?`,
+                    message: `${message} '${record.name}' ?`,
                     action: 'mod-activity-list:list.actions.clone',
                     activityDefnKey: activityDefKey,
                     activityDefnVersionKey: actVersionKey,
-                    activityName: record.name
+                    activityName: record.name,
+                    pagination: page.datatable.definitionList.pagination
                   }
                 })
                 .then((modalData) => {

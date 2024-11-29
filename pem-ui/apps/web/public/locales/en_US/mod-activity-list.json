@@ -33,6 +33,17 @@
       "DELETE": "Delete",
       "DRAFT": "Draft",
       "FINAL": "Final"
+    },
+    "messages": {
+      "confirmationMessage": "Do you want to clone the Activity Definition",
+      "deleteMessage": "Are you sure you want to delete? The Activity status will be changed to Deleted.",
+      "markAsFinalMessage": "The Activity can not be modified once you Mark as final. Do you want to Mark as final?"
+    },
+    "apiMessages": {
+      "actionCompleted": "Action completed successfully!",
+      "actionNotCompleted": "Action not completed successfully!",
+      "activityClone": "Activity clone successfully!",
+      "activityNotClone": "Activity not clone successfully!"
     }
   }
 }

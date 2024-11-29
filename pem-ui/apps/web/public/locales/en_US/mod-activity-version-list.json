@@ -13,12 +13,19 @@
       "cloneVersion": "Clone Version",
       "shareUnshared": "Share/Unshared",
       "delete": "Delete",
-      "markAsDefault": "Mark As Default"
+      "markAsDefault": "Mark As Default",
+      "clone": "Clone"
     },
     "emptyStates": {
       "initNoRecords": {
         "title": "No Version list"
       }
+    },
+    "messages": {
+      "confirmationMessage": "Do you want to clone the Activity Definition Version Ver.",
+      "informationMessage": "You cannot create more than one draft version. Please finalize/delete existing draft.",
+      "markAsDefaultMessage": "Are you sure you want to make 'Ver.2' Mark as default? The Activity version will be marked as default.",
+      "markAsFinalMessage": "The Activity can not be modified once you Mark as final. Do you want to Mark as final?"
     }
   }
 }

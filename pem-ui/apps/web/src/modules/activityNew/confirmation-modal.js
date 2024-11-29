@@ -5,6 +5,7 @@ import '@b2bi/styles/pages/list-page.scss';
 import './styles.scss';
 import { saveActivityData } from '../../modules/activity/services/activity-service';
 import { saveAs } from 'file-saver';
+import { createActivityVersion } from '../../modules/activity/services/actvity-version-service';
 
 function ConfirmationModal() {
   const pageArgs = useParams();
@@ -12,7 +13,7 @@ function ConfirmationModal() {
 
   const { modalConfig } = Shell.useModal();
 
-  const { activityDefnKey, activityDefnVersionKey, action, message, activityName } = modalConfig.data.data;
+  const { activityDefnKey, activityDefnVersionKey, action, message, activityName, pagination, activityVersion } = modalConfig.data.data;
 
   const pageConfig = {
     actionsConfig: {
@@ -59,6 +60,9 @@ function ConfirmationModal() {
           },
           listData: {
             dataloader: 'DEFINITION.LIST'
+          },
+          getActivityVersions: {
+            dataloader: 'ACTIVITY_VERSION.LIST'
           }
         },
         ui: {},
@@ -94,7 +98,8 @@ function ConfirmationModal() {
             handler
               .then((response) => {
                 let kind = response.status === 200 ? pageUtil.t('shell:common.actions.success') : pageUtil.t('shell:common.actions.error');
-                let message = response.status === 200 ? 'Action completed successfully!' : 'Action not completed successfully!';
+                let message =
+                  response.status === 200 ? pageUtil.t('mod-activity-list:list.apiMessages.actionCompleted') : pageUtil.t('mod-activity-list:list.apiMessages.actionNotCompleted');
                 pageUtil.showNotificationMessage('toast', kind, message);
                 modalConfig.onAction('cancel', {});
               })
@@ -114,7 +119,8 @@ function ConfirmationModal() {
             handler
               .then((response) => {
                 let kind = response.status === 200 ? pageUtil.t('shell:common.actions.success') : pageUtil.t('shell:common.actions.error');
-                let message = response.status === 200 ? 'Action completed successfully!' : 'Action not completed successfully!';
+                let message =
+                  response.status === 200 ? pageUtil.t('mod-activity-list:list.apiMessages.actionCompleted') : pageUtil.t('mod-activity-list:list.apiMessages.actionNotCompleted');
                 pageUtil.showNotificationMessage('toast', kind, message);
                 modalConfig.onAction('cancel', {});
               })
@@ -133,7 +139,8 @@ function ConfirmationModal() {
             handler
               .then((response) => {
                 let kind = response.status === 200 ? pageUtil.t('shell:common.actions.success') : pageUtil.t('shell:common.actions.error');
-                let message = response.status === 200 ? 'Action completed successfully!' : 'Action not completed successfully!';
+                let message =
+                  response.status === 200 ? pageUtil.t('mod-activity-list:list.apiMessages.actionCompleted') : pageUtil.t('mod-activity-list:list.apiMessages.actionNotCompleted');
                 pageUtil.showNotificationMessage('toast', kind, message);
                 modalConfig.onAction('cancel', {});
               })
@@ -154,26 +161,31 @@ function ConfirmationModal() {
           this.ds
             .getActivityData(data)
             .then((activityDataResp) => {
-              this.uiCloneActivityName()
-                .then((res) => {
-                  const file = new Blob([JSON.stringify(activityDataResp.data)], { type: 'application/json' });
-                  saveAs(file, `${res}.json`);
-                  let activityHandler = saveActivityData(activityDataResp.data, res);
-                  activityHandler &&
-                    activityHandler
-                      .then((newData) => {
-                        this.uiResponseMessage(newData);
-                      })
-                      .catch((err) => {
-                        console.error('Error:', err);
-                        modalConfig.onAction('cancel', {});
-                      });
-                })
-                .catch((err) => {
-                  console.error('Error:', err);
-                  modalConfig.onAction('cancel', {});
-                });
+              if (!activityVersion) {
+                this.uiCloneActivityName()
+                  .then((res) => {
+                    const file = new Blob([JSON.stringify(activityDataResp.data)], { type: 'application/json' });
+                    saveAs(file, `${res}.json`);
+                    let activityHandler = saveActivityData(activityDataResp.data, res);
+                    activityHandler &&
+                      activityHandler
+                        .then((newData) => {
+                          this.uiResponseMessage(newData);
+                        })
+                        .catch((err) => {
+                          console.error('Error:', err);
+                          modalConfig.onAction('cancel', {});
+                        });
+                  })
+                  .catch((err) => {
+                    console.error('Error:', err);
+                    modalConfig.onAction('cancel', {});
+                  });
+              } else {
+                this.uiCloneVersion(activityDataResp);
+              }
             })
+
             .catch((err) => {
               console.error('Error:', err);
               modalConfig.onAction('cancel', {});
@@ -181,7 +193,10 @@ function ConfirmationModal() {
         },
         uiResponseMessage: function (response) {
           let kind = response.status === 200 || response.status === 201 ? pageUtil.t('shell:common.actions.success') : pageUtil.t('shell:common.actions.error');
-          let message = response.status === 200 || response.status === 201 ? 'Activity clone successfully!' : 'Activity not clone successfully!';
+          let message =
+            response.status === 200 || response.status === 201
+              ? pageUtil.t('mod-activity-list:list.apiMessages.activityClone')
+              : pageUtil.t('mod-activity-list:list.apiMessages.activityNotClone');
           pageUtil.showNotificationMessage('toast', kind, message);
           modalConfig.onAction('cancel', {});
         },
@@ -189,7 +204,11 @@ function ConfirmationModal() {
           const baseId = activityName;
           let newIdSuffix = 1;
           let newId = `${baseId}_${newIdSuffix}`;
-          let handler = await this.ds.listData();
+          const params = {
+            pageNo: pagination.current.page,
+            pageSize: pagination.current.pageSize
+          };
+          let handler = await this.ds.listData({}, { params: params });
           handler.data.data.forEach((node) => {
             if (handler.data.data.some((node) => node.name === newId)) {
               newIdSuffix++;
@@ -197,6 +216,21 @@ function ConfirmationModal() {
             }
           });
           return newId;
+        },
+        uiCloneVersion: function (activityData) {
+          let data = {
+            activityDefnKey: activityDefnKey
+          };
+          let versionHandler = createActivityVersion(activityData.data, data.activityDefnKey);
+          versionHandler &&
+            versionHandler
+              .then((newData) => {
+                this.uiResponseMessage(newData);
+              })
+              .catch((err) => {
+                console.error('Error:', err);
+                modalConfig.onAction('cancel', {});
+              });
         }
       };
     })(pageArgs, pageUtil)

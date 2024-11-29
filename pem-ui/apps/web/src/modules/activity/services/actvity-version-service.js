@@ -78,3 +78,18 @@ export const updateActivityVersion = async (activityData, activityDefnKey, versi
     return await new RestApiService().callWithFile(config, null);
   } else return activityUpdateResponse;
 };
+
+// Function to save the details of version
+export const createActivityVersion = async (activityData, activityDefnKey) => {
+  const file = new Blob([JSON.stringify(activityData)], { type: 'text/json' });
+  const config = {
+    url: `/sponsors/cashbank/v2/activityDefinitions/${activityDefnKey}/versions`,
+    data: {
+      description: activityData.description,
+      isEncrypted: false,
+      application: 'PEM',
+      file: file
+    }
+  };
+  return await new RestApiService().callWithFile(config, null);
+};

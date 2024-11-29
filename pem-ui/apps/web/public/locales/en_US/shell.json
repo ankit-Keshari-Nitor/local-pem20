@@ -144,7 +144,8 @@
       "success": "success",
       "error": "error",
       "search": "search",
-      "unmap": "Unmap"
+      "unmap": "Unmap",
+      "info": "info"
     },
     "errors": {
       "fileSizeLimit_title": "File size exceeds limit",
@@ -221,7 +222,8 @@
     "timestamp": "Timestamp [{{timestamp}}]",
     "type": {
       "success": "success",
-      "error": "error"
+      "error": "error",
+      "info": "Draft Limit Reached"
     }
   },
   "wizard": {

@@ -10,9 +10,7 @@ import useActivityStore from '../../activity/store';
 
 import { capitalizeFirstLetter } from '../../activity/constants';
 
-
 const VersionListPage = () => {
-
   const store = useActivityStore();
 
   const pageArgs = useParams();
@@ -21,7 +19,7 @@ const VersionListPage = () => {
   const { sidePageConfig } = Shell.useSidePage();
 
   let activityDefnKey = sidePageConfig.data.data.activityDefnKey;
-  let activityName = sidePageConfig.data.data.activityName
+  let activityName = sidePageConfig.data.data.activityName;
 
   const pageConfig = {
     versionList: {
@@ -55,7 +53,7 @@ const VersionListPage = () => {
           sortable: '',
           displayType: 'custom',
           getCustomElements: (row, cellValue, config) => {
-            let type = row.status === 'DRAFT' ? 'cool-gray' : row.status === 'FINAL' ? 'green' : 'red'
+            let type = row.status === 'DRAFT' ? 'cool-gray' : row.status === 'FINAL' ? 'green' : 'red';
             return (
               <Tag size="sm" type={type}>
                 <span className="cds--text-truncate--end" title={row.status}>
@@ -72,7 +70,12 @@ const VersionListPage = () => {
           isSortable: false,
           displayType: 'custom',
           onAction: (...args) => {
-            let action = args[0].status === 'DRAFT' ? pageUtil.t('mod-activity-list:list.actions.markAsFinal') : args[0].status === 'FINAL' ? pageUtil.t('mod-activity-list:list.actions.rollout') : pageUtil.t('mod-activity-list:list.actions.restore')
+            let action =
+              args[0].status === 'DRAFT'
+                ? pageUtil.t('mod-activity-list:list.actions.markAsFinal')
+                : args[0].status === 'FINAL'
+                  ? pageUtil.t('mod-activity-list:list.actions.rollout')
+                  : pageUtil.t('mod-activity-list:list.actions.restore');
             let actVersionKey = args[0].activityDefnVersionKey;
 
             return page.uiOnCellActionClick.apply(page, [action, actVersionKey]);
@@ -80,26 +83,45 @@ const VersionListPage = () => {
           getCustomElements: (row, cellValue, config) => {
             return (
               <>
-                {row.status === 'DELETE' ?
-                  <Button kind="tertiary" onClick={() => {
-                    page.uiOnCellActionClick.apply(page, [pageUtil.t('mod-activity-list:list.actions.delete'), row.id]);
-                  }}
-                    size="sm" data-testid={`restore-${row.id}`} className='action-item action-item-delete'>
+                {row.status === 'DELETE' ? (
+                  <Button
+                    kind="tertiary"
+                    onClick={() => {
+                      page.uiOnCellActionClick.apply(page, [pageUtil.t('mod-activity-list:list.actions.delete'), row.id]);
+                    }}
+                    size="sm"
+                    data-testid={`restore-${row.id}`}
+                    className="action-item action-item-delete"
+                  >
                     {pageUtil.t('mod-activity-list:list.actions.restore')}
                   </Button>
-                  : row.status === 'DRAFT' ? <Button kind="tertiary" onClick={() => {
-                    page.uiOnCellActionClick.apply(page, [pageUtil.t('mod-activity-list:list.actions.markAsFinal'), row.id]);
-                  }} size="sm" data-testid={`markAsFinal-${row.id}`} className='action-item'>
+                ) : row.status === 'DRAFT' ? (
+                  <Button
+                    kind="tertiary"
+                    onClick={() => {
+                      page.uiOnCellActionClick.apply(page, [pageUtil.t('mod-activity-list:list.actions.markAsFinal'), row.id]);
+                    }}
+                    size="sm"
+                    data-testid={`markAsFinal-${row.id}`}
+                    className="action-item"
+                  >
                     {pageUtil.t('mod-activity-list:list.actions.markAsFinal')}
-                  </Button> : row.status === 'FINAL' && row.isDefault ?
-                    <Button kind="tertiary" onClick={() => {
+                  </Button>
+                ) : row.status === 'FINAL' && row.isDefault ? (
+                  <Button
+                    kind="tertiary"
+                    onClick={() => {
                       page.uiOnCellActionClick.apply(page, [pageUtil.t('mod-activity-list:list.actions.rollout'), row.id]);
                     }}
-                      size="sm" data-testid={`rollout-${row.id}`} className='action-item'>
-                      {pageUtil.t('mod-activity-list:list.actions.rollout')}
-                    </Button> : null}
+                    size="sm"
+                    data-testid={`rollout-${row.id}`}
+                    className="action-item"
+                  >
+                    {pageUtil.t('mod-activity-list:list.actions.rollout')}
+                  </Button>
+                ) : null}
               </>
-            )
+            );
           }
         }
       ],
@@ -118,7 +140,7 @@ const VersionListPage = () => {
               let activityDefnVersionKey = args[1].activityDefnVersionKey;
 
               return page.uiOnCellActionClick.apply(page, [action, activityDefnVersionKey]);
-            },
+            }
           },
           {
             id: 'edit',
@@ -130,7 +152,7 @@ const VersionListPage = () => {
               let activityDefnVersionKey = args[1].activityDefnVersionKey;
 
               return page.uiOnCellActionClick.apply(page, [action, activityDefnVersionKey]);
-            },
+            }
           },
           {
             id: 'exportVersion',
@@ -142,7 +164,7 @@ const VersionListPage = () => {
               let activityDefnVersionKey = args[1].activityDefnVersionKey;
 
               return page.uiOnCellActionClick.apply(page, [action, activityDefnVersionKey]);
-            },
+            }
           },
           {
             id: 'markAsDefault',
@@ -150,7 +172,7 @@ const VersionListPage = () => {
             type: 'row',
             resourceKey: '',
             onAction: (...args) => {
-              let action = pageUtil.t('mod-activity-version-list:versionList.actions.markAsDefault')
+              let action = pageUtil.t('mod-activity-version-list:versionList.actions.markAsDefault');
               let actVersionKey = args[1].activityDefnVersionKey;
               return page.uiOnCellActionClick.apply(page, [action, actVersionKey]);
             }
@@ -165,7 +187,7 @@ const VersionListPage = () => {
               let activityDefnVersionKey = args[1].activityDefnVersionKey;
 
               return page.uiOnCellActionClick.apply(page, [action, activityDefnVersionKey]);
-            },
+            }
           },
           {
             id: 'cloneVersion',
@@ -177,7 +199,7 @@ const VersionListPage = () => {
               let activityDefnVersionKey = args[1].activityDefnVersionKey;
 
               return page.uiOnCellActionClick.apply(page, [action, activityDefnVersionKey]);
-            },
+            }
           },
           {
             id: 'shareUnshared',
@@ -189,7 +211,7 @@ const VersionListPage = () => {
               let activityDefnVersionKey = args[1].activityDefnVersionKey;
 
               return page.uiOnCellActionClick.apply(page, [action, activityDefnVersionKey]);
-            },
+            }
           },
           {
             id: 'delete',
@@ -199,7 +221,7 @@ const VersionListPage = () => {
             type: 'row',
             attributes: {
               hasDivider: true,
-              className: 'overflow-option-delete',
+              className: 'overflow-option-delete'
             },
             resourceKey: '',
             onAction: (...args) => {
@@ -207,7 +229,7 @@ const VersionListPage = () => {
               let activityDefnVersionKey = args[1].activityDefnVersionKey;
 
               return page.uiOnCellActionClick.apply(page, [action, activityDefnVersionKey]);
-            },
+            }
           }
         ]
       },
@@ -253,7 +275,7 @@ const VersionListPage = () => {
         },
         ui: {
           tableLoadingState: false,
-          tableEmptyState: undefined,
+          tableEmptyState: undefined
         },
         datatable: {
           versionList: {
@@ -266,7 +288,7 @@ const VersionListPage = () => {
             }
           }
         },
-        init: function () { },
+        init: function () {},
 
         uiView: function (actVersionKey) {
           sidePageConfig.onAction('cancel', {});
@@ -289,34 +311,36 @@ const VersionListPage = () => {
             version: record.version
           });
 
-
           switch (action) {
             case pageUtil.t('mod-activity-list:list.actions.markAsFinal'):
-              pageUtil.showPageModal('CONFIRMATION_MODAL.VIEW', {
-                data: {
-                  message: 'The Version can not be modified once you Mark as final. Do you want to Mark as final?',
-                  action: 'mod-activity-list:list.actions.markAsFinal',
-                  activityDefnVersionKey: actVersionKey,
-                  activityDefnKey: activityDefnKey,
-                }
-              }).then(modalData => {
-                page.datatable.versionList.refresh();
-              });
+              pageUtil
+                .showPageModal('CONFIRMATION_MODAL.VIEW', {
+                  data: {
+                    message: pageUtil.t('mod-activity-version-list:versionList.messages.markAsFinalMessage'),
+                    action: 'mod-activity-list:list.actions.markAsFinal',
+                    activityDefnVersionKey: actVersionKey,
+                    activityDefnKey: activityDefnKey
+                  }
+                })
+                .then((modalData) => {
+                  page.datatable.versionList.refresh();
+                });
               break;
             case pageUtil.t('mod-activity-version-list:versionList.actions.markAsDefault'):
-              pageUtil.showPageModal('CONFIRMATION_MODAL.VIEW', {
-                data: {
-                  message: `Are you sure you want to make 'Ver.2' Mark as default? The Activity version will be marked as default.`,
-                  action: 'mod-activity-version-list:versionList.actions.markAsDefault',
-                  activityDefnVersionKey: actVersionKey,
-                  activityDefnKey: activityDefnKey,
-                }
-              }).then(modalData => {
-                page.datatable.versionList.refresh();
-              });
+              pageUtil
+                .showPageModal('CONFIRMATION_MODAL.VIEW', {
+                  data: {
+                    message: pageUtil.t('mod-activity-version-list:versionList.messages.markAsDefaultMessage'),
+                    action: 'mod-activity-version-list:versionList.actions.markAsDefault',
+                    activityDefnVersionKey: actVersionKey,
+                    activityDefnKey: activityDefnKey
+                  }
+                })
+                .then((modalData) => {
+                  page.datatable.versionList.refresh();
+                });
               break;
             case pageUtil.t('mod-activity-list:list.actions.rollout'):
-
               pageUtil.showPageModal('ROLLOUT.SELECT', {
                 data: {
                   activityDefnVersionKey: actVersionKey,
@@ -344,7 +368,7 @@ const VersionListPage = () => {
               pageUtil.showPageModal('FUNCTIONALITY_NOT_IMPLEMENTED_MODAL.View', {});
               break;
             case pageUtil.t('mod-activity-version-list:versionList.actions.cloneVersion'):
-              pageUtil.showPageModal('FUNCTIONALITY_NOT_IMPLEMENTED_MODAL.View', {});
+              page.uiCloneVersion(actVersionKey, record.version, record.status);
               break;
             case pageUtil.t('mod-activity-version-list:versionList.actions.shareUnshared'):
               pageUtil.showPageModal('FUNCTIONALITY_NOT_IMPLEMENTED_MODAL.View', {});
@@ -360,7 +384,7 @@ const VersionListPage = () => {
           if (selectedRow.status !== 'DRAFT') {
             rowActions.edit.isVisible = false;
           }
-          if (selectedRow.status === 'DRAFT') {
+          if (selectedRow.status === 'DRAFT' || selectedRow.status === 'DELETE') {
             rowActions.cloneVersion.isVisible = false;
           }
           if (selectedRow.status === 'DELETE') {
@@ -368,6 +392,30 @@ const VersionListPage = () => {
             rowActions.shareUnshared.isVisible = false;
           }
         },
+        uiCloneVersion: function (actVersionKey, versionName, activityStatus) {
+          const draftData = page.model.list.data.filter((x) => x.status === 'DRAFT');
+          if (draftData.length === 0) {
+            const message = pageUtil.t('mod-activity-version-list:versionList.messages.confirmationMessage');
+            pageUtil
+              .showPageModal('CONFIRMATION_MODAL.VIEW', {
+                data: {
+                  message: `${message} '${versionName}' ?`,
+                  action: 'mod-activity-version-list:versionList.actions.clone',
+                  activityDefnKey: activityDefnKey,
+                  activityDefnVersionKey: actVersionKey,
+                  activityStatus: activityStatus,
+                  activityVersion: 'version'
+                }
+              })
+              .then((modalData) => {
+                page.datatable.versionList.refresh();
+              });
+          } else {
+            let kind = pageUtil.t('shell:common.actions.info');
+            let message = pageUtil.t('mod-activity-version-list:versionList.messages.informationMessage');
+            pageUtil.showNotificationMessage('toast', kind, message);
+          }
+        }
       };
     })(pageArgs, pageUtil),
     pageConfig
@@ -395,7 +443,7 @@ const VersionListPage = () => {
           totalItems={page.model.list.meta.totalItems}
         ></Shell.DataTable>
       </Shell.PageBody>
-    </Shell.Page >
+    </Shell.Page>
   );
 };
 

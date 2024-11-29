@@ -30,6 +30,8 @@ const CarbonValueEditor = (allProps) => {
 
   const pageUtil = Shell.PageUtil();
   const [error, setError] = useState('');
+  const [isOperandSelector, setIsOperandSelector] = useState(false);
+
   const placeHolderText = fieldData?.placeholder ?? '';
   const inputTypeCoerced = ['in', 'notIn'].includes(operator[1]) ? 'text' : inputType || 'text';
   let rightOperandInput = null;
@@ -50,6 +52,7 @@ const CarbonValueEditor = (allProps) => {
   }
 
   const operandSelector = (selectedValue) => {
+    setIsOperandSelector(true);
     handleOnChange(selectedValue);
   };
 
@@ -90,6 +93,8 @@ const CarbonValueEditor = (allProps) => {
     );
   }
 
+
+  // eslint-disable-next-line default-case
   switch (allProps?.field) {
     case 'string':
       rightOperandInput = (
@@ -139,22 +144,39 @@ const CarbonValueEditor = (allProps) => {
     case 'boolean':
       rightOperandInput = (
         <>
-          <div style={{ marginTop: '-0.5rem' }}>
-            <Select
-              id="operand-input"
-              labelText=""
-              className={className}
-              title={title}
-              value={value}
-              disabled={disabled}
-              onChange={(e) => handleOnChange(e.target.value)}
-              {...extraProps}
-            >
-              <SelectItem value="" text="Select" />
-              <SelectItem value="true" text="True" />
-              <SelectItem value="false" text="False" />
-            </Select>
-          </div>
+          {isOperandSelector ? (
+            <div style={{ marginTop: '1rem' }}>
+              <TextInput
+                id="operand-input"
+                labelText=""
+                type={inputTypeCoerced}
+                value={value}
+                title={title}
+                className={className}
+                disabled={disabled}
+                placeholder={'Right Operand'}
+                onChange={() => setIsOperandSelector(false)}
+                {...extraProps}
+              />
+            </div>
+          ) : (
+            <div style={{ marginTop: '-0.5rem' }}>
+              <Select
+                id="operand-input"
+                labelText=""
+                className={className}
+                title={title}
+                value={value}
+                disabled={disabled}
+                onChange={(e) => handleOnChange(e.target.value)}
+                {...extraProps}
+              >
+                <SelectItem value="" text="Select" />
+                <SelectItem value="true" text="True" />
+                <SelectItem value="false" text="False" />
+              </Select>
+            </div>
+          )}
         </>
       );
       break;
@@ -162,15 +184,31 @@ const CarbonValueEditor = (allProps) => {
       rightOperandInput = (
         <>
           <div style={{ marginTop: '1rem' }}>
-            <DatePicker datePickerType="single" className={className} value={value} onChange={(e) => handleOnChange(e)} disabled={disabled}>
-              <DatePickerInput id="operand-input" labelText="" placeholder="mm/dd/yyyy" />
-            </DatePicker>
+            {isOperandSelector ? (
+              <TextInput
+                id="operand-input"
+                labelText=""
+                type={inputTypeCoerced}
+                value={value}
+                title={title}
+                className={className}
+                disabled={disabled}
+                placeholder={'Right Operand'}
+                onChange={() => setIsOperandSelector(false)}
+                {...extraProps}
+              />
+            ) : (
+              <DatePicker datePickerType="single" className={className} value={value} onChange={(e) => handleOnChange(e)} disabled={disabled}>
+                <DatePickerInput id="operand-input" labelText="" placeholder="mm/dd/yyyy" />
+              </DatePicker>
+            )}
           </div>
         </>
       );
       break;
     case 'select':
       rightOperandInput = <SelectorComponent {...props} className={className} title={title} value={value} disabled={disabled} handleOnChange={handleOnChange} options={values} />;
+      break;
     case 'multiselect':
       rightOperandInput = (
         <ValueSelector

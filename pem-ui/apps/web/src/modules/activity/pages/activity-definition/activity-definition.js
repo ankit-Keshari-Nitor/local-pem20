@@ -320,6 +320,16 @@ export default function ActivityDefinition() {
     }
   };
 
+  //Document Base64 call
+  const getDocuments = async (key) => {
+    try {
+      const base64doc = await ActivityService.getDocuments(key); // Ensure this is awaited if it's a promise
+      return base64doc;
+    } catch (error) {
+      console.error('Error fetching API configuration:', error);
+    }
+  };
+
   //Roles List Call
   const getRoleList = async () => {
     try {
@@ -459,7 +469,8 @@ export default function ActivityDefinition() {
               selectedVersion={store.selectedActivity ? store.selectedActivity.version : 1} //todo - pass current version id being loaded
               setNotificationProps={setNotificationProps} // to show the success notification
               getApiConfiguration={getApiConfiguration} //to call the API Configuration
-              getDocumentFile={getDocumentFile} //to call the Document Data
+              getDocumentFile={getDocumentFile} //to call document data
+              getDocuments={getDocuments} //to call base64 for the document
               getRoleList={getRoleList} // to call Role List
               isDialogFlowActive={isDialogFlowActive}
               setIsDialogFlowActive={setIsDialogFlowActive}

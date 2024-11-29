@@ -54,6 +54,7 @@ const WorkFlowDesigner = forwardRef(
     getApiConfiguration, //to call API Config
     getDocumentFile, // to call document data
     getRoleList, // to call the role List
+    getDocuments,//to call base64 for the document
     isDialogFlowActive,
     setIsDialogFlowActive,
     isPageDesignerActive,
@@ -868,7 +869,7 @@ const WorkFlowDesigner = forwardRef(
               activityDefinitionData={activityDefinitionData}
               saveFormDesignerData={saveFormDesignerData}
               formFields={formFields}
-              getDocumentFile={getDocumentFile}
+              getDocuments={getDocuments}
               setIsPageDesignerActive={setIsPageDesignerActive}
               setShowActivityDefineDrawer={setShowActivityDefineDrawer}
               onActivityDetailsSave={updateActivityDetails}

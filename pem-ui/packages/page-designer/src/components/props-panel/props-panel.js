@@ -68,7 +68,8 @@ export default function PropsPanel({
   componentMapper,
   replaceComponent,
   propsPanelActiveTab,
-  activityDefinitionData
+  activityDefinitionData,
+  getDocuments,
 }) {
   const [editableProps, setEditableProps] = React.useState({});
   const [advanceProps, setAdvanceProps] = React.useState([]);
@@ -164,7 +165,7 @@ export default function PropsPanel({
   }
 
   const onOpenFiles = (key, propsName, selectedFieldProps, documentCategory) => {
-    pageUtil.showPageModal(`FILE_ATTACHMENT.${documentCategory}`).then((modalData) => {
+    pageUtil.showPageModal(`FILE_ATTACHMENT.${documentCategory}`).then(async (modalData) => {
       if (modalData.actionType === 'submit') {
         const file = {
           status: 'edit',
@@ -174,6 +175,8 @@ export default function PropsPanel({
           name: modalData?.data?.data?.documentName,
           filesize: modalData?.data?.data?.contentLength || modalData?.data?.data?.uploadFile?.addedFiles[0]?.size
         }
+        const base64 = await getDocuments(modalData?.data?.data?.documentKey);
+        file.base64 = base64
         setFile({
           ...file
         });

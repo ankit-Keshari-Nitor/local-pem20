@@ -52,7 +52,7 @@ const WorkFlowDesigner = forwardRef(
     selectedVersion, //current selected version,
     setNotificationProps, //toast message config
     getApiConfiguration, //to call API Config
-    getDocumentFile,// to call document data 
+    getDocumentFile, // to call document data
     getRoleList, // to call the role List
     isDialogFlowActive,
     setIsDialogFlowActive,
@@ -62,11 +62,13 @@ const WorkFlowDesigner = forwardRef(
     openTaskPropertiesBlock,
     openDialogPropertiesBlock,
     setOpenDialogPropertiesBlock,
-    nodeDataRefActivity
+    nodeDataRefActivity,
+    setIsSaveActivity
   }) => {
     //-------------------------------- State Management -------------------------------------
     const store = useTaskStore();
     let storeData = useTaskStore((state) => state.tasks);
+
     const editTask = useTaskStore((state) => state.editTaskNodePros);
     const editDialog = useTaskStore((state) => state.editDialogNodePros);
 
@@ -163,7 +165,7 @@ const WorkFlowDesigner = forwardRef(
       }
     }, [dialogNodes]);
 
-    const deleteNode = (id, isdialog, selectedTaskNodeId, branchNode=false) => {
+    const deleteNode = (id, isdialog, selectedTaskNodeId, branchNode = false) => {
       setOpenTaskPropertiesBlock(false);
       setOpenDialogPropertiesBlock(false);
       setShowActivityDefineDrawer(true);
@@ -792,6 +794,69 @@ const WorkFlowDesigner = forwardRef(
         }
       }
     }, [isDialogFlowActive, isPageDesignerActive, setIsDialogFlowActive, setIsPageDesignerActive]);
+
+    useEffect(() => {
+      checkConnectivity(storeData);
+    }, [storeData, dialogNodes]);
+
+    const checkConnectivity = (storeData) => {
+      if (storeData) {
+        const { nodes, edges } = storeData;
+        const matchArr = nodes.map((node) => {
+          if (
+            node.type === NODE_TYPE.PARTNER ||
+            node.type === NODE_TYPE.APPROVAL ||
+            node.type === NODE_TYPE.ATTRIBUTE ||
+            node.type === NODE_TYPE.SPONSOR ||
+            node.type === NODE_TYPE.CUSTOM ||
+            node.type === NODE_TYPE.SYSTEM ||
+            node.type === NODE_TYPE.BRANCH_START ||
+            node.type === NODE_TYPE.BRANCH_END
+          ) {
+            const { id } = node;
+            const isSource = edges.some(({ source }) => source === id);
+            const isTarget = edges.some(({ target }) => target === id);
+            return isSource & isTarget ? true : false;
+          } else if (node.type === NODE_TYPE.START) {
+            const { id } = node;
+            const isSource = edges.some(({ source }) => source === id);
+            return isSource;
+          } else if (node.type === NODE_TYPE.END) {
+            const { id } = node;
+            const isTarget = edges.some(({ target }) => target === id);
+            return isTarget;
+          }
+        });
+        const isMatch = matchArr.every((value) => value === true);
+        setIsSaveActivity(isMatch);
+      }
+      if (dialogNodes?.length) {
+        const matchArr = dialogNodes.map((node) => {
+          if (
+            node.type === NODE_TYPE.DIALOG ||
+            node.type === NODE_TYPE.XSLT ||
+            node.type === NODE_TYPE.API ||
+            node.type === NODE_TYPE.BRANCH_START ||
+            node.type === NODE_TYPE.BRANCH_END
+          ) {
+            const { id } = node;
+            const isSource = dialogEdges.some(({ source }) => source === id);
+            const isTarget = dialogEdges.some(({ target }) => target === id);
+            return isSource & isTarget ? true : false;
+          } else if (node.type === NODE_TYPE.START) {
+            const { id } = node;
+            const isSource = dialogEdges.some(({ source }) => source === id);
+            return isSource;
+          } else if (node.type === NODE_TYPE.END) {
+            const { id } = node;
+            const isTarget = dialogEdges.some(({ target }) => target === id);
+            return isTarget;
+          }
+        });
+        const isMatch = matchArr.every((value) => value === true);
+        setIsSaveActivity(isMatch);
+      }
+    };
 
     return (
       <>

@@ -59,12 +59,14 @@ export default function BranchStartPropertiesTray({
   const storeData = useTaskStore((state) => state.tasks);
   const editTask = useTaskStore((state) => state.editTaskNodePros);
   const editDialog = useTaskStore((state) => state.editDialogNodePros);
-
+  
   const [branchName, setBranchName] = useState('');
   const [branchNameError, setBranchNameError] = useState(false);
   const [selectedBranchConnector, setSelectedBranchConnector] = useState([]);
   const [showDialogSequence, setShowDialogSequence] = useState(false);
   const [openCancelDialog, setOpenCancelDialog] = useState(false);
+  const [isNodeDelete, setIsNodeDelete] = useState(false);
+
 
   useEffect(() => {
     setBranchName(selectedNode?.data?.editableProps.name ? selectedNode?.data?.editableProps.name : selectedNode?.data.id);
@@ -166,6 +168,10 @@ export default function BranchStartPropertiesTray({
     setOpenCancelDialog(true);
   };
 
+  const onDeleteModel = () => {
+    setIsNodeDelete(true);
+  }
+
   const onCloseModel = () => {
     setOpenCancelDialog(false);
     setOpenPropertiesBlock(false)
@@ -191,13 +197,32 @@ export default function BranchStartPropertiesTray({
           <Button
           style={{ marginTop: '2rem'}}
            size="md"
-            onClick={() => {
-              deleteNode(selectedNode.id, isDialogFlowActive, selectedTaskNode?.id, true);
-            }}
+            onClick={onDeleteModel}
           >
             {/* <TrashCan /> */}
             Delete
           </Button>
+          <Modal
+                open={isNodeDelete}
+                onRequestClose={()=> setIsNodeDelete(false)}
+                onRequestSubmit={() => {
+                  deleteNode(selectedNode.id, isDialogFlowActive, selectedTaskNode?.id, true);
+                }}
+                isFullWidth
+                modalHeading={<h4 style={{ display: 'flex', justifyContent: 'flex-start'}}>Confirmation</h4>}
+                primaryButtonText={'Delete'}
+                secondaryButtonText="Cancel"
+              >
+                <p
+                  style={{
+                    padding: '0px 0px 1rem 1rem',
+                    display: 'flex',
+                    justifyContent: 'flex-start'
+                  }}
+                >
+                  {'Are you sure you want to delete'}
+                </p>
+              </Modal>
         </Column>
       </Grid>
       {/* Conditional Builder and Dialog Sequence */}

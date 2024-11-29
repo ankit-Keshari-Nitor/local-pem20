@@ -222,7 +222,7 @@ export default function ActivityDefinition() {
   const getNodeTypesCount = (nodes) => {
     const counts =
       nodes !== undefined &&
-      nodes.reduce(
+      nodes?.reduce(
         (acc, node) => {
           acc[node.type] = (acc[node.type] || 0) + 1;
           return acc;

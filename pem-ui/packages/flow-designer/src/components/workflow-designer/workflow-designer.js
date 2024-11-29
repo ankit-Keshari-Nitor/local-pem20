@@ -52,7 +52,7 @@ const WorkFlowDesigner = forwardRef(
     selectedVersion, //current selected version,
     setNotificationProps, //toast message config
     getApiConfiguration, //to call API Config
-    getDocumentFile,// to call document data 
+    getDocumentFile, // to call document data
     getRoleList, // to call the role List
     isDialogFlowActive,
     setIsDialogFlowActive,
@@ -163,7 +163,7 @@ const WorkFlowDesigner = forwardRef(
       }
     }, [dialogNodes]);
 
-    const deleteNode = (id, isdialog, selectedTaskNodeId, branchNode=false) => {
+    const deleteNode = (id, isdialog, selectedTaskNodeId, branchNode = false) => {
       setOpenTaskPropertiesBlock(false);
       setOpenDialogPropertiesBlock(false);
       setShowActivityDefineDrawer(true);
@@ -551,7 +551,8 @@ const WorkFlowDesigner = forwardRef(
         node.type === NODE_TYPE.XSLT ||
         node.type === NODE_TYPE.API ||
         node.type === NODE_TYPE.DIALOG_GATEWAY ||
-        node.type === NODE_TYPE.BRANCH_START
+        node.type === NODE_TYPE.BRANCH_START ||
+        node.type === NODE_TYPE.BRANCH_END
       ) {
         let copyNodes = dialogNodes;
         copyNodes.map((copyNode) => {

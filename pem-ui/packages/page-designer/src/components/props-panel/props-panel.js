@@ -458,7 +458,7 @@ export default function PropsPanel({
 
                                         <Button
                                           size="sm"
-                                          className="opt-btn context-mapping-btn"
+                                          className="ctn-mapping-button"
                                           kind="secondary"
                                           renderIcon={() => <div className='vector-btn'><VectorIcon /></div>}
                                           onClick={() => OpenMappingDialog(selectedFieldProps?.id, key, item.propsName, selectedFieldProps?.currentPathDetail)}
@@ -708,7 +708,7 @@ export default function PropsPanel({
                                                     />
                                                     <Button
                                                       size="sm"
-                                                      className="opt-btn context-mapping-btn"
+                                                      className="ctn-mapping-button"
                                                       kind="secondary"
                                                       renderIcon={<div className='vector-btn'><VectorIcon /></div>}
                                                       onClick={() =>
@@ -824,7 +824,7 @@ export default function PropsPanel({
                                   <Button
                                     key={`text-map-${index}`}
                                     size="md"
-                                    className="mapping-button context-mapping-btn"
+                                    className="ctn-mapping-button"
                                     kind="secondary"
                                     renderIcon={<div className='vector-btn'><VectorIcon /></div>}
                                     onClick={() => OpenMappingDialog(selectedFieldProps?.id, 'Basic', 'mapping', selectedFieldProps?.currentPathDetail)}
@@ -853,7 +853,7 @@ export default function PropsPanel({
                                     <Button
                                       key={`text-value-${index}`}
                                       size="md"
-                                      className="mapping-button context-mapping-btn"
+                                      className="ctn-mapping-button"
                                       kind="secondary"
                                       renderIcon={<div className='vector-btn'><VectorIcon /></div>}
                                       onClick={() => OpenMappingDialog(selectedFieldProps?.id, 'Basic', 'options', selectedFieldProps?.currentPathDetail)}
@@ -876,7 +876,7 @@ export default function PropsPanel({
                                   className={`right-props-icon ${options.length === 1 && 'right-props-margin-icon'}  right-props-icon-background valueasLabel-text-field ${selectedRadioValue === 'static' && !isValueAsLabel && (options.length > 1 ? 'value-label-icon' : 'value-label-opt-icon')}`}
                                 >
                                   <span className="right-props-plus-icon-color" onClick={() => handleAddOption(index)}>
-                                    <CarbonPlus className="carbon-plus-btn" />
+                                    <CarbonPlus size="md" className="carbon-plus-btn"/>
                                   </span>
                                 </Column>
                               </>
@@ -899,7 +899,7 @@ export default function PropsPanel({
                             />
                             <Button
                               size="sm"
-                              className="mapping-button label-mapping-button context-mapping-btn"
+                              className="ctn-mapping-button label-mapping-button"
                               kind="secondary"
                               renderIcon={() => <div className='vector-btn'><VectorIcon /></div>}
                               onClick={() => OpenMappingDialog(selectedFieldProps?.id, 'Basic', TABLE_ROWS, selectedFieldProps?.currentPathDetail, 0, 'value')}
@@ -919,7 +919,7 @@ export default function PropsPanel({
                               />
                               <Button
                                 size="md"
-                                className="mapping-button label-mapping-button context-mapping-btn"
+                                className="label-mapping-button ctn-mapping-button"
                                 kind="secondary"
                                 renderIcon={() => <div className='vector-btn'><VectorIcon /></div>}
                                 onClick={() => OpenMappingDialog(selectedFieldProps?.id, 'Basic', TABLE_ROWS, selectedFieldProps?.currentPathDetail, 0, 'label')}
@@ -939,7 +939,7 @@ export default function PropsPanel({
                             />
                             <Button
                               size="md"
-                              className="mapping-button label-mapping-button context-mapping-btn"
+                              className="ctn-mapping-button label-mapping-button"
                               kind="secondary"
                               renderIcon={() => <div className='vector-btn'><VectorIcon /></div>}
                               onClick={() => OpenMappingDialog(selectedFieldProps?.id, 'Basic', TABLE_ROWS, selectedFieldProps?.currentPathDetail, 1, 'value')}
@@ -958,7 +958,7 @@ export default function PropsPanel({
                             />
                             <Button
                               size="md"
-                              className="mapping-button label-mapping-button context-mapping-btn"
+                              className="ctn-mapping-button label-mapping-button"
                               kind="secondary"
                               renderIcon={() => <div className='vector-btn'><VectorIcon /></div>}
                               onClick={() => OpenMappingDialog(selectedFieldProps?.id, 'Basic', TABLE_ROWS, selectedFieldProps?.currentPathDetail, 1, 'label')}

@@ -59,6 +59,8 @@ export default function ActivityDefinition() {
 
   const [openDeleteActivityModal, setOpenDeleteActivityModal] = useState(false);
   // -------------------------------- Node Deletion -------------------------------------------
+  const [isSaveActivity, setIsSaveActivity] = useState(false);
+
   const nodeDataRefActivity = useRef();
 
   useEffect(() => {
@@ -70,7 +72,7 @@ export default function ActivityDefinition() {
           const { nodes, edges } = generateActivitySchema(response.activityData.schema.nodes, response.activityData.schema.edges, readOnly);
           response.activityData.schema.nodes = nodes;
           response.activityData.schema.edges = edges;
-          response.activityData.definition.contextData = response.activityData?.version?.contextData
+          response.activityData.definition.contextData = response.activityData?.version?.contextData;
           setActivityDefinitionData(response.activityData);
 
           updateActivityData(response.activityData);
@@ -159,7 +161,18 @@ export default function ActivityDefinition() {
       setNotificationProps({
         open: true,
         title: 'Validation',
-        subTitle: 'Activity Name is required',
+        subtitle: 'Activity Name is required',
+        kind: 'error',
+        onCloseButtonClick: () => setNotificationProps(null)
+      });
+      setShowActivityDefineDrawer(true);
+      return;
+    }
+    if (!isSaveActivity) {
+      setNotificationProps({
+        open: true,
+        title: 'Validation',
+        subtitle: 'Atleast connector should be their in node',
         kind: 'error',
         onCloseButtonClick: () => setNotificationProps(null)
       });
@@ -172,7 +185,7 @@ export default function ActivityDefinition() {
       setNotificationProps({
         open: true,
         title: 'Error-' + nodeEdgesData.error[0].error,
-        subTitle: nodeEdgesData.error[0].error,
+        subtitle: nodeEdgesData.error[0].error,
         kind: 'error',
         onCloseButtonClick: () => setNotificationProps(null)
       });
@@ -432,33 +445,34 @@ export default function ActivityDefinition() {
       {loading
         ? 'Loading...'
         : activityDefinitionData && (
-          <Designer.WorkFlowDesigner
-            showActivityDefineDrawer={showActivityDefineDrawer}
-            setShowActivityDefineDrawer={setShowActivityDefineDrawer}
-            setActivityDesignerStack={setActivityDesignerStack}
-            updateActivityDetails={activityDetailsSave}
-            updateActivitySchema={updateActivitySchema}
-            activityDefinitionData={activityDefinitionData}
-            activityOperation={store.selectedActivity ? store.selectedActivity.operation : 'New'}
-            readOnly={readOnly}
-            onVersionSelection={(selectedVersion) => onVersionSelection(selectedVersion)}
-            versionData={activityVersions} //todo -- this data will be based on version api response
-            selectedVersion={store.selectedActivity ? store.selectedActivity.version : 1} //todo - pass current version id being loaded
-            setNotificationProps={setNotificationProps} // to show the success notification
-            getApiConfiguration={getApiConfiguration} //to call the API Configuration
-            getDocumentFile={getDocumentFile} //to call the Document Data 
-            getRoleList={getRoleList} // to call Role List
-            isDialogFlowActive={isDialogFlowActive}
-            setIsDialogFlowActive={setIsDialogFlowActive}
-            isPageDesignerActive={isPageDesignerActive}
-            setIsPageDesignerActive={setIsPageDesignerActive}
-            openTaskPropertiesBlock={openTaskPropertiesBlock}
-            setOpenTaskPropertiesBlock={setOpenTaskPropertiesBlock}
-            openDialogPropertiesBlock={openDialogPropertiesBlock}
-            setOpenDialogPropertiesBlock={setOpenDialogPropertiesBlock}
-            nodeDataRefActivity={nodeDataRefActivity}
-          />
-        )}
+            <Designer.WorkFlowDesigner
+              showActivityDefineDrawer={showActivityDefineDrawer}
+              setShowActivityDefineDrawer={setShowActivityDefineDrawer}
+              setActivityDesignerStack={setActivityDesignerStack}
+              updateActivityDetails={activityDetailsSave}
+              updateActivitySchema={updateActivitySchema}
+              activityDefinitionData={activityDefinitionData}
+              activityOperation={store.selectedActivity ? store.selectedActivity.operation : 'New'}
+              readOnly={readOnly}
+              onVersionSelection={(selectedVersion) => onVersionSelection(selectedVersion)}
+              versionData={activityVersions} //todo -- this data will be based on version api response
+              selectedVersion={store.selectedActivity ? store.selectedActivity.version : 1} //todo - pass current version id being loaded
+              setNotificationProps={setNotificationProps} // to show the success notification
+              getApiConfiguration={getApiConfiguration} //to call the API Configuration
+              getDocumentFile={getDocumentFile} //to call the Document Data
+              getRoleList={getRoleList} // to call Role List
+              isDialogFlowActive={isDialogFlowActive}
+              setIsDialogFlowActive={setIsDialogFlowActive}
+              isPageDesignerActive={isPageDesignerActive}
+              setIsPageDesignerActive={setIsPageDesignerActive}
+              openTaskPropertiesBlock={openTaskPropertiesBlock}
+              setOpenTaskPropertiesBlock={setOpenTaskPropertiesBlock}
+              openDialogPropertiesBlock={openDialogPropertiesBlock}
+              setOpenDialogPropertiesBlock={setOpenDialogPropertiesBlock}
+              nodeDataRefActivity={nodeDataRefActivity}
+              setIsSaveActivity={setIsSaveActivity}
+            />
+          )}
       {notificationProps && notificationProps.open && <Notification {...notificationProps} />}
       <Modal
         open={openDeleteActivityModal}

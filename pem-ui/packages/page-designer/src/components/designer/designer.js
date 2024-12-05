@@ -86,6 +86,8 @@ export default function Designer({
   const [componentsNames, setComponentsNames] = useState([]);
   const [propsPanelActiveTab, setPropsPanelActiveTab] = useState(0);
   const [isRowDelete, setIsRowDelete] = useState(false);
+  const [openCancelDialog, setOpenCancelDialog] = useState(false);
+
   const rowDataForDelete = useRef();
   const activityDefPanelRef = useRef();
 
@@ -462,6 +464,15 @@ export default function Designer({
     setLayout([newPropsObjs, ...layout]);
   };
 
+  const onCancelDefinitionForm = () => {
+    setOpenCancelDialog(true);
+  };
+
+  const onCloseModel = () => {
+    setOpenCancelDialog(false);
+    setLayout([false])
+  }
+
   const renderRow = (row, currentPath, renderRow, previewMode, onChangeHandle, isSelected, setIsSelected, onGroupChange) => {
     return (
       <Row
@@ -545,7 +556,7 @@ export default function Designer({
                   <div className="btn-top-container">
                     <Grid fullWidth className="buttons-container-bottom">
                       <Column lg={16} className="buttons-container">
-                        <Button kind="secondary" className="cancelButton">
+                        <Button kind="secondary" className="cancelButton" onClick={onCancelDefinitionForm}>
                           Cancel
                         </Button>
                         <Button kind="primary" className="saveButton" onClick={() => saveFormDesignerData(convertToApiSchema(layout))}>
@@ -553,6 +564,23 @@ export default function Designer({
                         </Button>
                       </Column>
                     </Grid>
+                    <Modal
+                      open={openCancelDialog}
+                      onRequestClose={() => setOpenCancelDialog(false)}
+                      isFullWidth
+                      modalHeading="Confirmation"
+                      primaryButtonText="Exit"
+                      secondaryButtonText="Cancel"
+                      onRequestSubmit={(onCloseModel)}
+                    >
+                      <p
+                        style={{
+                          padding: '0px 0px 1rem 1rem'
+                        }}
+                      >
+                        Your changes are not saved. Do you want to exit without saving changes?{' '}
+                      </p>
+                    </Modal>
                   </div>
                 </div>
               </div>

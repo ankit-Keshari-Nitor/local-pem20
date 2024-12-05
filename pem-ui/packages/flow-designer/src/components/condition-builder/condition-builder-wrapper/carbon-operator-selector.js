@@ -51,6 +51,10 @@ const CarbonOperatorSelector = ({
     setIsOperandSelector(false);
     multiValueHandler(value, 0);
   };
+  
+  React.useEffect(()=> {
+     setIsOperandSelector(false)
+  }, [_field])
 
   let leftOperandInput = null;
   // eslint-disable-next-line default-case

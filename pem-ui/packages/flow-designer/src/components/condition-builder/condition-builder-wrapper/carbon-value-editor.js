@@ -32,6 +32,10 @@ const CarbonValueEditor = (allProps) => {
   const [error, setError] = useState('');
   const [isOperandSelector, setIsOperandSelector] = useState(false);
 
+  React.useEffect(()=> {
+    setIsOperandSelector(false)
+ }, [allProps?.field])
+
   const placeHolderText = fieldData?.placeholder ?? '';
   const inputTypeCoerced = ['in', 'notIn'].includes(operator[1]) ? 'text' : inputType || 'text';
   let rightOperandInput = null;
@@ -56,6 +60,7 @@ const CarbonValueEditor = (allProps) => {
     handleOnChange(selectedValue);
   };
 
+ 
   if ((operator[1] === 'between' || operator[1] === 'notBetween') && (type === 'select' || type === 'text')) {
     const editors = ['from', 'to'].map((key, i) => {
       if (type === 'text') {
@@ -92,8 +97,7 @@ const CarbonValueEditor = (allProps) => {
       </span>
     );
   }
-
-
+  
   // eslint-disable-next-line default-case
   switch (allProps?.field) {
     case 'string':

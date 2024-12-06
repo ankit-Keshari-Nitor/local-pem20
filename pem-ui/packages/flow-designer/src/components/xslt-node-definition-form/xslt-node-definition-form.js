@@ -9,20 +9,16 @@ import ConditionalBuilder from '../condition-builder';
 import { INITIAL_QUERY, queryValidation } from '../../constants';
 import APINodePropertyForm from './xslt-node-property-form';
 
-export default function XsltNodeDefinitionForm({
-  selectedNode,
-  selectedTaskNode = null,
-  readOnly,
-  setOpenPropertiesBlock,
-  setNotificationProps,
-  activityDefinitionData
-}) {
+export default function XsltNodeDefinitionForm({ selectedNode, selectedTaskNode = null, readOnly, setOpenPropertiesBlock, setNotificationProps, activityDefinitionData }) {
   const pageUtil = Shell.PageUtil();
   const queryValidator = useRef({});
   const [query, setQuery] = useState(INITIAL_QUERY);
   const [openCancelDialog, setOpenCancelDialog] = useState(false);
   const [errorMessage, setErrorMessage] = useState(selectedNode?.data?.exitValidationMessage);
   const editDialog = useTaskStore((state) => state.editDialogNodePros);
+
+  const store = useTaskStore();
+  let storeData = useTaskStore((state) => state.tasks);
 
   // Initialize form states
   const [formState, setFormState] = useState({
@@ -121,8 +117,10 @@ export default function XsltNodeDefinitionForm({
     if (fieldName === 'input') {
       try {
         pageUtil
-          .showPageModal('CONTEXT_DATA_MAPPING.SELECT', {
-            data: JSON.parse(activityDefinitionData.definition?.contextData ? activityDefinitionData.definition.contextData : activityDefinitionData?.version?.contextData)
+          .showPageModal('CONTEXT_DATA_MAPPING.MAPPING', {
+            data: JSON.parse(formState?.propertyForm?.input),
+            contextData: JSON.parse(activityDefinitionData.definition?.contextData ? activityDefinitionData.definition.contextData : activityDefinitionData?.version?.contextData),
+            nodeData: storeData?.nodes
           })
           .then((modalData) => {
             if (modalData.actionType === 'submit') {
@@ -131,7 +129,7 @@ export default function XsltNodeDefinitionForm({
                 ...prev,
                 propertyForm: {
                   ...prev.propertyForm,
-                  [fieldName]: newData
+                  [fieldName]: JSON.stringify(newData)
                 }
               }));
             }
@@ -223,8 +221,8 @@ export default function XsltNodeDefinitionForm({
 
   const onCloseModel = () => {
     setOpenCancelDialog(false);
-    setOpenPropertiesBlock(false)
-  }
+    setOpenPropertiesBlock(false);
+  };
 
   return (
     <div>

@@ -204,7 +204,7 @@ const ContextDataModal = ({ contextData, contextPage }) => {
                 uiOnPropertyChange: function (event, value) {
                     const propertyRef = JSONPath({ path: `${this.ui.selectedNode.activeNodeId}`, json: contextPage.page.model.originalData, wrap: false });
                     this.ui.selectedNode.value.value = event.target.value;
-                    propertyRef.pValue = event.target.value;
+                    propertyRef.value = event.target.value;
                     const transformedData = generateTreeData(contextPage.page.model.originalData);
                     updateTreeNodeIcon(transformedData, iconMapping)
                     this.setModel('data', transformedData);
@@ -241,7 +241,7 @@ const ContextDataModal = ({ contextData, contextPage }) => {
                     }
                     const propertyRef = JSONPath({ path: `${selectedNode.activeNodeId}`, json: contextPage.page.model.originalData, wrap: false });
                     selectedNode.value.value = ''
-                    propertyRef.pValue = '';
+                    propertyRef.value = '';
                     const transformedData = generateTreeData(contextPage.page.model.originalData);
                     updateTreeNodeIcon(transformedData, iconMapping)
                     this.setModel('data', transformedData);
@@ -285,7 +285,7 @@ const ContextDataModal = ({ contextData, contextPage }) => {
                     }
                     const propertyRef = JSONPath({ path: `${selectedNode.activeNodeId}`, json: contextPage.page.model.originalData, wrap: false });
                     selectedNode.value.value = val
-                    propertyRef.pValue = val;
+                    propertyRef.value = val;
                     const transformedData = generateTreeData(contextPage.page.model.originalData);
                     updateTreeNodeIcon(transformedData, iconMapping)
                     this.setModel('data', transformedData);
@@ -322,8 +322,8 @@ const ContextDataModal = ({ contextData, contextPage }) => {
                     if (args[0].join('') !== '') {
                         const propertyRef = JSONPath({ path: `${page.ui.selectedNode.activeNodeId}`, json: contextPage.page.model.originalData, wrap: false });
                         page.ui.selectedNode.value.value = args[0].join('')
-                        propertyRef.pValue = args[0].join('');
-                        page.uiOnMap(propertyRef.pType, args[0].join(''), page.ui.selectedNode)
+                        propertyRef.value = args[0].join('');
+                        page.uiOnMap(propertyRef.type, args[0].join(''), page.ui.selectedNode)
                     }
                 }
             },
@@ -408,8 +408,8 @@ const ContextDataModal = ({ contextData, contextPage }) => {
                     if (args[0].join('') !== '') {
                         const propertyRef = JSONPath({ path: `${page.ui.selectedNode.activeNodeId}`, json: contextPage.page.model.originalData, wrap: false });
                         page.ui.selectedNode.value.value = args[0].join('')
-                        propertyRef.pValue = args[0].join('');
-                        page.uiOnMap(propertyRef.pType, args[0].join(''), page.ui.selectedNode)
+                        propertyRef.value = args[0].join('');
+                        page.uiOnMap(propertyRef.type, args[0].join(''), page.ui.selectedNode)
                     }
                 }
             },
@@ -487,8 +487,8 @@ const ContextDataModal = ({ contextData, contextPage }) => {
                     if (args[0].join('') !== '') {
                         const propertyRef = JSONPath({ path: `${page.ui.selectedNode.activeNodeId}`, json: contextPage.page.model.originalData, wrap: false });
                         page.ui.selectedNode.value.value = args[0].join('')
-                        propertyRef.pValue = args[0].join('');
-                        page.uiOnMap(propertyRef.pType, args[0].join(''), page.ui.selectedNode)
+                        propertyRef.value = args[0].join('');
+                        page.uiOnMap(propertyRef.type, args[0].join(''), page.ui.selectedNode)
                     }
                 }
             },

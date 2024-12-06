@@ -169,8 +169,7 @@ export const getDocuments = async (key) => {
     if (!response.ok) {
       return null;
     }
-
-    const blob = await response.blob();
+        const blob = await response.blob();
 
     // Read the Blob as a data URL
     const base64String = await readFileInput(blob);

@@ -5,9 +5,9 @@ import { JSONPath } from 'jsonpath-plus';
 import '@b2bi/styles/pages/list-page.scss';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 
-import CDMTreeView from './cdm-tree-view';
+
 import { CONTEXT_MAPPING_TYPES, CONTEXT_TYPES } from './constant';
-import { transformDataToTree, generateContextDataMapping, generateTreeData, updateTreeNodeIcon } from './cdm-utils';
+import { generateTreeData, updateTreeNodeIcon } from './cdm-utils';
 import { ListBoxes, TextFont, Image, Task, Repeat } from '@carbon/icons-react';
 
 import './style.scss';
@@ -139,11 +139,7 @@ const ContextDataModal = ({ mode, context }) => {
         },
 
         init: function () {
-          if (context === 'PROPERTY') {
-            this._processProperty();
-          } else {
-            this._processActivity();
-          }
+          this._processProperty();
         },
 
         _updateEmptyState_SponsorList: function (data) {
@@ -189,19 +185,8 @@ const ContextDataModal = ({ mode, context }) => {
           this.setModel('originalData', modalConfig.data.data);
         },
 
-        _processActivity: function () {
-          const contextDataMapping = generateContextDataMapping(modalConfig.data.data);
-          const transformedData = transformDataToTree(contextDataMapping);
-          this.setModel('data', transformedData);
-          this.setModel('originalData', { items: modalConfig?.data?.data });
-        },
-
         uiOnRequestSubmit: function () {
-          if (context === 'PROPERTY') {
-            modalConfig.onAction('submit', { data: this.model.originalData });
-          } else {
-            modalConfig.onAction('submit', { data: '${' + this.ui.selectedJPath + '}' });
-          }
+          modalConfig.onAction('submit', { data: this.model.originalData });
         },
 
         uiOnSelectJPath: function (event, selectedNode) {
@@ -237,7 +222,7 @@ const ContextDataModal = ({ mode, context }) => {
         uiOnPropertyChange: function (event, value) {
           const propertyRef = JSONPath({ path: `${this.ui.selectedNode.activeNodeId}`, json: this.model.originalData, wrap: false });
           this.ui.selectedNode.value.value = event.target.value;
-          propertyRef.pValue = event.target.value;
+          propertyRef.value = event.target.value;
           const transformedData = generateTreeData(this.model.originalData);
           updateTreeNodeIcon(transformedData, iconMapping);
           this.setModel('data', transformedData);
@@ -258,14 +243,7 @@ const ContextDataModal = ({ mode, context }) => {
         },
 
         uiOnRequestClose: function () {
-          if (context === 'PROPERTY') {
-            modalConfig.onAction('cancel', {
-              data: this.model.originalData
-            });
-          }
-          modalConfig.onAction('cancel', {
-            data: ''
-          });
+          modalConfig.onAction('cancel', { data: this.model.originalData });
         },
 
         uiOnUnmapBtn: function (type, selectedNode) {
@@ -287,7 +265,7 @@ const ContextDataModal = ({ mode, context }) => {
           }
           const propertyRef = JSONPath({ path: `${selectedNode.activeNodeId}`, json: page.model.originalData, wrap: false });
           selectedNode.value.value = '';
-          propertyRef.pValue = '';
+          propertyRef.value = '';
           const transformedData = generateTreeData(page.model.originalData);
           updateTreeNodeIcon(transformedData, iconMapping);
           this.setModel('data', transformedData);
@@ -336,7 +314,7 @@ const ContextDataModal = ({ mode, context }) => {
           }
           const propertyRef = JSONPath({ path: `${selectedNode.activeNodeId}`, json: page.model.originalData, wrap: false });
           selectedNode.value.value = val;
-          propertyRef.pValue = val;
+          propertyRef.value = val;
           const transformedData = generateTreeData(page.model.originalData);
           updateTreeNodeIcon(transformedData, iconMapping);
           this.setModel('data', transformedData);
@@ -372,39 +350,15 @@ const ContextDataModal = ({ mode, context }) => {
           label: 'shell:common.actions.cancel',
           type: 'button',
           kind: 'secondary',
-          isVisible: context === 'PROPERTY',
           onAction: (...args) => {
             return page.uiOnRequestClose.apply();
           }
         },
-        {
-          id: 'cancel',
-          label: 'shell:common.actions.cancel',
-          type: 'button',
-          kind: 'secondary',
-          isVisible: context !== 'PROPERTY',
-          onAction: (...args) => {
-            return page.uiOnRequestClose.apply();
-          }
-        },
-        {
-          id: 'select',
-          label: 'shell:common.actions.select',
-          type: 'button',
-          kind: 'primary',
-          disabled: !page.ui.selectedJPath,
-          isVisible: context !== 'PROPERTY',
-          onAction: (...args) => {
-            return page.uiOnRequestSubmit.apply();
-          }
-        },
-
         {
           id: 'save',
           label: 'shell:common.actions.save',
           type: 'button',
           kind: 'primary',
-          isVisible: context === 'PROPERTY',
           onAction: (...args) => {
             return page.uiOnRequestSubmit.apply();
           }
@@ -420,8 +374,8 @@ const ContextDataModal = ({ mode, context }) => {
           if (args[0].join('') !== '') {
             const propertyRef = JSONPath({ path: `${page.ui.selectedNode.activeNodeId}`, json: page.model.originalData, wrap: false });
             page.ui.selectedNode.value.value = args[0].join('');
-            propertyRef.pValue = args[0].join('');
-            page.uiOnMap(propertyRef.pType, args[0].join(''), page.ui.selectedNode);
+            propertyRef.value = args[0].join('');
+            page.uiOnMap(propertyRef.type, args[0].join(''), page.ui.selectedNode);
           }
         }
       },
@@ -506,8 +460,8 @@ const ContextDataModal = ({ mode, context }) => {
           if (args[0].join('') !== '') {
             const propertyRef = JSONPath({ path: `${page.ui.selectedNode.activeNodeId}`, json: page.model.originalData, wrap: false });
             page.ui.selectedNode.value.value = args[0].join('');
-            propertyRef.pValue = args[0].join('');
-            page.uiOnMap(propertyRef.pType, args[0].join(''), page.ui.selectedNode);
+            propertyRef.value = args[0].join('');
+            page.uiOnMap(propertyRef.type, args[0].join(''), page.ui.selectedNode);
           }
         }
       },
@@ -585,8 +539,8 @@ const ContextDataModal = ({ mode, context }) => {
           if (args[0].join('') !== '') {
             const propertyRef = JSONPath({ path: `${page.ui.selectedNode.activeNodeId}`, json: page.model.originalData, wrap: false });
             page.ui.selectedNode.value.value = args[0].join('');
-            propertyRef.pValue = args[0].join('');
-            page.uiOnMap(propertyRef.pType, args[0].join(''), page.ui.selectedNode);
+            propertyRef.value = args[0].join('');
+            page.uiOnMap(propertyRef.type, args[0].join(''), page.ui.selectedNode);
           }
         }
       },
@@ -664,412 +618,405 @@ const ContextDataModal = ({ mode, context }) => {
           title={mode === 'CONTEXT_DATA' ? pageUtil.t('mod-context-properties:title_ContextData') : pageUtil.t('mod-context-properties:title')}
           buttonOnClick={page.uiOnRequestClose}
         />
-        <Shell.PageBody className={context !== 'PROPERTY' ? 'treeview-wrapper' : ''}>
-          {context !== 'PROPERTY' && (
-            <Column lg={context === 'PROPERTY' ? 6 : 16} md={context === 'PROPERTY' ? 6 : 16}>
-              <CDMTreeView data={page.model.data} onSelect={page.uiOnSelectJPath} selected={page.ui.selectedNodes} />
-            </Column>
-          )}
-          {context === 'PROPERTY' && (
-            <>
-              <PanelGroup direction="horizontal">
-                {/* <Grid className="pem--cdm-grid"> */}
-                <Panel minSize={20} defaultSize={30} maxSize={60}>
-                  <Column lg={4} md={4} className="pem--cdm-tree-container">
-                    <Shell.TreeView name="cdpTreeView" config={pageConfig.cdpTreeView} data={page.model.data}></Shell.TreeView>
-                  </Column>
-                </Panel>
-                <PanelResizeHandle style={{ cursor: 'ew-resize' }} />
-                <Panel minSize={40} defaultSize={70} maxSize={80}>
-                  <div class="right-pane">
-                    <Column lg={12} md={12} style={{ margin: '0rem 1rem' }}>
-                      {(!page.ui.selectedNode || page.ui?.selectedNode?.value?.type === 'OBJECT') && (
-                        <>
-                          <div className="no-connector-container">
-                            <div>
-                              <ListBoxes className="listbox-svg" />{' '}
-                            </div>
-                            <div>
-                              {' '}
-                              <span className="no-connector-container-text">No Node Selected </span>
-                            </div>
-                            <div>Please select Node from left panel</div>
+        <Shell.PageBody>
+          <>
+            <PanelGroup direction="horizontal">
+              {/* <Grid className="pem--cdm-grid"> */}
+              <Panel minSize={20} defaultSize={30} maxSize={60}>
+                <Column lg={4} md={4} className="pem--cdm-tree-container">
+                  <Shell.TreeView name="cdpTreeView" config={pageConfig.cdpTreeView} data={page.model.data}></Shell.TreeView>
+                </Column>
+              </Panel>
+              <PanelResizeHandle style={{ cursor: 'ew-resize' }} />
+              <Panel minSize={40} defaultSize={70} maxSize={80}>
+                <div class="right-pane">
+                  <Column lg={12} md={12} style={{ margin: '0rem 1rem' }}>
+                    {(!page.ui.selectedNode || page.ui?.selectedNode?.value?.type === 'OBJECT') && (
+                      <>
+                        <div className="no-connector-container">
+                          <div>
+                            <ListBoxes className="listbox-svg" />{' '}
                           </div>
+                          <div>
+                            {' '}
+                            <span className="no-connector-container-text">No Node Selected </span>
+                          </div>
+                          <div>Please select Node from left panel</div>
+                        </div>
+                      </>
+                    )}
+                    <CDS.Form name="property" context={page.form.property}>
+                      {page.ui.selectedNode && (
+                        <>
+                          {page.ui.selectedNode.value.type === CONTEXT_MAPPING_TYPES.CONSTANT && (
+                            <>
+                              <Layer>
+                                <Layer>
+                                  <TextInput
+                                    className="right-panel"
+                                    id="context-constant"
+                                    type="text"
+                                    labelText="Set value for selected node"
+                                    placeholder="Enter Value"
+                                  ></TextInput>
+                                </Layer>
+                              </Layer>
+                            </>
+                          )}
+                          {page.ui.selectedNode.value.type === CONTEXT_TYPES.TEXT && (
+                            <CDS.TextInput
+                              className="right-panel"
+                              name="textProperty"
+                              labelText="Set value for selected node"
+                              rules={{ onChange: page.uiOnPropertyChange }}
+                            ></CDS.TextInput>
+                          )}
+                          {page.ui.selectedNode.value.type === CONTEXT_TYPES.BOOLEAN && (
+                            <CDS.Toggle
+                              className="right-panel"
+                              name="booleanProperty"
+                              labelText="Set value for selected node"
+                              rules={{ onChange: page.uiOnPropertyChange }}
+                            ></CDS.Toggle>
+                          )}
+                          {page.ui.selectedNode.value.type === CONTEXT_TYPES.API_CONFIG && (
+                            <>
+                              {page.ui.selectedNode.value.value ? (
+                                <>
+                                  <div className="unmap-header">
+                                    <span className="pem-unmap-table-title">{pageUtil.t('mod-context-properties:page.viewAPIConfig')}</span>
+                                    <Button className="pem-unmap-button-wrapper" onClick={() => page.uiOnUnmapBtn(page.ui.selectedNode.value.type, page.ui.selectedNode)}>
+                                      Unmap
+                                    </Button>
+                                  </div>
+                                  <Grid className="unmap-wrapper">
+                                    {/* Name */}
+                                    <Column className="unmap-col-wrapper" lg={6}>
+                                      {pageUtil.t('mod-context-properties:form.name')}
+                                    </Column>
+                                    <Column className="unmap-col-wrapper" lg={6}>
+                                      {page.model.apiConfigListData?.name}
+                                    </Column>
+                                    {/* Protocol */}
+                                    <Column className="unmap-col-wrapper" lg={6}>
+                                      {pageUtil.t('mod-context-properties:form.protocol')}
+                                    </Column>
+                                    <Column className="unmap-col-wrapper" lg={6}>
+                                      {page.model.apiConfigListData?.protocol}
+                                    </Column>
+                                    {/* Host */}
+                                    <Column className="unmap-col-wrapper" lg={6}>
+                                      {pageUtil.t('mod-context-properties:form.host')}
+                                    </Column>
+                                    <Column className="unmap-col-wrapper" lg={6}>
+                                      {page.model.apiConfigListData?.host}
+                                    </Column>
+                                    {/* Port */}
+                                    <Column className="unmap-col-wrapper" lg={6}>
+                                      {pageUtil.t('mod-context-properties:form.port')}
+                                    </Column>
+                                    <Column className="unmap-col-wrapper" lg={6}>
+                                      {page.model.apiConfigListData?.port}
+                                    </Column>
+                                    {/* SSL Protocol */}
+                                    <Column className="unmap-col-wrapper" lg={6}>
+                                      {pageUtil.t('mod-context-properties:form.sslProtocol')}
+                                    </Column>
+                                    <Column className="unmap-col-wrapper" lg={6}>
+                                      {page.model.apiConfigListData?.sslProtocol ? page.model.apiConfigListData?.sslProtocol : 'None'}
+                                    </Column>
+                                    {/* preemptive Auth*/}
+                                    <Column className="unmap-col-wrapper" lg={6}>
+                                      {pageUtil.t('mod-context-properties:form.preemptiveAuth')}
+                                    </Column>
+                                    <Column className="unmap-col-wrapper" lg={6}>
+                                      {page.model.apiConfigListData?.preemptiveAuth?.code === 'TRUE' ? 'Yes' : 'No'}
+                                    </Column>
+                                    {/* authenticationType */}
+                                    <Column className="unmap-col-wrapper" lg={6}>
+                                      {pageUtil.t('mod-context-properties:form.authenticationType')}
+                                    </Column>
+                                    <Column className="unmap-col-wrapper" lg={6}>
+                                      <span>
+                                        {!page.model.apiConfigListData?.userName &&
+                                          !page.model.apiConfigListData?.password &&
+                                          page.model.apiConfigListData?.isInternalAuth?.code === 'FALSE'
+                                          ? 'None'
+                                          : page.model.apiConfigListData?.isInternalAuth?.code === 'TRUE'
+                                            ? 'Internally generated token'
+                                            : page.model.apiConfigListData?.userName && page.model.apiConfigListData?.password
+                                              ? 'User Name and Password'
+                                              : ''}
+                                      </span>
+                                    </Column>
+                                    {/* Verify host*/}
+                                    <Column className="unmap-col-wrapper" lg={6}>
+                                      {pageUtil.t('mod-context-properties:form.verifyHost')}
+                                    </Column>
+                                    <Column className="unmap-col-wrapper" lg={6}>
+                                      {page.model.apiConfigListData?.verifyHost?.code === 'TRUE' ? 'Yes' : 'No'}
+                                    </Column>
+                                  </Grid>
+                                </>
+                              ) : (
+                                <>
+                                  <Tabs
+                                    defaultSelectedIndex={0}
+                                    onChange={(e) => {
+                                      page.uiTabChange(e, CONTEXT_TYPES.API_CONFIG);
+                                    }}
+                                  >
+                                    <TabList>
+                                      <Tab>{pageUtil.t('mod-context-properties:tabs.apiConfigList')}</Tab>
+                                      <Tab>{pageUtil.t('mod-context-properties:tabs.createNew')}</Tab>
+                                    </TabList>
+                                    <TabPanels>
+                                      <TabPanel>
+                                        <div className="pem--table-header">
+                                          <span className="pem--table-title">{pageUtil.t('mod-context-properties:tabs.titleTwo')}</span>
+                                        </div>
+                                        <Shell.DataTable
+                                          className={'sfg--datatable--sponsorServer-list modal-height'}
+                                          data-testid="apiConfigList"
+                                          controller={page.datatable.apiConfigList}
+                                          data={page.model.apiConfigList.data}
+                                          config={pageConfig.apiConfigList}
+                                          loadingState={page.ui.tableLoadingState}
+                                          emptyState={page.datatable.apiConfigList.emptyState}
+                                          totalItems={page.model.apiConfigList.meta.totalItems}
+                                        ></Shell.DataTable>
+                                      </TabPanel>
+                                      <TabPanel>
+                                        <CreateApiConfiguration mode="CREATE" cdmPage={page} />
+                                      </TabPanel>
+                                    </TabPanels>
+                                  </Tabs>
+                                </>
+                              )}
+                            </>
+                          )}
+                          {page.ui.selectedNode.value.type === CONTEXT_TYPES.LOGO_FILE && (
+                            <>
+                              {' '}
+                              {page.ui.selectedNode.value.value ? (
+                                <>
+                                  <div className="unmap-header">
+                                    <span className="pem-unmap-table-title">{pageUtil.t('mod-context-properties:page.viewDocument')}</span>
+                                    <Button className="pem-unmap-button-wrapper" onClick={() => page.uiOnUnmapBtn(page.ui.selectedNode.value.type, page.ui.selectedNode)}>
+                                      Unmap
+                                    </Button>
+                                  </div>
+                                  <Grid className="unmap-wrapper">
+                                    {/* Name */}
+                                    <Column className="unmap-col-wrapper" lg={6}>
+                                      {pageUtil.t('mod-file:list.columns.documentName')}
+                                    </Column>
+                                    <Column className="unmap-col-wrapper" lg={6}>
+                                      {page.model.headerLogoListData?.documentName}
+                                    </Column>
+                                    {/* Owner */}
+                                    <Column className="unmap-col-wrapper" lg={6}>
+                                      {pageUtil.t('mod-file:list.columns.createdBy')}
+                                    </Column>
+                                    <Column className="unmap-col-wrapper" lg={6}>
+                                      {page.model.headerLogoListData?.createdBy}
+                                    </Column>
+                                    {/* Category */}
+                                    <Column className="unmap-col-wrapper" lg={6}>
+                                      {pageUtil.t('mod-file:list.columns.documentCategory')}
+                                    </Column>
+                                    <Column className="unmap-col-wrapper" lg={6}>
+                                      {page.model.headerLogoListData?.documentCategory?.display}
+                                    </Column>
+                                    {/* Type */}
+                                    <Column className="unmap-col-wrapper" lg={6}>
+                                      {pageUtil.t('mod-file:list.columns.contentType')}
+                                    </Column>
+                                    <Column className="unmap-col-wrapper" lg={6}>
+                                      {page.model.headerLogoListData?.contentType}
+                                    </Column>
+                                    {/* Encrypted */}
+                                    <Column className="unmap-col-wrapper" lg={6}>
+                                      {pageUtil.t('mod-file:list.columns.isEncrypted')}
+                                    </Column>
+                                    <Column className="unmap-col-wrapper" lg={6}>
+                                      {page.model.headerLogoListData?.isEncrypted?.code === 'TRUE' ? 'Yes' : 'No'}
+                                    </Column>
+                                    {/* Upload Date*/}
+                                    <Column className="unmap-col-wrapper" lg={6}>
+                                      {pageUtil.t('mod-file:list.columns.createTs')}
+                                    </Column>
+                                    <Column className="unmap-col-wrapper" lg={6}>
+                                      {page.model.headerLogoListData?.createTs
+                                        ? (() => {
+                                          const date = new Date(page.model.headerLogoListData.createTs);
+                                          const options = {
+                                            year: 'numeric',
+                                            month: 'short', // For abbreviated month (e.g., "Oct")
+                                            day: 'numeric',
+                                            hour: 'numeric',
+                                            minute: 'numeric',
+                                            second: 'numeric',
+                                            hour12: true
+                                          };
+                                          return date.toLocaleString('en-US', options); // Format the date
+                                        })()
+                                        : ''}
+                                    </Column>
+                                  </Grid>
+                                </>
+                              ) : (
+                                <>
+                                  <Tabs
+                                    defaultSelectedIndex={0}
+                                    onChange={(e) => {
+                                      page.uiTabChange(e, CONTEXT_MAPPING_TYPES.HEADER_LOGO);
+                                    }}
+                                  >
+                                    <TabList>
+                                      <Tab>{pageUtil.t('mod-context-properties:tabs.availableFiles')}</Tab>
+                                      <Tab>{pageUtil.t('mod-context-properties:tabs.uploadFiles')}</Tab>
+                                    </TabList>
+                                    <TabPanels>
+                                      <TabPanel>
+                                        <div className="pem--table-header">
+                                          <span className="pem--table-title">{pageUtil.t('mod-context-properties:tabs.titleOne')}</span>
+                                        </div>
+                                        <Shell.DataTable
+                                          className={'sfg--datatable--header-logo-list modal-height'}
+                                          data-testid="headerLogoList"
+                                          controller={page.datatable.headerLogoList}
+                                          data={page.model.headerLogoList.data}
+                                          config={pageConfig.headerLogoList}
+                                          loadingState={page.ui.tableLoadingState}
+                                          emptyState={page.datatable.headerLogoList.emptyState}
+                                          totalItems={page.model.headerLogoList.meta.totalItems}
+                                        ></Shell.DataTable>
+                                      </TabPanel>
+                                      <TabPanel>
+                                        <CreateUploadForm documentCategory="LOGO" cdmPage={page} />
+                                      </TabPanel>
+                                    </TabPanels>
+                                  </Tabs>
+                                </>
+                              )}
+                            </>
+                          )}
+                          {page.ui.selectedNode.value.type === CONTEXT_TYPES.ACTIVITY_FILE && (
+                            <>
+                              {page.ui.selectedNode.value.value ? (
+                                <>
+                                  <div className="unmap-header">
+                                    <span className="pem-unmap-table-title">{pageUtil.t('mod-context-properties:page.viewDocument')}</span>
+                                    <Button className="pem-unmap-button-wrapper" onClick={() => page.uiOnUnmapBtn(page.ui.selectedNode.value.type, page.ui.selectedNode)}>
+                                      Unmap
+                                    </Button>
+                                  </div>
+                                  <Grid className="unmap-wrapper">
+                                    {/* Name */}
+                                    <Column className="unmap-col-wrapper" lg={6}>
+                                      {pageUtil.t('mod-file:list.columns.documentName')}
+                                    </Column>
+                                    <Column className="unmap-col-wrapper" lg={6}>
+                                      {page.model.activityFileListData?.documentName}
+                                    </Column>
+                                    {/* Owner */}
+                                    <Column className="unmap-col-wrapper" lg={6}>
+                                      {pageUtil.t('mod-file:list.columns.createdBy')}
+                                    </Column>
+                                    <Column className="unmap-col-wrapper" lg={6}>
+                                      {page.model.activityFileListData?.createdBy}
+                                    </Column>
+                                    {/* Category */}
+                                    <Column className="unmap-col-wrapper" lg={6}>
+                                      {pageUtil.t('mod-file:list.columns.documentCategory')}
+                                    </Column>
+                                    <Column className="unmap-col-wrapper" lg={6}>
+                                      {page.model.activityFileListData?.documentCategory?.display}
+                                    </Column>
+                                    {/* Type */}
+                                    <Column className="unmap-col-wrapper" lg={6}>
+                                      {pageUtil.t('mod-file:list.columns.contentType')}
+                                    </Column>
+                                    <Column className="unmap-col-wrapper" lg={6}>
+                                      {page.model.activityFileListData?.contentType}
+                                    </Column>
+                                    {/* Encrypted */}
+                                    <Column className="unmap-col-wrapper" lg={6}>
+                                      {pageUtil.t('mod-file:list.columns.isEncrypted')}
+                                    </Column>
+                                    <Column className="unmap-col-wrapper" lg={6}>
+                                      {page.model.activityFileListData?.isEncrypted?.code === 'TRUE' ? 'Yes' : 'No'}
+                                    </Column>
+                                    {/* Upload Date*/}
+                                    <Column className="unmap-col-wrapper" lg={6}>
+                                      {pageUtil.t('mod-file:list.columns.createTs')}
+                                    </Column>
+                                    <Column className="unmap-col-wrapper" lg={6}>
+                                      {page.model.activityFileListData?.createTs
+                                        ? (() => {
+                                          const date = new Date(page.model.activityFileListData.createTs);
+                                          const options = {
+                                            year: 'numeric',
+                                            month: 'short', // For abbreviated month (e.g., "Oct")
+                                            day: 'numeric',
+                                            hour: 'numeric',
+                                            minute: 'numeric',
+                                            second: 'numeric',
+                                            hour12: true
+                                          };
+                                          return date.toLocaleString('en-US', options); // Format the date
+                                        })()
+                                        : ''}
+                                    </Column>
+                                  </Grid>
+                                </>
+                              ) : (
+                                <>
+                                  <Tabs
+                                    defaultSelectedIndex={0}
+                                    onChange={(e) => {
+                                      page.uiTabChange(e, CONTEXT_MAPPING_TYPES.ACTIVITY_FILE);
+                                    }}
+                                  >
+                                    <TabList>
+                                      <Tab>{pageUtil.t('mod-context-properties:tabs.availableFiles')}</Tab>
+                                      <Tab>{pageUtil.t('mod-context-properties:tabs.uploadFiles')}</Tab>
+                                    </TabList>
+                                    <TabPanels>
+                                      <TabPanel>
+                                        <div className="pem--table-header">
+                                          <span className="pem--table-title">{pageUtil.t('mod-context-properties:tabs.titleOne')}</span>
+                                        </div>
+                                        <Shell.DataTable
+                                          className={'sfg--datatable--activity-file-list modal-height'}
+                                          data-testid="activityFileList"
+                                          controller={page.datatable.activityFileList}
+                                          data={page.model.activityFileList.data}
+                                          config={pageConfig.activityFileList}
+                                          loadingState={page.ui.tableLoadingState}
+                                          emptyState={page.datatable.activityFileList.emptyState}
+                                          totalItems={page.model.activityFileList.meta.totalItems}
+                                        ></Shell.DataTable>
+                                      </TabPanel>
+                                      <TabPanel>
+                                        <CreateUploadForm documentCategory="ACTIVITY" cdmPage={page} />
+                                      </TabPanel>
+                                    </TabPanels>
+                                  </Tabs>
+                                </>
+                              )}
+                            </>
+                          )}
                         </>
                       )}
-                      <CDS.Form name="property" context={page.form.property}>
-                        {page.ui.selectedNode && (
-                          <>
-                            {page.ui.selectedNode.value.type === CONTEXT_MAPPING_TYPES.CONSTANT && (
-                              <>
-                                <Layer>
-                                  <Layer>
-                                    <TextInput
-                                      className="right-panel"
-                                      id="context-constant"
-                                      type="text"
-                                      labelText="Set value for selected node"
-                                      placeholder="Enter Value"
-                                    ></TextInput>
-                                  </Layer>
-                                </Layer>
-                              </>
-                            )}
-                            {page.ui.selectedNode.value.type === CONTEXT_TYPES.TEXT && (
-                              <CDS.TextInput
-                                className="right-panel"
-                                name="textProperty"
-                                labelText="Set value for selected node"
-                                rules={{ onChange: page.uiOnPropertyChange }}
-                              ></CDS.TextInput>
-                            )}
-                            {page.ui.selectedNode.value.type === CONTEXT_TYPES.BOOLEAN && (
-                              <CDS.Toggle
-                                className="right-panel"
-                                name="booleanProperty"
-                                labelText="Set value for selected node"
-                                rules={{ onChange: page.uiOnPropertyChange }}
-                              ></CDS.Toggle>
-                            )}
-                            {page.ui.selectedNode.value.type === CONTEXT_TYPES.API_CONFIG && (
-                              <>
-                                {page.ui.selectedNode.value.value ? (
-                                  <>
-                                    <div className="unmap-header">
-                                      <span className="pem-unmap-table-title">{pageUtil.t('mod-context-properties:page.viewAPIConfig')}</span>
-                                      <Button className="pem-unmap-button-wrapper" onClick={() => page.uiOnUnmapBtn(page.ui.selectedNode.value.type, page.ui.selectedNode)}>
-                                        Unmap
-                                      </Button>
-                                    </div>
-                                    <Grid className="unmap-wrapper">
-                                      {/* Name */}
-                                      <Column className="unmap-col-wrapper" lg={6}>
-                                        {pageUtil.t('mod-context-properties:form.name')}
-                                      </Column>
-                                      <Column className="unmap-col-wrapper" lg={6}>
-                                        {page.model.apiConfigListData?.name}
-                                      </Column>
-                                      {/* Protocol */}
-                                      <Column className="unmap-col-wrapper" lg={6}>
-                                        {pageUtil.t('mod-context-properties:form.protocol')}
-                                      </Column>
-                                      <Column className="unmap-col-wrapper" lg={6}>
-                                        {page.model.apiConfigListData?.protocol}
-                                      </Column>
-                                      {/* Host */}
-                                      <Column className="unmap-col-wrapper" lg={6}>
-                                        {pageUtil.t('mod-context-properties:form.host')}
-                                      </Column>
-                                      <Column className="unmap-col-wrapper" lg={6}>
-                                        {page.model.apiConfigListData?.host}
-                                      </Column>
-                                      {/* Port */}
-                                      <Column className="unmap-col-wrapper" lg={6}>
-                                        {pageUtil.t('mod-context-properties:form.port')}
-                                      </Column>
-                                      <Column className="unmap-col-wrapper" lg={6}>
-                                        {page.model.apiConfigListData?.port}
-                                      </Column>
-                                      {/* SSL Protocol */}
-                                      <Column className="unmap-col-wrapper" lg={6}>
-                                        {pageUtil.t('mod-context-properties:form.sslProtocol')}
-                                      </Column>
-                                      <Column className="unmap-col-wrapper" lg={6}>
-                                        {page.model.apiConfigListData?.sslProtocol ? page.model.apiConfigListData?.sslProtocol : 'None'}
-                                      </Column>
-                                      {/* preemptive Auth*/}
-                                      <Column className="unmap-col-wrapper" lg={6}>
-                                        {pageUtil.t('mod-context-properties:form.preemptiveAuth')}
-                                      </Column>
-                                      <Column className="unmap-col-wrapper" lg={6}>
-                                        {page.model.apiConfigListData?.preemptiveAuth?.code === 'TRUE' ? 'Yes' : 'No'}
-                                      </Column>
-                                      {/* authenticationType */}
-                                      <Column className="unmap-col-wrapper" lg={6}>
-                                        {pageUtil.t('mod-context-properties:form.authenticationType')}
-                                      </Column>
-                                      <Column className="unmap-col-wrapper" lg={6}>
-                                        <span>
-                                          {!page.model.apiConfigListData?.userName &&
-                                            !page.model.apiConfigListData?.password &&
-                                            page.model.apiConfigListData?.isInternalAuth?.code === 'FALSE'
-                                            ? 'None'
-                                            : page.model.apiConfigListData?.isInternalAuth?.code === 'TRUE'
-                                              ? 'Internally generated token'
-                                              : page.model.apiConfigListData?.userName && page.model.apiConfigListData?.password
-                                                ? 'User Name and Password'
-                                                : ''}
-                                        </span>
-                                      </Column>
-                                      {/* Verify host*/}
-                                      <Column className="unmap-col-wrapper" lg={6}>
-                                        {pageUtil.t('mod-context-properties:form.verifyHost')}
-                                      </Column>
-                                      <Column className="unmap-col-wrapper" lg={6}>
-                                        {page.model.apiConfigListData?.verifyHost?.code === 'TRUE' ? 'Yes' : 'No'}
-                                      </Column>
-                                    </Grid>
-                                  </>
-                                ) : (
-                                  <>
-                                    <Tabs
-                                      defaultSelectedIndex={0}
-                                      onChange={(e) => {
-                                        page.uiTabChange(e, CONTEXT_TYPES.API_CONFIG);
-                                      }}
-                                    >
-                                      <TabList>
-                                        <Tab>{pageUtil.t('mod-context-properties:tabs.apiConfigList')}</Tab>
-                                        <Tab>{pageUtil.t('mod-context-properties:tabs.createNew')}</Tab>
-                                      </TabList>
-                                      <TabPanels>
-                                        <TabPanel>
-                                          <div className="pem--table-header">
-                                            <span className="pem--table-title">{pageUtil.t('mod-context-properties:tabs.titleTwo')}</span>
-                                          </div>
-                                          <Shell.DataTable
-                                            className={'sfg--datatable--sponsorServer-list modal-height'}
-                                            data-testid="apiConfigList"
-                                            controller={page.datatable.apiConfigList}
-                                            data={page.model.apiConfigList.data}
-                                            config={pageConfig.apiConfigList}
-                                            loadingState={page.ui.tableLoadingState}
-                                            emptyState={page.datatable.apiConfigList.emptyState}
-                                            totalItems={page.model.apiConfigList.meta.totalItems}
-                                          ></Shell.DataTable>
-                                        </TabPanel>
-                                        <TabPanel>
-                                          <CreateApiConfiguration mode="CREATE" cdmPage={page} />
-                                        </TabPanel>
-                                      </TabPanels>
-                                    </Tabs>
-                                  </>
-                                )}
-                              </>
-                            )}
-                            {page.ui.selectedNode.value.type === CONTEXT_TYPES.LOGO_FILE && (
-                              <>
-                                {' '}
-                                {page.ui.selectedNode.value.value ? (
-                                  <>
-                                    <div className="unmap-header">
-                                      <span className="pem-unmap-table-title">{pageUtil.t('mod-context-properties:page.viewDocument')}</span>
-                                      <Button className="pem-unmap-button-wrapper" onClick={() => page.uiOnUnmapBtn(page.ui.selectedNode.value.type, page.ui.selectedNode)}>
-                                        Unmap
-                                      </Button>
-                                    </div>
-                                    <Grid className="unmap-wrapper">
-                                      {/* Name */}
-                                      <Column className="unmap-col-wrapper" lg={6}>
-                                        {pageUtil.t('mod-file:list.columns.documentName')}
-                                      </Column>
-                                      <Column className="unmap-col-wrapper" lg={6}>
-                                        {page.model.headerLogoListData?.documentName}
-                                      </Column>
-                                      {/* Owner */}
-                                      <Column className="unmap-col-wrapper" lg={6}>
-                                        {pageUtil.t('mod-file:list.columns.createdBy')}
-                                      </Column>
-                                      <Column className="unmap-col-wrapper" lg={6}>
-                                        {page.model.headerLogoListData?.createdBy}
-                                      </Column>
-                                      {/* Category */}
-                                      <Column className="unmap-col-wrapper" lg={6}>
-                                        {pageUtil.t('mod-file:list.columns.documentCategory')}
-                                      </Column>
-                                      <Column className="unmap-col-wrapper" lg={6}>
-                                        {page.model.headerLogoListData?.documentCategory?.display}
-                                      </Column>
-                                      {/* Type */}
-                                      <Column className="unmap-col-wrapper" lg={6}>
-                                        {pageUtil.t('mod-file:list.columns.contentType')}
-                                      </Column>
-                                      <Column className="unmap-col-wrapper" lg={6}>
-                                        {page.model.headerLogoListData?.contentType}
-                                      </Column>
-                                      {/* Encrypted */}
-                                      <Column className="unmap-col-wrapper" lg={6}>
-                                        {pageUtil.t('mod-file:list.columns.isEncrypted')}
-                                      </Column>
-                                      <Column className="unmap-col-wrapper" lg={6}>
-                                        {page.model.headerLogoListData?.isEncrypted?.code === 'TRUE' ? 'Yes' : 'No'}
-                                      </Column>
-                                      {/* Upload Date*/}
-                                      <Column className="unmap-col-wrapper" lg={6}>
-                                        {pageUtil.t('mod-file:list.columns.createTs')}
-                                      </Column>
-                                      <Column className="unmap-col-wrapper" lg={6}>
-                                        {page.model.headerLogoListData?.createTs
-                                          ? (() => {
-                                            const date = new Date(page.model.headerLogoListData.createTs);
-                                            const options = {
-                                              year: 'numeric',
-                                              month: 'short', // For abbreviated month (e.g., "Oct")
-                                              day: 'numeric',
-                                              hour: 'numeric',
-                                              minute: 'numeric',
-                                              second: 'numeric',
-                                              hour12: true
-                                            };
-                                            return date.toLocaleString('en-US', options); // Format the date
-                                          })()
-                                          : ''}
-                                      </Column>
-                                    </Grid>
-                                  </>
-                                ) : (
-                                  <>
-                                    <Tabs
-                                      defaultSelectedIndex={0}
-                                      onChange={(e) => {
-                                        page.uiTabChange(e, CONTEXT_MAPPING_TYPES.HEADER_LOGO);
-                                      }}
-                                    >
-                                      <TabList>
-                                        <Tab>{pageUtil.t('mod-context-properties:tabs.availableFiles')}</Tab>
-                                        <Tab>{pageUtil.t('mod-context-properties:tabs.uploadFiles')}</Tab>
-                                      </TabList>
-                                      <TabPanels>
-                                        <TabPanel>
-                                          <div className="pem--table-header">
-                                            <span className="pem--table-title">{pageUtil.t('mod-context-properties:tabs.titleOne')}</span>
-                                          </div>
-                                          <Shell.DataTable
-                                            className={'sfg--datatable--header-logo-list modal-height'}
-                                            data-testid="headerLogoList"
-                                            controller={page.datatable.headerLogoList}
-                                            data={page.model.headerLogoList.data}
-                                            config={pageConfig.headerLogoList}
-                                            loadingState={page.ui.tableLoadingState}
-                                            emptyState={page.datatable.headerLogoList.emptyState}
-                                            totalItems={page.model.headerLogoList.meta.totalItems}
-                                          ></Shell.DataTable>
-                                        </TabPanel>
-                                        <TabPanel>
-                                          <CreateUploadForm documentCategory="LOGO" cdmPage={page} />
-                                        </TabPanel>
-                                      </TabPanels>
-                                    </Tabs>
-                                  </>
-                                )}
-                              </>
-                            )}
-                            {page.ui.selectedNode.value.type === CONTEXT_TYPES.ACTIVITY_FILE && (
-                              <>
-                                {page.ui.selectedNode.value.value ? (
-                                  <>
-                                    <div className="unmap-header">
-                                      <span className="pem-unmap-table-title">{pageUtil.t('mod-context-properties:page.viewDocument')}</span>
-                                      <Button className="pem-unmap-button-wrapper" onClick={() => page.uiOnUnmapBtn(page.ui.selectedNode.value.type, page.ui.selectedNode)}>
-                                        Unmap
-                                      </Button>
-                                    </div>
-                                    <Grid className="unmap-wrapper">
-                                      {/* Name */}
-                                      <Column className="unmap-col-wrapper" lg={6}>
-                                        {pageUtil.t('mod-file:list.columns.documentName')}
-                                      </Column>
-                                      <Column className="unmap-col-wrapper" lg={6}>
-                                        {page.model.activityFileListData?.documentName}
-                                      </Column>
-                                      {/* Owner */}
-                                      <Column className="unmap-col-wrapper" lg={6}>
-                                        {pageUtil.t('mod-file:list.columns.createdBy')}
-                                      </Column>
-                                      <Column className="unmap-col-wrapper" lg={6}>
-                                        {page.model.activityFileListData?.createdBy}
-                                      </Column>
-                                      {/* Category */}
-                                      <Column className="unmap-col-wrapper" lg={6}>
-                                        {pageUtil.t('mod-file:list.columns.documentCategory')}
-                                      </Column>
-                                      <Column className="unmap-col-wrapper" lg={6}>
-                                        {page.model.activityFileListData?.documentCategory?.display}
-                                      </Column>
-                                      {/* Type */}
-                                      <Column className="unmap-col-wrapper" lg={6}>
-                                        {pageUtil.t('mod-file:list.columns.contentType')}
-                                      </Column>
-                                      <Column className="unmap-col-wrapper" lg={6}>
-                                        {page.model.activityFileListData?.contentType}
-                                      </Column>
-                                      {/* Encrypted */}
-                                      <Column className="unmap-col-wrapper" lg={6}>
-                                        {pageUtil.t('mod-file:list.columns.isEncrypted')}
-                                      </Column>
-                                      <Column className="unmap-col-wrapper" lg={6}>
-                                        {page.model.activityFileListData?.isEncrypted?.code === 'TRUE' ? 'Yes' : 'No'}
-                                      </Column>
-                                      {/* Upload Date*/}
-                                      <Column className="unmap-col-wrapper" lg={6}>
-                                        {pageUtil.t('mod-file:list.columns.createTs')}
-                                      </Column>
-                                      <Column className="unmap-col-wrapper" lg={6}>
-                                        {page.model.activityFileListData?.createTs
-                                          ? (() => {
-                                            const date = new Date(page.model.activityFileListData.createTs);
-                                            const options = {
-                                              year: 'numeric',
-                                              month: 'short', // For abbreviated month (e.g., "Oct")
-                                              day: 'numeric',
-                                              hour: 'numeric',
-                                              minute: 'numeric',
-                                              second: 'numeric',
-                                              hour12: true
-                                            };
-                                            return date.toLocaleString('en-US', options); // Format the date
-                                          })()
-                                          : ''}
-                                      </Column>
-                                    </Grid>
-                                  </>
-                                ) : (
-                                  <>
-                                    <Tabs
-                                      defaultSelectedIndex={0}
-                                      onChange={(e) => {
-                                        page.uiTabChange(e, CONTEXT_MAPPING_TYPES.ACTIVITY_FILE);
-                                      }}
-                                    >
-                                      <TabList>
-                                        <Tab>{pageUtil.t('mod-context-properties:tabs.availableFiles')}</Tab>
-                                        <Tab>{pageUtil.t('mod-context-properties:tabs.uploadFiles')}</Tab>
-                                      </TabList>
-                                      <TabPanels>
-                                        <TabPanel>
-                                          <div className="pem--table-header">
-                                            <span className="pem--table-title">{pageUtil.t('mod-context-properties:tabs.titleOne')}</span>
-                                          </div>
-                                          <Shell.DataTable
-                                            className={'sfg--datatable--activity-file-list modal-height'}
-                                            data-testid="activityFileList"
-                                            controller={page.datatable.activityFileList}
-                                            data={page.model.activityFileList.data}
-                                            config={pageConfig.activityFileList}
-                                            loadingState={page.ui.tableLoadingState}
-                                            emptyState={page.datatable.activityFileList.emptyState}
-                                            totalItems={page.model.activityFileList.meta.totalItems}
-                                          ></Shell.DataTable>
-                                        </TabPanel>
-                                        <TabPanel>
-                                          <CreateUploadForm documentCategory="ACTIVITY" cdmPage={page} />
-                                        </TabPanel>
-                                      </TabPanels>
-                                    </Tabs>
-                                  </>
-                                )}
-                              </>
-                            )}
-                          </>
-                        )}
-                      </CDS.Form>
-                    </Column>
-                  </div>{' '}
-                </Panel>
-                {/* </Grid> */}
-              </PanelGroup>
-            </>
-          )}
+                    </CDS.Form>
+                  </Column>
+                </div>{' '}
+              </Panel>
+              {/* </Grid> */}
+            </PanelGroup>
+          </>
         </Shell.PageBody>
         <Shell.PageActions actions={pageConfig.actionsConfig.pageActions}></Shell.PageActions>
       </Shell.Page>

@@ -26,8 +26,11 @@ export default function APINodeDefinitionForm({
   const [query, setQuery] = useState(INITIAL_QUERY);
   const [openCancelDialog, setOpenCancelDialog] = useState(false);
   const [errorMessage, setErrorMessage] = useState(selectedNode?.data?.exitValidationMessage);
-  const [responseDisable, setResponseDisable] = useState(false)
+  const [responseDisable, setResponseDisable] = useState(readOnly ? readOnly : false)
   const editDialog = useTaskStore((state) => state.editDialogNodePros);
+
+  const store = useTaskStore();
+  let storeData = useTaskStore((state) => state.tasks);
 
   // Initialize form states
   const [formState, setFormState] = useState({
@@ -79,8 +82,8 @@ export default function APINodeDefinitionForm({
       },
       propertyForm: {
         apiConfig: selectedNode.data?.api?.apiConfiguration || '',
-        hostPrefix: selectedNode.data?.api?.hostPrefix,
-        url: selectedNode.data?.api?.url.includes('http://') || selectedNode.data?.api?.url.includes('https://') ? selectedNode.data?.api?.url.split('/', 4)[3] : selectedNode.data?.api?.url.split('/').slice(0, 2)[1] || '',
+        hostPrefix: selectedNode.data?.api?.hostPrefix === undefined ? true : selectedNode.data?.api?.hostPrefix,
+        url: selectedNode.data?.api?.url ? (selectedNode.data?.api?.url.includes('http://') || selectedNode.data?.api?.url.includes('https://') ? selectedNode.data?.api?.url.split('/').length >= 4 ? selectedNode.data?.api?.url.split('/').slice(3).join('/') : '' : selectedNode.data?.api?.url.split('/').length > 1 ? selectedNode.data?.api?.url.split('/').slice(1).join('/') : '') : '',
         requestMethod: selectedNode.data?.api?.method || '',
         inputOutputFormats: selectedNode.data?.api?.requestContentType || '',
         escapeRequest: selectedNode.data?.api?.escapeRequest || false,
@@ -190,8 +193,45 @@ export default function APINodeDefinitionForm({
     } else if (name === "hostPrefix" && !checked) {
       setApiConfigUrl('')
     }
+
     //  Request Method 
-    if (name === "requestMethod" && (e.target.selectedOptions[0].value === "GET" || e.target.selectedOptions[0].value === "DELETE")) {
+    if (name === "requestMethod" && e.target.selectedOptions[0].value !== "POST" && e.target.selectedOptions[0].value !== "PUT") {
+      setResponseDisable(true); // Disable response-related actions
+      setFile();
+      setFileKey('');
+      setFileMap('');
+      setFormState((prev) => ({
+        ...prev,
+        propertyForm: {
+          ...prev.propertyForm,
+          request: "", // Clear the request field
+        }
+      }));
+    } else if (name === "requestMethod" && e.target.selectedOptions[0].value !== "GET" && e.target.selectedOptions[0].value !== "DELTE") {
+      setResponseDisable(false); // Re-enable response if the condition is not met
+    }
+
+    //inputOutputFormats
+    if (
+      name === "inputOutputFormats" &&
+      e.target.selectedOptions[0].value === "application/json" &&
+      (formState.propertyForm.requestMethod !== "GET" && formState.propertyForm.requestMethod !== "DELETE")
+    ) {
+      setResponseDisable(false);
+      setFormState((prev) => ({
+        ...prev,
+        propertyForm: {
+          ...prev.propertyForm,
+          request: "{}",
+          sampleResponse: "{}",
+          response: "{}"
+        }
+      }));
+    } else if (
+      name === "inputOutputFormats" &&
+      e.target.selectedOptions[0].value === "application/json" &&
+      (formState.propertyForm.requestMethod !== "POST" && formState.propertyForm.requestMethod !== "PUT")
+    ) {
       setResponseDisable(true);
       setFile();
       setFileKey('');
@@ -201,19 +241,6 @@ export default function APINodeDefinitionForm({
         propertyForm: {
           ...prev.propertyForm,
           "request": "",
-        }
-      }));
-    } else {
-      setResponseDisable(false);
-    }
-
-    //inputOutputFormats
-    if (name === "inputOutputFormats" && e.target.selectedOptions[0].value === "application/json") {
-      setFormState((prev) => ({
-        ...prev,
-        propertyForm: {
-          ...prev.propertyForm,
-          "request": "{}",
           "sampleResponse": "{}",
           "response": "{}"
         }
@@ -268,6 +295,8 @@ export default function APINodeDefinitionForm({
     const propertyErrors = {};
     const regex = /[&<>."\'{}\\]/;
     const regexDes = /[<>]/;
+    const regexUrl = /^(?!.*\/\/)(?!.*\\).*$/;
+
     // Validate Define Form
     if (!formState.defineForm.name || formState.defineForm.name?.trim().length === 0) {
       defineErrors.name = 'Name is required.';
@@ -291,6 +320,10 @@ export default function APINodeDefinitionForm({
     }
     if (!formState.propertyForm.url) {
       propertyErrors.url = 'URL is required';
+    }
+
+    if (!regexUrl.test(formState.propertyForm.url)) {
+      propertyErrors.url = 'URL  should not contain /';
     }
     if (!formState.propertyForm.requestMethod) {
       propertyErrors.requestMethod = 'Request Method is required';
@@ -489,60 +522,66 @@ export default function APINodeDefinitionForm({
   };
 
   const OpenMappingDialog = (fieldName, index) => {
+    let contextData = activityDefinitionData.definition?.contextData ? JSON.parse(activityDefinitionData.definition.contextData) : activityDefinitionData?.version?.contextData ? JSON.parse(activityDefinitionData?.version?.contextData) : {}
 
-    if (activityDefinitionData?.definition?.contextData === undefined) {
-      return;
-    }
     if (fieldName === "apiConfig") {
-      try {
-        pageUtil
-          .showPageModal('CONTEXT_DATA_MAPPING.APICONFIG', {
-            data: JSON.parse(activityDefinitionData.definition?.contextData ? activityDefinitionData.definition.contextData : activityDefinitionData?.version?.contextData)
-          })
-          .then((modalData) => {
-            if (modalData.actionType === 'submit') {
-              const newData = modalData.data.data;
-              setFormState((prev) => ({
-                ...prev,
-                propertyForm: {
-                  ...prev.propertyForm,
-                  [fieldName]: newData
+      if (Object.keys(contextData).length > 0) {
+        try {
+          pageUtil
+            .showPageModal('CONTEXT_DATA_MAPPING.APICONFIG', {
+              data: contextData
+            })
+            .then((modalData) => {
+              if (modalData.actionType === 'submit') {
+                const newData = modalData.data.data;
+                setFormState((prev) => ({
+                  ...prev,
+                  propertyForm: {
+                    ...prev.propertyForm,
+                    [fieldName]: newData
+                  }
+                }));
+                // Validate the specific field and update errors
+                let error = '';
+                if (fieldName === 'apiConfig' && !newData) {
+                  error = 'API Configuration is required';
                 }
-              }));
-              // Validate the specific field and update errors
-              let error = '';
-              if (fieldName === 'apiConfig' && !newData) {
-                error = 'API Configuration is required';
+                // Update the error state for the specific field
+                setErrors((prevErrors) => ({
+                  ...prevErrors,
+                  propertyForm: {
+                    ...prevErrors.propertyForm,
+                    [fieldName]: error
+                  }
+                }));
               }
-              // Update the error state for the specific field
-              setErrors((prevErrors) => ({
-                ...prevErrors,
-                propertyForm: {
-                  ...prevErrors.propertyForm,
-                  [fieldName]: error
-                }
-              }));
-            }
-          });
-      } catch (e) {
-        console.log('Error-', e);
+            });
+        } catch (e) {
+          console.log('Error-', e);
+        }
+      } else {
+        return;
       }
     }
     else if (fieldName === "file") {
-      try {
-        pageUtil
-          .showPageModal('CONTEXT_DATA_MAPPING.ACTIVITYFILE', {
-            data: JSON.parse(activityDefinitionData.definition?.contextData ? activityDefinitionData.definition.contextData : activityDefinitionData?.version?.contextData)
-          })
-          .then((modalData) => {
-            if (modalData.actionType === 'submit') {
-              setFileMap(modalData.data.data);
-              setFile();
-              setFileKey(modalData.data.data)
-            }
-          });
-      } catch (e) {
-        console.log('Error-', e);
+      if (Object.keys(contextData).length > 0) {
+        try {
+          pageUtil
+            .showPageModal('CONTEXT_DATA_MAPPING.ACTIVITYFILE', {
+              data: JSON.parse(activityDefinitionData.definition?.contextData ? activityDefinitionData.definition.contextData : activityDefinitionData?.version?.contextData)
+            })
+            .then((modalData) => {
+              if (modalData.actionType === 'submit') {
+                setFileMap(modalData.data.data);
+                setFile();
+                setFileKey(modalData.data.data)
+              }
+            });
+        } catch (e) {
+          console.log('Error-', e);
+        }
+      } else {
+        return;
       }
     } else if (fieldName === "request") {
       if (formState.propertyForm.inputOutputFormats === "application/json") {
@@ -550,8 +589,8 @@ export default function APINodeDefinitionForm({
           try {
             // Attempt to parse the request and context data
             const requestData = JSON.parse(formState.propertyForm.request);
-            const contextData = JSON.parse(activityDefinitionData?.definition?.contextData);
-
+            const contextDataMapping = contextData;
+            const nodeData = (storeData?.nodes)
             // Check if the parsed request is not an empty object
             if (Object.keys(requestData).length === 0) {
               setErrors({
@@ -565,7 +604,8 @@ export default function APINodeDefinitionForm({
             pageUtil
               .showPageModal('CONTEXT_DATA_MAPPING.MAPPING', {
                 data: requestData,
-                contextData: contextData
+                contextData: contextDataMapping,
+                nodeData: nodeData
               })
               .then((modalData) => {
                 const newData = JSON.stringify(modalData.data.data);
@@ -603,7 +643,8 @@ export default function APINodeDefinitionForm({
       try {
         pageUtil
           .showPageModal('CONTEXT_DATA_MAPPING.SELECT', {
-            data: JSON.parse(activityDefinitionData.definition?.contextData ? activityDefinitionData.definition.contextData : activityDefinitionData?.version?.contextData)
+            data: contextData,
+            nodeData: (storeData?.nodes)
           })
           .then((modalData) => {
             if (modalData.actionType === 'submit') {

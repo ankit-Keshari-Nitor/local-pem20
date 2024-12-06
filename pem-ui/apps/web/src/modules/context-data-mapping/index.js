@@ -42,7 +42,7 @@ const modals = [
     size: 'md',
     element: (
       <Shell.PageContainer mode="MODAL_PAGE" dataLoaderConfig={CDM.DataLoaderConfig}>
-        <CDM.ModalPage mode="SELECT" context=""></CDM.ModalPage>
+        <CDM.ModalPageRequest mode="SELECT" context=""></CDM.ModalPageRequest>
       </Shell.PageContainer>
     )
   },

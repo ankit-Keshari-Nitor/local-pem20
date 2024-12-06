@@ -4,6 +4,7 @@ import { TextInput, Button, DatePicker, DatePickerInput, Select, SelectItem } fr
 import { VectorIcon } from '../../../icons';
 import { useState } from 'react';
 import Shell from '@b2bi/shell';
+import useTaskStore from '../../../store';
 
 const CarbonOperatorSelector = ({
   className,
@@ -29,8 +30,6 @@ const CarbonOperatorSelector = ({
 }) => {
   const pageUtil = Shell.PageUtil();
   const [error, setError] = useState('');
-  const [isOperandSelector, setIsOperandSelector] = useState(false);
-
   const { valueAsArray, multiValueHandler } = useValueEditor({
     handleOnChange,
     inputType: 'text',
@@ -41,19 +40,19 @@ const CarbonOperatorSelector = ({
     parseNumbers: 'false',
     values: []
   });
+  const store = useTaskStore();
+  let storeData = useTaskStore((state) => state.tasks);
+
 
   const operandSelector = (selectedValue) => {
-    setIsOperandSelector(true);
     multiValueHandler(selectedValue, 0);
   };
 
   const handleChange = (value) => {
-    setIsOperandSelector(false);
     multiValueHandler(value, 0);
   };
 
   let leftOperandInput = null;
-  // eslint-disable-next-line default-case
   switch (_field) {
     case 'string':
       leftOperandInput = (
@@ -101,38 +100,22 @@ const CarbonOperatorSelector = ({
     case 'boolean':
       leftOperandInput = (
         <>
-          {isOperandSelector ? (
-            <div style={{ marginTop: '1rem' }}>
-              <TextInput
-                id="txt-input"
-                labelText=""
-                value={valueAsArray.length > 1 ? valueAsArray[0] : ''}
-                title={title}
-                className={className}
-                disabled={disabled}
-                placeholder={'Left Operand'}
-                onChange={handleChange}
-                {...extraProps}
-              />
-            </div>
-          ) : (
-            <div style={{ marginTop: '0rem' }}>
-              <Select
-                id="txt-input"
-                labelText=""
-                className={className}
-                title={title}
-                value={valueAsArray[0]}
-                disabled={disabled}
-                onChange={(e) => handleChange(e.target.value)}
-                {...extraProps}
-              >
-                <SelectItem value="" text="Select" />
-                <SelectItem value="true" text="True" />
-                <SelectItem value="false" text="False" />
-              </Select>
-            </div>
-          )}
+          <div style={{ marginTop: '0rem' }}>
+            <Select
+              id="txt-input"
+              labelText=""
+              className={className}
+              title={title}
+              value={valueAsArray[0]}
+              disabled={disabled}
+              onChange={(e) => handleChange(e.target.value)}
+              {...extraProps}
+            >
+              <SelectItem value="" text="Select" />
+              <SelectItem value="true" text="True" />
+              <SelectItem value="false" text="False" />
+            </Select>
+          </div>
         </>
       );
       break;
@@ -140,23 +123,9 @@ const CarbonOperatorSelector = ({
       leftOperandInput = (
         <>
           <div style={{ marginTop: '1rem' }}>
-            {isOperandSelector ? (
-              <TextInput
-                id="txt-input"
-                labelText=""
-                value={valueAsArray.length > 1 ? valueAsArray[0] : ''}
-                title={title}
-                className={className}
-                disabled={disabled}
-                placeholder={'Left Operand'}
-                onChange={handleChange}
-                {...extraProps}
-              />
-            ) : (
-              <DatePicker datePickerType="single" className={className} value={valueAsArray[0]} onChange={(e) => handleChange(e)} disabled={disabled}>
-                <DatePickerInput id="txt-input" labelText="" placeholder="mm/dd/yyyy" />
-              </DatePicker>
-            )}
+            <DatePicker datePickerType="single" className={className} value={valueAsArray[0]} onChange={(e) => handleChange(e)} disabled={disabled}>
+              <DatePickerInput id="txt-input" labelText="" placeholder="mm/dd/yyyy" />
+            </DatePicker>
           </div>
         </>
       );
@@ -167,7 +136,8 @@ const CarbonOperatorSelector = ({
     try {
       pageUtil
         .showPageModal('CONTEXT_DATA_MAPPING.SELECT', {
-          data: JSON.parse(_context.definition?.contextData ? _context.definition.contextData : _context?.version?.contextData)
+          data: _context.definition?.contextData ? JSON.parse(_context.definition.contextData) : _context?.version?.contextData ? JSON.parse(_context?.version?.contextData) : {},
+          nodeData: (storeData?.nodes)
         })
         .then((modalData) => {
           if (modalData.actionType === 'submit') {

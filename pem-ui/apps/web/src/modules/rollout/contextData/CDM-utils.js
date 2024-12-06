@@ -26,21 +26,21 @@ const generateTreeData = (definition, path = '$') => {
         }))
       };
     } else if (typeof value === 'object' && value !== null) {
-      if (value.pType) {
+      if (value.type) {
         return {
           id: currentPath,
-          label: `${key} [${value.pType === 'TEXT' ? value.pValue : value.pType + ' : ' + (value.pValue || '')}]`,
-          type: value.pType,
+          label: `${key} [${value.type === 'TEXT' ? value.value : value.type + ' : ' + (value.value || '')}]`,
+          type: value.type,
           value: {
-            type: value.pType,
+            type: value.type,
             name: key,
-            value: value.pValue || ''
+            value: value.value || ''
           }
         };
       } else {
         return {
           id: currentPath,
-          label: `${key} [${value.pValue || ''}]`,
+          label: `${key} [${value.value || ''}]`,
           type: 'TEXT',
           value: {
             type: 'TEXT',

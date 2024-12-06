@@ -378,7 +378,7 @@ export const NODE_TYPES = {
     ],
     nodeIcon: <XsltBlockIcon />,
     category: CATEGORYS.DIALOG,
-    active: false
+    active: true
   },
   [NODE_TYPE.DIALOG_GATEWAY]: {
     type: NODE_TYPE.DIALOG_GATEWAY,

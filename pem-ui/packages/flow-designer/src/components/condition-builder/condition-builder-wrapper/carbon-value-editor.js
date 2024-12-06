@@ -4,6 +4,7 @@ import { ValueSelector, getFirstOption, standardClassnames, useValueEditor } fro
 import { VectorIcon } from '../../../icons';
 import { useState } from 'react';
 import Shell from '@b2bi/shell';
+import useTaskStore from '../../../store';
 
 const CarbonValueEditor = (allProps) => {
   const {
@@ -40,6 +41,9 @@ const CarbonValueEditor = (allProps) => {
   const inputTypeCoerced = ['in', 'notIn'].includes(operator[1]) ? 'text' : inputType || 'text';
   let rightOperandInput = null;
 
+  const store = useTaskStore();
+  let storeData = useTaskStore((state) => state.tasks);
+
   const { valueAsArray, multiValueHandler } = useValueEditor({
     handleOnChange,
     inputType,
@@ -51,6 +55,8 @@ const CarbonValueEditor = (allProps) => {
     values
   });
 
+
+
   if (operator[1] === 'null' || operator[1] === 'notNull') {
     return null;
   }
@@ -60,7 +66,6 @@ const CarbonValueEditor = (allProps) => {
     handleOnChange(selectedValue);
   };
 
- 
   if ((operator[1] === 'between' || operator[1] === 'notBetween') && (type === 'select' || type === 'text')) {
     const editors = ['from', 'to'].map((key, i) => {
       if (type === 'text') {
@@ -97,9 +102,9 @@ const CarbonValueEditor = (allProps) => {
       </span>
     );
   }
-  
+
   // eslint-disable-next-line default-case
-  switch (allProps?.field) {
+ switch (allProps?.field) {
     case 'string':
       rightOperandInput = (
         <>
@@ -241,11 +246,13 @@ const CarbonValueEditor = (allProps) => {
       break;
   }
 
+
   const OpenMappingDialog = () => {
     try {
       pageUtil
         .showPageModal('CONTEXT_DATA_MAPPING.SELECT', {
-          data: JSON.parse(_context.definition?.contextData ? _context.definition.contextData : _context?.version?.contextData)
+          data: _context.definition?.contextData ? JSON.parse(_context.definition.contextData) : _context?.version?.contextData ? JSON.parse(_context?.version?.contextData) : {},
+          nodeData: storeData?.nodes
         })
         .then((modalData) => {
           if (modalData.actionType === 'submit') {

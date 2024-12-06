@@ -3,7 +3,7 @@ import Shell from '@b2bi/shell';
 import '@b2bi/styles/pages/list-page.scss';
 import { Column } from '@carbon/react';
 import CDMTreeView from './cdm-tree-view';
-import { transformDataToTreeBasedOnType, generateContextDataMapping } from './cdm-utils';
+import { transformDataToTreeBasedOnType, generateContextDataMapping, transformDataToTree } from './cdm-utils';
 
 import './style.scss';
 
@@ -27,8 +27,8 @@ const ContextDataModalRequest = ({ mode, context }) => {
           this._processActivity();
         },
         _processActivity: function () {
-          const contextDataMapping = generateContextDataMapping(modalConfig.data.data);
-          const transformedData = transformDataToTreeBasedOnType(contextDataMapping, context);
+          const contextDataMapping = generateContextDataMapping(modalConfig.data.data, modalConfig.data?.nodeData);
+          const transformedData = context === "" ? transformDataToTree(contextDataMapping) : transformDataToTreeBasedOnType(contextDataMapping, context);
           this.setModel('data', transformedData);
           this.setModel('originalData', { items: modalConfig?.data?.data });
         },
@@ -36,9 +36,10 @@ const ContextDataModalRequest = ({ mode, context }) => {
           modalConfig.onAction('submit', { data: '${' + this.ui.selectedJPath + '}' });
         },
         uiOnSelectJPath: function (event, selectedNode) {
-          if (selectedNode === 'CATEGORY') {
+          if (selectedNode === 'CATEGORY' || selectedNode.value.type === "TASK_NODE" || selectedNode.value.type === "DIALOG_NODE") {
             this.setUI('selectedJPath', '');
-          } if (selectedNode.value === "" || selectedNode.value === undefined) {
+          }
+          if (selectedNode.value === "" || selectedNode.value === undefined || selectedNode.value.type === "" || selectedNode.value.type === "TASK_NODE" || selectedNode.value.type === "DIALOG_NODE") {
             this.setUI('selectedJPath', '');
           } else {
             this.setUI('selectedJPath', selectedNode.id);
@@ -102,8 +103,8 @@ const ContextDataModalRequest = ({ mode, context }) => {
           title={mode === 'CONTEXT_DATA' ? pageUtil.t('mod-context-properties:title_ContextData') : pageUtil.t('mod-context-properties:title')}
           buttonOnClick={page.uiOnRequestClose}
         />
-        <Shell.PageBody className={context !== 'PROPERTY' ? 'treeview-wrapper' : ''}>
-          <Column lg={context === 'PROPERTY' ? 6 : 16} md={context === 'PROPERTY' ? 6 : 16}>
+        <Shell.PageBody className='treeview-wrapper'>
+          <Column lg={16} md={16}>
             <CDMTreeView data={page.model.data} onSelect={page.uiOnSelectJPath} selected={page.ui.selectedNodes} />
           </Column>
         </Shell.PageBody>

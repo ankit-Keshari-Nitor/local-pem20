@@ -39,7 +39,7 @@ const ContextDataModal = ({ mode }) => {
           this.setModel('originalData', modalConfig.data.data);
         },
         _process: function () {
-          const contextDataMapping = generateContextDataMapping(modalConfig.data.contextData);
+          const contextDataMapping = generateContextDataMapping(modalConfig.data.contextData, modalConfig.data.nodeData);
           const transformedData = transformDataToTree(contextDataMapping);
           this.setModel('mappingdata', transformedData);
           this.setModel('originalMappingData', { items: modalConfig?.data?.contextData });
@@ -76,11 +76,19 @@ const ContextDataModal = ({ mode }) => {
           modalConfig.onAction('submit', { data: this.model.originalData });
         },
         uiOnSelectJPath: function (event, selectedNode) {
-          this.setUI('selectedJPath', selectedNode.id);
-          this.uiMapValue(this.ui.selectedNode.value.name, selectedNode.id);
-          const transformedData = generateMappingTreeData(this.model.originalData);
-          this.setModel('data', transformedData);
-          this.setModel('originalData', this.model.originalData);
+          if (selectedNode === 'CATEGORY' || selectedNode.value.type === "TASK_NODE" || selectedNode.value.type === "DIALOG_NODE") {
+            this.setUI('selectedJPath', '');
+          }
+          if (selectedNode.value === "" || selectedNode.value === undefined || selectedNode.value.type === "" || selectedNode.value.type === "TASK_NODE" || selectedNode.value.type === "DIALOG_NODE") {
+            this.setUI('selectedJPath', '');
+          } else {
+            this.setUI('selectedJPath', selectedNode.id);
+            this.uiMapValue(this.ui.selectedNode.value.name, selectedNode.id);
+            const transformedData = generateMappingTreeData(this.model.originalData);
+            this.setModel('data', transformedData);
+            this.setModel('originalData', this.model.originalData);
+          }
+
         },
         uiOnSelectNode: function (event, selectedNode) {
           this.setUI('selectedNode', selectedNode);

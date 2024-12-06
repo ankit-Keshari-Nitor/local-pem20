@@ -1,122 +1,80 @@
 import * as React from 'react';
-import { Checkbox, TextArea, TextInput, Toggle, Button, DatePicker, DatePickerInput, Select, SelectItem } from '@carbon/react';
-import { ValueSelector, getFirstOption, standardClassnames, useValueEditor } from 'react-querybuilder';
+import { toOptions, useValueEditor } from 'react-querybuilder';
+import { TextInput, Button, DatePicker, DatePickerInput, Select, SelectItem } from '@carbon/react';
 import { VectorIcon } from '../../../icons';
 import { useState } from 'react';
 import Shell from '@b2bi/shell';
 
-const CarbonValueEditor = (allProps) => {
-  const {
-    fieldData,
-    operator,
-    value,
-    handleOnChange,
-    title,
-    className,
-    type,
-    inputType,
-    values = [],
-    listsAsArrays,
-    parseNumbers,
-    separator,
-    valueSource: _vs,
-    testID,
-    disabled,
-    selectorComponent: SelectorComponent = allProps.schema.controls.valueSelector,
-    extraProps,
-    context: _context,
-    ...props
-  } = allProps;
-
+const CarbonOperatorSelector = ({
+  className,
+  handleOnChange,
+  options,
+  value,
+  title,
+  disabled,
+  testID: _testID,
+  rule: _rule,
+  rules: _rules,
+  level: _level,
+  path: _path,
+  context: _context,
+  validation: _validation,
+  operator: _operator,
+  field: _field,
+  fieldData: _fieldData,
+  multiple: _multiple,
+  listsAsArrays: _listsAsArrays,
+  schema: _schema,
+  ...extraProps
+}) => {
   const pageUtil = Shell.PageUtil();
   const [error, setError] = useState('');
   const [isOperandSelector, setIsOperandSelector] = useState(false);
 
-  React.useEffect(()=> {
-    setIsOperandSelector(false)
- }, [allProps?.field])
-
-  const placeHolderText = fieldData?.placeholder ?? '';
-  const inputTypeCoerced = ['in', 'notIn'].includes(operator[1]) ? 'text' : inputType || 'text';
-  let rightOperandInput = null;
-
   const { valueAsArray, multiValueHandler } = useValueEditor({
     handleOnChange,
-    inputType,
-    operator,
-    value,
-    type,
-    listsAsArrays,
-    parseNumbers,
-    values
+    inputType: 'text',
+    operator: 'between',
+    value: Array.isArray(value) ? value : ['', value],
+    type: 'text',
+    listsAsArrays: 'false',
+    parseNumbers: 'false',
+    values: []
   });
-
-  if (operator[1] === 'null' || operator[1] === 'notNull') {
-    return null;
-  }
 
   const operandSelector = (selectedValue) => {
     setIsOperandSelector(true);
-    handleOnChange(selectedValue);
+    multiValueHandler(selectedValue, 0);
   };
 
- 
-  if ((operator[1] === 'between' || operator[1] === 'notBetween') && (type === 'select' || type === 'text')) {
-    const editors = ['from', 'to'].map((key, i) => {
-      if (type === 'text') {
-        return (
-          <TextInput
-            key={key}
-            type={inputTypeCoerced}
-            value={valueAsArray[i] ?? ''}
-            className={standardClassnames.valueListItem}
-            placeholder={placeHolderText}
-            onChange={(e) => multiValueHandler(e.target.value, i)}
-            {...extraProps}
-          />
-        );
-      }
-      return (
-        <SelectorComponent
-          {...props}
-          key={key}
-          className={standardClassnames.valueListItem}
-          handleOnChange={(v) => multiValueHandler(v, i)}
-          disabled={disabled}
-          value={valueAsArray[i] ?? getFirstOption(values)}
-          options={values}
-          listsAsArrays={listsAsArrays}
-        />
-      );
-    });
-    return (
-      <span data-testid={testID} className={className} title={title}>
-        {editors[0]}
-        {separator}
-        {editors[1]}
-      </span>
-    );
-  }
+  const handleChange = (value) => {
+    setIsOperandSelector(false);
+    multiValueHandler(value, 0);
+  };
   
+  React.useEffect(()=> {
+     setIsOperandSelector(false)
+  }, [_field])
+
+  let leftOperandInput = null;
   // eslint-disable-next-line default-case
-  switch (allProps?.field) {
+  switch (_field) {
     case 'string':
-      rightOperandInput = (
+      leftOperandInput = (
         <>
           <div style={{ marginTop: '1rem' }}>
             <TextInput
-              id="operand-input"
+              id="txt-input"
               labelText=""
-              type={inputTypeCoerced}
-              value={value}
+              value={valueAsArray.length > 1 ? valueAsArray[0] : ''}
               title={title}
               className={className}
               disabled={disabled}
-              placeholder={'Right Operand'}
+              placeholder={'Left Operand'}
               onChange={(e) => {
                 let myString = e.target.value;
                 myString = myString.replace(/["']/g, '');
-                handleOnChange("'" + myString + "'");
+                handleChange("'" + myString + "'");
               }}
               {...extraProps}
             />
@@ -124,21 +82,20 @@ const CarbonValueEditor = (allProps) => {
         </>
       );
       break;
-    case 'number':
     case 'numeric':
-      rightOperandInput = (
+    case 'number':
+      leftOperandInput = (
         <>
           <div style={{ marginTop: '1rem' }}>
             <TextInput
-              id="operand-input"
+              id="txt-input"
               labelText=""
-              type={inputTypeCoerced}
-              value={value}
+              value={valueAsArray.length > 1 ? valueAsArray[0] : ''}
               title={title}
               className={className}
               disabled={disabled}
-              placeholder={'Right Operand'}
-              onChange={(e) => handleOnChange(e.target.value)}
+              placeholder={'Left Operand'}
+              onChange={(e) => handleChange(e.target.value)}
               {...extraProps}
             />
           </div>
@@ -146,33 +103,32 @@ const CarbonValueEditor = (allProps) => {
       );
       break;
     case 'boolean':
-      rightOperandInput = (
+      leftOperandInput = (
         <>
           {isOperandSelector ? (
             <div style={{ marginTop: '1rem' }}>
               <TextInput
-                id="operand-input"
+                id="txt-input"
                 labelText=""
-                type={inputTypeCoerced}
-                value={value}
+                value={valueAsArray.length > 1 ? valueAsArray[0] : ''}
                 title={title}
                 className={className}
                 disabled={disabled}
-                placeholder={'Right Operand'}
-                onChange={() => setIsOperandSelector(false)}
+                placeholder={'Left Operand'}
+                onChange={handleChange}
                 {...extraProps}
               />
             </div>
           ) : (
-            <div style={{ marginTop: '-0.5rem' }}>
+            <div style={{ marginTop: '0rem' }}>
               <Select
-                id="operand-input"
+                id="txt-input"
                 labelText=""
                 className={className}
                 title={title}
-                value={value}
+                value={valueAsArray[0]}
                 disabled={disabled}
-                onChange={(e) => handleOnChange(e.target.value)}
+                onChange={(e) => handleChange(e.target.value)}
                 {...extraProps}
               >
                 <SelectItem value="" text="Select" />
@@ -185,59 +141,29 @@ const CarbonValueEditor = (allProps) => {
       );
       break;
     case 'date':
-      rightOperandInput = (
+      leftOperandInput = (
         <>
           <div style={{ marginTop: '1rem' }}>
             {isOperandSelector ? (
               <TextInput
-                id="operand-input"
+                id="txt-input"
                 labelText=""
-                type={inputTypeCoerced}
-                value={value}
+                value={valueAsArray.length > 1 ? valueAsArray[0] : ''}
                 title={title}
                 className={className}
                 disabled={disabled}
-                placeholder={'Right Operand'}
-                onChange={() => setIsOperandSelector(false)}
+                placeholder={'Left Operand'}
+                onChange={handleChange}
                 {...extraProps}
               />
             ) : (
-              <DatePicker datePickerType="single" className={className} value={value} onChange={(e) => handleOnChange(e)} disabled={disabled}>
-                <DatePickerInput id="operand-input" labelText="" placeholder="mm/dd/yyyy" />
+              <DatePicker datePickerType="single" className={className} value={valueAsArray[0]} onChange={(e) => handleChange(e)} disabled={disabled}>
+                <DatePickerInput id="txt-input" labelText="" placeholder="mm/dd/yyyy" />
               </DatePicker>
             )}
           </div>
         </>
       );
-      break;
-    case 'select':
-      rightOperandInput = <SelectorComponent {...props} className={className} title={title} value={value} disabled={disabled} handleOnChange={handleOnChange} options={values} />;
-      break;
-    case 'multiselect':
-      rightOperandInput = (
-        <ValueSelector
-          {...props}
-          className={className}
-          title={title}
-          value={value}
-          disabled={disabled}
-          handleOnChange={handleOnChange}
-          options={values}
-          multiple
-          listsAsArrays={listsAsArrays}
-        />
-      );
-      break;
-    case 'textarea':
-      rightOperandInput = (
-        <TextArea value={value} title={title} className={className} placeholder={placeHolderText} onChange={(e) => handleOnChange(e.target.value)} {...extraProps} />
-      );
-      break;
-    case 'switch':
-      rightOperandInput = <Toggle className={className} isChecked={!!value} title={title} onChange={(e) => handleOnChange(e.target.checked)} {...extraProps} />;
-      break;
-    case 'checkbox':
-      rightOperandInput = <Checkbox className={className} title={title} onChange={(e) => handleOnChange(e.target.checked)} isChecked={!!value} {...extraProps} />;
       break;
   }
 
@@ -258,12 +184,25 @@ const CarbonValueEditor = (allProps) => {
     }
   };
 
-  // Right Operand
   return (
     <>
-      {rightOperandInput}
+      {leftOperandInput}
       <Button size="md" className="opt-btn" kind="secondary" renderIcon={VectorIcon} onClick={OpenMappingDialog} style={{ marginTop: '1rem' }}></Button>
+      {/* Relational Operator Dropdown */}
+      <Select
+        id="selector-label"
+        className={className}
+        title={title}
+        labelText=""
+        value={valueAsArray.length > 1 ? valueAsArray[1] : valueAsArray[0]}
+        disabled={disabled}
+        onChange={(e) => multiValueHandler(e.target.value, 1)}
+        {...extraProps}
+      >
+        {toOptions(options)}
+      </Select>
     </>
   );
 };
-export default CarbonValueEditor;
+
+export default CarbonOperatorSelector;

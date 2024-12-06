@@ -1,33 +1,28 @@
 // cdm-utils.js
 /* eslint-disable array-callback-return */
 
-const generateContextDataMapping = (storeData) => {
-  const generateContextDataMappingChildern = (value) => {
-    // If the value is an object with nested data, recurse to map its properties
+const generateContextDataMapping = (storeData, nodeData) => {
+  // Helper to map properties of nested objects
+  const mapNestedProperties = (value) => {
     if (typeof value === 'object' && value !== null) {
-      return Object.keys(value).map((key) => {
+      return Object.keys(value).map(key => {
         const item = value[key];
 
-        // If pType exists, return a simple object with its type and data
-        if (item.pType) {
-          // If pValue is empty, bind value to an empty string, otherwise use the actual pValue
-          const data = {
-            type: item.pType,
-            value: item.pValue !== undefined ? item.pValue : ""
-          };
-
+        if (item.type) {
           return {
             name: key,
-            type: item.pType,
-            data: data
+            type: item.type,
+            data: {
+              type: item.type,
+              value: item.value !== undefined ? item.value : ""
+            }
           };
         } else {
-          // If pType is not defined, treat it as a category and recurse
           return {
             name: key,
             type: '',
             data: { type: 'CATEGORY' },
-            items: generateContextDataMappingChildern(item) // Recursively map child items
+            items: mapNestedProperties(item) // Recursive call for children
           };
         }
       });
@@ -35,27 +30,99 @@ const generateContextDataMapping = (storeData) => {
     return [];
   };
 
-  // Start by processing the entire storeData object, which could have multiple top-level keys like "application"
+  // Helper to process form data into a mapping structure
+  const mapFormData = (formData) => {
+    return formData.flatMap(row => row.cType === "ROW"
+      ? row.children.flatMap(column => column.cType === "COLUMN"
+        ? column.children.map(child => mapFormControl(child))
+        : [])
+      : []
+    );
+  };
+
+  // Map individual form controls
+  const mapFormControl = (child) => {
+    const controlTypeMap = {
+      "LABEL": "LABEL",
+      "TEXT_INPUT": "TEXT_INPUT",
+      "TEXTAREA": "TEXTAREA",
+      "CHECKBOX": "CHECKBOX",
+      "DROPDOWN": "DROPDOWN"
+    };
+    return controlTypeMap[child.cType] ? {
+      id: child.id,
+      name: `${child.cType}[${child.props.name}]`,
+      type: controlTypeMap[child.cType],
+    } : null;
+  };
+
+  // Helper to map node data into a hierarchical structure
+  const mapNodeData = (nodeData) => {
+    return nodeData?.filter(node => !['START', 'END', 'BRANCH_START', 'BRANCH_END'].includes(node.type))
+      .map(node => createNodeMapping(node));
+  };
+
+  // Create a node mapping
+  const createNodeMapping = (node) => {
+    const { data, type } = node;
+    const nodeMapping = {
+      name: data.id,
+      type: ['PARTNER', 'SPONSOR'].includes(type) ? 'TASK_NODE' : 'DIALOG_NODE',
+      items: [],
+    };
+
+    if (data.dialogNodes?.length) {
+      nodeMapping.items = mapNodeData(data.dialogNodes);
+    }
+
+    if (data?.form?.children?.length) {
+      nodeMapping.items = [{
+        name: "FormData",
+        type: '',
+        data: { type: "CATEGORY" },
+        items: mapFormData(data.form.children[0].children),
+      }];
+    }
+
+    return nodeMapping;
+  };
+
+  // Main context mapping
   return [{
     name: "ProcessData",
     type: '',
     data: { type: "CATEGORY" },
-    items: [/* {
-      name: "ParticipantActivityKey",
-      type: '',
-      data: { type: "SUBCATEGORY" },
-      items: []
-    }, */ {
+    items: [
+      {
         name: "ContextData",
         type: '',
         data: { type: "CATEGORY" },
-        items: generateContextDataMappingChildern(storeData) // Pass storeData directly for mapping
-      }]
+        items: mapNestedProperties(storeData),
+      },
+      ...(nodeData ? mapNodeData(nodeData) : []),
+    ],
   }];
 };
 
+// Helper to format the name of each item
+const getFormattedItemName = (item) => {
+  // First, handle special cases for 'ProcessData', 'ContextData', and 'FormData'
+  if (['ProcessData', 'ContextData', 'FormData'].includes(item.name)) {
+    return item.name.charAt(0).toLowerCase() + item.name.slice(1); // Make the first letter lowercase
+  }
+
+  // Handle form control names, like 'TEXTAREA[form-control]' -> 'form-control'
+  if (item.name && item.name.includes('[')) {
+    const nameParts = item.name.split('[');
+    return nameParts[1]?.slice(0, -1) || nameParts[0]; // Remove the closing bracket and return the inner name
+  }
+
+  // If none of the above conditions match, just return the original name
+  return item.name;
+};
+
 const transformDataToTree = (data, parentKey = '') => {
-  const transformDataChildren = (data, parentKey) => {
+  /* const transformDataChildren = (data, parentKey) => {
     return Object.entries(data).map(([key, value]) => {
       const dataNodeId = `${parentKey}`;
       const titleValue = value !== undefined ? value : 'binding';
@@ -83,42 +150,36 @@ const transformDataToTree = (data, parentKey = '') => {
 
       return dataNode;
     });
-  };
+  }; */
 
-  return (
-    data !== 'undefined' &&
-    data?.map((item) => {
-      const itemName = item.name === 'ProcessData' || item.name === 'ContextData' ? `${item.name.charAt(0).toLowerCase()}${item.name.slice(1)}` : `${item.name}`
-      const nodeId = parentKey !== "" ? `${parentKey}.${itemName}` : itemName;
-      const { items, data, ...itemProps } = item;
-      const treeNode = {
-        id: nodeId && nodeId,
-        title: `${item.name}`,
-        type: item.type,
-        value: itemProps,
-        children: []
-      };
+  return data?.map(item => {
+    const itemName = getFormattedItemName(item);
+    const nodeId = parentKey ? `${parentKey}.${itemName}` : itemName;
+    const { items, data, ...itemProps } = item;
 
-      if (item.items) {
-        treeNode.children = transformDataToTree(item.items, nodeId);
-      }
+    const treeNode = {
+      id: data?.type !== "CATEGORY" ? `${nodeId}.value` : nodeId,
+      title: item.name,
+      type: item.type,
+      value: itemProps,
+      children: [],
+    };
 
-      if (item.data && item.data.type !== 'TEXT' && item.data.type !== 'SUBCATEGORY' && item.data.type !== 'API_CONFIG' && item.data.type !== 'LOGO_FILE' && item.data.type !== 'ACTIVITY_FILE' && item.data.type !== 'CATEGORY' && item.data.type !== undefined && typeof item.data === 'object') {
-        treeNode.children = treeNode.children.concat(transformDataChildren(item.data, nodeId));
-      }
+    if (items) {
+      treeNode.children = transformDataToTree(items, nodeId);
+    }
 
-      return treeNode;
-    })
-  );
+    return treeNode;
+  }) || [];
 };
 
 const transformDataToTreeBasedOnType = (data, type, parentKey = '') => {
   return data.map((item) => {
-    const itemName = item.name === 'ProcessData' || item.name === 'ContextData' ? `${item.name.charAt(0).toLowerCase()}${item.name.slice(1)}` : `${item.name}`
+    const itemName = getFormattedItemName(item);
     const nodeId = parentKey !== "" ? `${parentKey}.${itemName}` : itemName;
     if (item.type === type || item.data?.type === "CATEGORY") {
       const treeNode = {
-        id: nodeId + '.pValue',
+        id: nodeId + '.value',
         title: item.name,
         type: item.type || item.data.type,
         value: item?.data?.value,
@@ -169,15 +230,15 @@ const generateTreeData = (definition, path = '$') => {
         }))
       };
     } else if (typeof value === 'object' && value !== null) {
-      if (value.pType) {
+      if (value.type) {
         return {
           id: currentPath,
-          label: `${key} [${value.pType === 'TEXT' ? value.pValue : value.pType + (value.pValue ? ' : ' + value.pValue : '')}]`,
-          type: value.pType,
+          label: `${key} [${value.type === 'TEXT' ? value.value : value.type + (value.value ? ' : ' + value.value : '')}]`,
+          type: value.type,
           value: {
-            type: value.pType,
+            type: value.type,
             name: key,
-            value: value.pType === 'OBJECT' ? '' : (value.pValue || '')
+            value: value.type === 'OBJECT' ? '' : (value.value || '')
           }
         };
       } else {

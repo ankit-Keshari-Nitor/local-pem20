@@ -49,7 +49,6 @@ const CreateApiConfiguration = ({ mode, contextPage, cdmPage }) => {
         uiSave: function () {
 
           const apiConfigurationInput = pageUtil.removeEmptyAttributes(this.form.apiConfiguration.getValues());
-
           let handler;
           if (page.ui.mode === 'CREATE') {
             apiConfigurationInput.sponsorContext = 'b2b';

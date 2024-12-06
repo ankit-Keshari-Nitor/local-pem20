@@ -4,7 +4,6 @@ import { ValueSelector, getFirstOption, standardClassnames, useValueEditor } fro
 import { VectorIcon } from '../../../icons';
 import { useState } from 'react';
 import Shell from '@b2bi/shell';
-import useTaskStore from '../../../store';
 
 const CarbonValueEditor = (allProps) => {
   const {
@@ -31,6 +30,12 @@ const CarbonValueEditor = (allProps) => {
 
   const pageUtil = Shell.PageUtil();
   const [error, setError] = useState('');
+  const [isOperandSelector, setIsOperandSelector] = useState(false);
+
+  React.useEffect(()=> {
+    setIsOperandSelector(false)
+ }, [allProps?.field])
+
   const placeHolderText = fieldData?.placeholder ?? '';
   const inputTypeCoerced = ['in', 'notIn'].includes(operator[1]) ? 'text' : inputType || 'text';
   let rightOperandInput = null;
@@ -49,13 +54,13 @@ const CarbonValueEditor = (allProps) => {
   if (operator[1] === 'null' || operator[1] === 'notNull') {
     return null;
   }
-  const store = useTaskStore();
-  let storeData = useTaskStore((state) => state.tasks);
 
   const operandSelector = (selectedValue) => {
+    setIsOperandSelector(true);
     handleOnChange(selectedValue);
   };
 
+ 
   if ((operator[1] === 'between' || operator[1] === 'notBetween') && (type === 'select' || type === 'text')) {
     const editors = ['from', 'to'].map((key, i) => {
       if (type === 'text') {
@@ -92,7 +97,8 @@ const CarbonValueEditor = (allProps) => {
       </span>
     );
   }
-
+  
+  // eslint-disable-next-line default-case
   switch (allProps?.field) {
     case 'string':
       rightOperandInput = (
@@ -142,22 +148,39 @@ const CarbonValueEditor = (allProps) => {
     case 'boolean':
       rightOperandInput = (
         <>
-          <div style={{ marginTop: '-0.5rem' }}>
-            <Select
-              id="operand-input"
-              labelText=""
-              className={className}
-              title={title}
-              value={value}
-              disabled={disabled}
-              onChange={(e) => handleOnChange(e.target.value)}
-              {...extraProps}
-            >
-              <SelectItem value="" text="Select" />
-              <SelectItem value="true" text="True" />
-              <SelectItem value="false" text="False" />
-            </Select>
-          </div>
+          {isOperandSelector ? (
+            <div style={{ marginTop: '1rem' }}>
+              <TextInput
+                id="operand-input"
+                labelText=""
+                type={inputTypeCoerced}
+                value={value}
+                title={title}
+                className={className}
+                disabled={disabled}
+                placeholder={'Right Operand'}
+                onChange={() => setIsOperandSelector(false)}
+                {...extraProps}
+              />
+            </div>
+          ) : (
+            <div style={{ marginTop: '-0.5rem' }}>
+              <Select
+                id="operand-input"
+                labelText=""
+                className={className}
+                title={title}
+                value={value}
+                disabled={disabled}
+                onChange={(e) => handleOnChange(e.target.value)}
+                {...extraProps}
+              >
+                <SelectItem value="" text="Select" />
+                <SelectItem value="true" text="True" />
+                <SelectItem value="false" text="False" />
+              </Select>
+            </div>
+          )}
         </>
       );
       break;
@@ -165,15 +188,31 @@ const CarbonValueEditor = (allProps) => {
       rightOperandInput = (
         <>
           <div style={{ marginTop: '1rem' }}>
-            <DatePicker datePickerType="single" className={className} value={value} onChange={(e) => handleOnChange(e)} disabled={disabled}>
-              <DatePickerInput id="operand-input" labelText="" placeholder="mm/dd/yyyy" />
-            </DatePicker>
+            {isOperandSelector ? (
+              <TextInput
+                id="operand-input"
+                labelText=""
+                type={inputTypeCoerced}
+                value={value}
+                title={title}
+                className={className}
+                disabled={disabled}
+                placeholder={'Right Operand'}
+                onChange={() => setIsOperandSelector(false)}
+                {...extraProps}
+              />
+            ) : (
+              <DatePicker datePickerType="single" className={className} value={value} onChange={(e) => handleOnChange(e)} disabled={disabled}>
+                <DatePickerInput id="operand-input" labelText="" placeholder="mm/dd/yyyy" />
+              </DatePicker>
+            )}
           </div>
         </>
       );
       break;
     case 'select':
       rightOperandInput = <SelectorComponent {...props} className={className} title={title} value={value} disabled={disabled} handleOnChange={handleOnChange} options={values} />;
+      break;
     case 'multiselect':
       rightOperandInput = (
         <ValueSelector
@@ -203,12 +242,10 @@ const CarbonValueEditor = (allProps) => {
   }
 
   const OpenMappingDialog = () => {
-
     try {
       pageUtil
         .showPageModal('CONTEXT_DATA_MAPPING.SELECT', {
-          data: _context.definition?.contextData ? JSON.parse(_context.definition.contextData) : _context?.version?.contextData ? JSON.parse(_context?.version?.contextData) : {},
-          nodeData: (storeData?.nodes)
+          data: JSON.parse(_context.definition?.contextData ? _context.definition.contextData : _context?.version?.contextData)
         })
         .then((modalData) => {
           if (modalData.actionType === 'submit') {

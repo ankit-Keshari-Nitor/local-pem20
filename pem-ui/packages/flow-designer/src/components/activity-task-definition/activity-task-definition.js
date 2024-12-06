@@ -22,9 +22,9 @@ const ActivityTaskDefinition = ({ id, onSubmitDefinitionForm, setShowActivityDef
   };
 
   const onCloseModel = () => {
-    setOpenCancelDialog(false)
-    setShowActivityDefineDrawer(false)
-  }
+    setOpenCancelDialog(false);
+    setShowActivityDefineDrawer(false);
+  };
 
   useEffect(() => {
     if (activityDefinitionData && activityDefinitionData.definition) {
@@ -159,40 +159,40 @@ const ActivityTaskDefinition = ({ id, onSubmitDefinitionForm, setShowActivityDef
           />
         </Column>
       </Grid>
-      <Grid >
-        <Column className="col-margin" lg={isExpanded ? 15 : 14}>
-          <TextArea
-            className="txt-area"
-            id="contextData"
-            data-testid="contextData"
-            labelText={pageUtil.t('mod-context-data-properties:form.contextData')}
-            rows={5}
-            name="contextData"
-            disabled={readOnly}
-            enableCounter={true}
-            value={formState.contextData}
-            onChange={handlePropertyFormChange}
-            invalid={!!errors.errors.contextData}
-            invalidText={errors.errors.contextData}
-          />
-        </Column>
-        {formState.contextData !== '' && (
-          <Column className="context-mapping-button-container">
-            <Button
-              onClick={() => {
-                validateContextData(formState.contextData);
-              }}
-              className="context-mapping-btn"
-              kind="tertiary"
-              renderIcon={VectorIcon}
-              size="sm"
-              hasIconOnly
+      <Grid className="tab-panel-grid">
+        <Column lg={16}>
+          <div style={{ display: 'flex' }}>
+            <TextArea
+              className="txt-area"
+              id="contextData"
+              data-testid="contextData"
+              labelText={pageUtil.t('mod-context-data-properties:form.contextData')}
+              rows={5}
+              name="contextData"
               disabled={readOnly}
-              iconDescription={pageUtil.t('mod-context-data-properties:form.iconDescription')}
-              tooltipAlignment="center"
+              enableCounter={true}
+              value={formState.contextData}
+              onChange={handlePropertyFormChange}
+              invalid={!!errors.errors.contextData}
+              invalidText={errors.errors.contextData}
             />
-          </Column>
-        )}
+            {formState.contextData !== '' && (
+              <Button
+                onClick={() => {
+                  validateContextData(formState.contextData);
+                }}
+                className="context-mapping-btn"
+                kind="tertiary"
+                renderIcon={VectorIcon}
+                size="sm"
+                hasIconOnly
+                disabled={readOnly}
+                iconDescription={pageUtil.t('mod-context-data-properties:form.iconDescription')}
+                tooltipAlignment="center"
+              />
+            )}
+          </div>
+        </Column>
       </Grid>
       <Grid fullWidth className="button-container-container">
         <Column lg={16} className="buttons-containers">
